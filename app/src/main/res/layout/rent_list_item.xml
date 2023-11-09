@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:id="@+id/root"
+        app:cardCornerRadius="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:paddingBottom="@dimen/_10dp"
+                        app:layout_constraintTop_toTopOf="parent" >
+
+                        <ImageView
+                            android:id="@+id/pdImgView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@null"
+                            android:scaleType="center"
+                            android:src="@drawable/ic_launcher_background"/>
+
+                    </FrameLayout>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        app:cardCornerRadius="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <TextView
+                            android:id="@+id/cateTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/primary_rotate"
+                            android:fontFamily="@font/monserrat_semibold"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="4dp"
+                            android:text="Bike"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+                    </androidx.cardview.widget.CardView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginVertical="8dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/perHourTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/monserrat_semibold"
+                            android:text="\u20B9 50"
+                            android:textSize="12sp"
+                            android:theme="@style/textStyle" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="/hour"
+                            android:textSize="12sp"
+                            android:theme="@style/textStyle" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/addTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:drawableStart="@drawable/loc_ic"
+                        android:drawablePadding="4dp"
+                        android:drawableTint="@color/primary"
+                        android:gravity="center"
+                        android:text="Delhi, India"
+                        android:textSize="12sp"
+                        android:theme="@style/textStyle" />
+
+                    <TextView
+                        android:id="@+id/timingsTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:drawableStart="@drawable/baseline_timer_24"
+                        android:drawablePadding="4dp"
+                        android:drawableTint="@color/primary"
+                        android:gravity="center"
+                        android:text="10:00AM - 11:00PM"
+                        android:textSize="12sp"
+                        android:theme="@style/textStyle" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--        android:id="@+id/card_lay"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginHorizontal="4dp"-->
+    <!--        android:layout_marginVertical="4dp">-->
+
+    <!--        <ImageView-->
+    <!--            android:id="@+id/imageView"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="197dp"-->
+    <!--            android:scaleType="centerCrop"-->
+    <!--            android:src="@drawable/american_flag"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/house"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginLeft="12dp"-->
+    <!--            android:layout_marginBottom="12dp"-->
+    <!--            android:background="@color/primary"-->
+    <!--            android:fontFamily="@font/montserrat_regular"-->
+    <!--            android:paddingHorizontal="8dp"-->
+    <!--            android:paddingVertical="7dp"-->
+    <!--            android:paddingLeft="8dp"-->
+    <!--            android:paddingTop="7dp"-->
+    <!--            android:paddingRight="8dp"-->
+    <!--            android:paddingBottom="7dp"-->
+    <!--            android:text="HOUSE"-->
+    <!--            android:textAlignment="center"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:textSize="13sp"-->
+    <!--            app:layout_constraintBottom_toBottomOf="@+id/imageView"-->
+    <!--            app:layout_constraintStart_toStartOf="@+id/imageView" />-->
+    <!--        <LinearLayout-->
+    <!--            android:id="@+id/price_linear"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginTop="7dp"-->
+    <!--            android:orientation="horizontal"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toBottomOf="@+id/imageView">-->
+
+    <!--            <TextView-->
+    <!--                android:id="@+id/price_txt"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_marginLeft="10dp"-->
+    <!--                android:fontFamily="@font/montserrat_bold"-->
+    <!--                android:text="$ 2499 "-->
+    <!--                android:textColor="@color/black"-->
+    <!--                android:textSize="19sp" />-->
+
+    <!--            <TextView-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:fontFamily="@font/montserrat_regular"-->
+    <!--                android:text="/hour"-->
+    <!--                android:textColor="@color/black"-->
+    <!--                android:textSize="17sp" />-->
+    <!--        </LinearLayout>-->
+
+    <!--        <LinearLayout-->
+    <!--            android:id="@+id/linearLayout2"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginTop="5dp"-->
+    <!--            android:gravity="center_vertical"-->
+    <!--            android:orientation="horizontal"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toBottomOf="@+id/price_linear">-->
+
+    <!--            <TextView-->
+    <!--                android:id="@+id/description_txt"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_marginLeft="10dp"-->
+    <!--                android:layout_marginRight="11dp"-->
+    <!--                android:fontFamily="@font/montserrat_regular"-->
+    <!--                android:text="2 Beds | 2 Baths"-->
+    <!--                android:textColor="@color/black"-->
+    <!--                android:textSize="13sp" />-->
+
+    <!--            <ImageView-->
+    <!--                android:layout_width="5dp"-->
+    <!--                android:layout_height="5dp"-->
+    <!--                android:src="@drawable/circle_blue" />-->
+
+    <!--            <TextView-->
+    <!--                android:id="@+id/type_txt"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_marginLeft="11dp"-->
+    <!--                android:fontFamily="@font/montserrat_regular"-->
+    <!--                android:text="Semi Furnished"-->
+    <!--                android:textColor="@color/black"-->
+    <!--                android:textSize="13sp" />-->
+    <!--        </LinearLayout>-->
+
+    <!--&lt;!&ndash;        <LinearLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_width="55dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_height="29dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_marginTop="16dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_marginRight="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:background="@color/pastel_orange"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:gravity="center"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:orientation="horizontal"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:paddingHorizontal="5.53dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:paddingLeft="5.53dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:paddingTop="4dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:paddingRight="5.53dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:paddingBottom="3dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintEnd_toEndOf="@+id/imageView"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintTop_toBottomOf="@+id/imageView">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;            <ImageView&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_width="10.69dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_height="10.69dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:src="@drawable/loc" />&ndash;&gt;-->
+
+    <!--&lt;!&ndash;            <TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:id="@+id/rating_txt"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_marginLeft="2dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:fontFamily="@font/montserrat_bold"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:text="3.5"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:textColor="@color/white"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:textSize="15sp" />&ndash;&gt;-->
+    <!--&lt;!&ndash;        </LinearLayout>&ndash;&gt;-->
+
+    <!--        <LinearLayout-->
+    <!--            android:id="@+id/linearLayout3"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginTop="9dp"-->
+    <!--            android:gravity="center_vertical"-->
+    <!--            android:orientation="horizontal"-->
+    <!--            app:layout_constraintTop_toBottomOf="@+id/linearLayout2">-->
+
+    <!--            <ImageView-->
+    <!--                android:layout_width="9.8dp"-->
+    <!--                android:layout_height="12.81dp"-->
+    <!--                android:layout_marginLeft="10dp"-->
+    <!--                android:src="@drawable/loc_ic" />-->
+
+    <!--            <TextView-->
+    <!--                android:id="@+id/location_txt"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_marginLeft="6.2dp"-->
+    <!--                android:text="3 Court Square, Long Island City, NY 11101"-->
+    <!--                android:textColor="@color/black"-->
+    <!--                android:textSize="13sp" />-->
+    <!--        </LinearLayout>-->
+
+    <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="58dp"-->
+    <!--            android:layout_marginTop="11dp"-->
+    <!--            android:background="#EEF2F4"-->
+    <!--            app:layout_constraintTop_toBottomOf="@+id/linearLayout3">-->
+
+    <!--            <ImageView-->
+    <!--                android:id="@+id/imageView2"-->
+    <!--                android:layout_width="34dp"-->
+    <!--                android:layout_height="34dp"-->
+    <!--                android:layout_marginLeft="9dp"-->
+    <!--                android:src="@drawable/profile_24"-->
+    <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--                app:layout_constraintStart_toStartOf="parent"-->
+    <!--                app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!--            <TextView-->
+    <!--                android:id="@+id/textView3"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_marginLeft="6dp"-->
+    <!--                android:layout_marginTop="9dp"-->
+    <!--                android:fontFamily="@font/monserrat_semibold"-->
+    <!--                android:text="Skyline Tower"-->
+    <!--                android:textColor="@color/black"-->
+    <!--                android:textSize="15sp"-->
+    <!--                app:layout_constraintBottom_toTopOf="@+id/textView2"-->
+    <!--                app:layout_constraintStart_toEndOf="@+id/imageView2"-->
+    <!--                app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!--            <TextView-->
+    <!--                android:id="@+id/textView2"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_marginLeft="6dp"-->
+    <!--                android:layout_marginTop="3dp"-->
+    <!--                android:layout_marginBottom="14dp"-->
+    <!--                android:fontFamily="@font/montserrat_regular"-->
+    <!--                android:text="Hosted by Daniel Harris"-->
+    <!--                android:textColor="@color/black"-->
+    <!--                android:textSize="11sp"-->
+    <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--                app:layout_constraintStart_toEndOf="@+id/imageView2"-->
+    <!--                app:layout_constraintTop_toBottomOf="@+id/textView3" />-->
+
+    <!--            <LinearLayout-->
+    <!--                android:layout_width="100dp"-->
+    <!--                android:layout_height="32dp"-->
+    <!--                android:layout_marginRight="10dp"-->
+    <!--                android:background="@drawable/dotted_border_card_white"-->
+    <!--                android:gravity="center"-->
+    <!--                android:orientation="horizontal"-->
+    <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--                app:layout_constraintEnd_toEndOf="parent"-->
+    <!--                app:layout_constraintTop_toTopOf="parent">-->
+
+    <!--                <ImageView-->
+    <!--                    android:id="@+id/ic_chat_img"-->
+    <!--                    android:layout_width="16.5dp"-->
+    <!--                    android:layout_height="13dp"-->
+    <!--                    android:layout_marginRight="4dp"-->
+    <!--                    android:src="@drawable/rent_24" />-->
+
+    <!--                <TextView-->
+    <!--                    android:id="@+id/textView"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_centerVertical="true"-->
+    <!--                    android:fontFamily="@font/monserrat_semibold"-->
+    <!--                    android:text="Chat now"-->
+    <!--                    android:textColor="@color/black"-->
+    <!--                    android:textSize="14sp" />-->
+    <!--            </LinearLayout>-->
+    <!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+</layout>

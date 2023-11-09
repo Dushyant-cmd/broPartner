@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/profile_24"
+        android:title="@string/profile"/>
+    <item
+        android:id="@+id/rent"
+        android:icon="@drawable/rent_24"
+        android:title="Rent"/>
+    <item
+        android:id="@+id/driving"
+        android:icon="@drawable/baseline_directions_bike_24"
+        android:title="Ride"/>
+    <item
+        android:id="@+id/history"
+        android:icon="@drawable/baseline_history_24"
+        android:title="History"/>
+    <item
+        android:id="@+id/termsCon"
+        android:icon="@drawable/baseline_policy_24"
+        android:title="Terms &amp; Conditions"/>
+<!--    <item-->
+<!--        android:id="@+id/logout"-->
+<!--        android:icon="@drawable/baseline_login_24"-->
+<!--        android:title="Log-out"/>-->
+</menu>

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1046799944122",
+    "project_id": "bro-rental",
+    "storage_bucket": "bro-rental.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1046799944122:android:c804812fd516c217133583",
+        "android_client_info": {
+          "package_name": "com.brorental.bropartner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBQNKnGClisJvVXH1hZ3-A49LHoZCOSOY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1046799944122:android:8242de8f2876c501133583",
+        "android_client_info": {
+          "package_name": "com.brorental.brorental"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBQNKnGClisJvVXH1hZ3-A49LHoZCOSOY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

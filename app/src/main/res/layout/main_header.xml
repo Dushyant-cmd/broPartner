@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="170dp"
+    android:background="@drawable/primary_rotate">
+
+    <TextView
+        android:id="@+id/viewProfileTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/dotted_border_card_white"
+        android:drawableStart="@drawable/eye_ic"
+        android:drawablePadding="8dp"
+        android:fontFamily="@font/montserrat_regular"
+        android:padding="4dp"
+        android:text="View Profile"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:id="@+id/walletLL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/_8dp"
+        android:background="@drawable/dotted_border_card_white"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="4dp">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:contentDescription="@null"
+            android:src="@drawable/wallet" />
+
+        <TextView
+            android:id="@+id/walletTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/montserrat_medium"
+            android:text="\u20B9 40"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileIV"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/circle_blue"
+        android:src="@drawable/profile_24" />
+
+    <TextView
+        android:id="@+id/nameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profileIV"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:drawablePadding="8dp"
+        android:fontFamily="@font/montserrat_medium"
+        android:text="Guest_1002"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+</RelativeLayout>
