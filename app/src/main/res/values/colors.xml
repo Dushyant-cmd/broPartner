@@ -2,4 +2,12 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="primary">#9FC13B</color>
+    <color name="secondary">#79A202</color>
+    <color name="pastel_orange">#ff964f</color>
+    <color name="gold">#dfbd2a</color>
+    <color name="pastel_blue">#6392b0</color>
+    <color name="placeholder_bg">#ECECEC</color>
+    <color name="purple_500">#9FC13B</color>
+    <color name="teal_200">#33AB51</color>
 </resources>
