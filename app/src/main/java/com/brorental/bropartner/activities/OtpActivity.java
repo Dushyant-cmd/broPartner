@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -25,6 +26,7 @@ import com.brorental.bropartner.localdb.SharedPref;
 import com.brorental.bropartner.models.User;
 import com.brorental.bropartner.utilities.AppClass;
 import com.brorental.bropartner.utilities.DialogCustoms;
+import com.brorental.bropartner.utilities.ErrorDialog;
 import com.brorental.bropartner.utilities.Utility;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -58,7 +60,7 @@ public class OtpActivity extends AppCompatActivity {
     private PhoneAuthProvider.ForceResendingToken mResendToken;
     String phone;
     String TAG = "OtpActivity.java", referCode;
-    ProgressDialog dialog;
+    android.app.AlertDialog dialog;
     Thread t;
     FirebaseFirestore mFirestore;
     SharedPref sharedPreferences;
@@ -81,7 +83,7 @@ public class OtpActivity extends AppCompatActivity {
         binding.phone2.setVisibility(View.VISIBLE);
         binding.login.setEnabled(false);
         sharedPreferences = new SharedPref(OtpActivity.this);
-        dialog = new ProgressDialog(OtpActivity.this);
+        dialog = com.brorental.bropartner.utilities.ProgressDialog.createAlertDialog(this);
         mFirestore = FirebaseFirestore.getInstance();
 
         //set the TextWatcher interface instance on otp pinView
@@ -382,6 +384,7 @@ public class OtpActivity extends AppCompatActivity {
                     DocumentSnapshot d = task.getResult().getDocuments().get(0);
                     if (d.getBoolean("termsCheck")) {
                         //login
+                        Toast.makeText(OtpActivity.this, "Welcome", Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(OtpActivity.this, MainActivity.class);
                         i.putExtra("phone", phone);//with +91 code in phone variable.
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -470,32 +473,33 @@ public class OtpActivity extends AppCompatActivity {
 //                                                                            sharedPreferences.setEmail("");
 //                                                                            sharedPreferences.saveUser(new User(username, phone, pin, "0", "0", false, "", "0"));
                                                                             binding.otpLl.setVisibility(View.GONE);
-                                                                            binding.otpLl.setVisibility(View.VISIBLE);
+                                                                            binding.termsLangLL.setVisibility(View.VISIBLE);
                                                                             Toast.makeText(OtpActivity.this, "Sign-Up Successfully", Toast.LENGTH_SHORT).show();
                                                                         }
                                                                     }).addOnFailureListener(new OnFailureListener() {
                                                                         @Override
                                                                         public void onFailure(@NonNull Exception e) {
-                                                                            Log.d(TAG, "onFailure: " + t);
+                                                                            ErrorDialog.createErrorDialog(OtpActivity.this, task.getException().getMessage());
                                                                         }
                                                                     });
                                                         }
                                                     }).addOnFailureListener(new OnFailureListener() {
                                                         @Override
                                                         public void onFailure(@NonNull Exception e) {
-                                                            Log.d(TAG, "onFailure: " + t);
+                                                            ErrorDialog.createErrorDialog(OtpActivity.this, task.getException().getMessage());
                                                         }
                                                     });
                                         } else {
-                                            Toast.makeText(OtpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                            Log.d(TAG, "onComplete: " + task.getException());
+                                            ErrorDialog.createErrorDialog(OtpActivity.this, task.getException().getMessage());
                                         }
                                     }
                                 });
                     } catch (Exception e) {
                         Log.v("OtpActivity.java", e + "");
+                        ErrorDialog.createErrorDialog(OtpActivity.this, task.getException().getMessage());
                     }
                 } else {
+                    ErrorDialog.createErrorDialog(OtpActivity.this, task.getException().getMessage());
                 }
             }
         });

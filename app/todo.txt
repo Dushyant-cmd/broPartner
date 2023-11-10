@@ -1,0 +1,6 @@
+*. Slider and login with phone and email at sign-up and only phone at login.
+*. Dashboard have a banner dynamic image, recent rent items vertical list, recent rides
+ vertical list, Floating action button which opens upload product activity.
+*. Product Upload: first select category, select multiple images, if bike then get bike owner
+ name, bike name, aadhar number, rc number, photos, and rent timing, per hour charge, extra charge,
+ owner description, pickup location, year model, color, health of bike, state.

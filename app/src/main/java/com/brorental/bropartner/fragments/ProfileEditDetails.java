@@ -3,6 +3,7 @@ package com.brorental.bropartner.fragments;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -61,7 +62,7 @@ public class ProfileEditDetails extends Fragment {
     private AppClass appClass;
     private File fileAadhaarImage, fileDLImage, fileProfileImage;
     private String currentPhotoPath, profilePath, dLPath, aadhaarPath;
-    private ProgressDialog dialog;
+    private AlertDialog dialog;
     private UtilsInterface.RefreshInterface refreshInterface;
     private boolean isKyc = false;
     public ProfileEditDetails(UtilsInterface.RefreshInterface refreshInterface) {
@@ -74,7 +75,7 @@ public class ProfileEditDetails extends Fragment {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile_details, container, false);
         appClass = (AppClass) getActivity().getApplication();
-        dialog = new ProgressDialog(getActivity());
+        dialog = com.brorental.bropartner.utilities.ProgressDialog.createAlertDialog(requireActivity());
         dialog.setCancelable(false);
         setListeners();
         return binding.getRoot();

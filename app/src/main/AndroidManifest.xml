@@ -26,36 +26,47 @@
 
         <activity
             android:name=".activities.PaymentHistory"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activities.PaymentActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activities.RentDetailsActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activities.HistoryActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activities.RideActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activities.RentActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activities.ProfileActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activities.OtpActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activities.SignUpAndLogin"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activities.ScreenSliderActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activities.SplashActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -65,6 +76,7 @@
         </activity>
         <activity
             android:name="com.brorental.bropartner.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
 
         <provider
