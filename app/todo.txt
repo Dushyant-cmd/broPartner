@@ -1,4 +1,4 @@
-*. Slider and login with phone and email at sign-up and only phone at login.
+*. Slider and login with phone and email at sign-up and only phone at login(done).
 *. Dashboard have a banner dynamic image, recent rent items vertical list, recent rides
  vertical list, Floating action button which opens upload product activity.
 *. Product Upload: first select category, select multiple images, if bike then get bike owner

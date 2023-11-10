@@ -108,7 +108,7 @@ public class OtpActivity extends AppCompatActivity {
                     binding.otp.requestFocus();
                     return;
                 }
-                dialog.setMessage("Please wait...");
+//                dialog.setMessage("Please wait...");
                 //verifying the code entered manually
                 verifyVerificationCode(code);
             }
@@ -238,9 +238,6 @@ public class OtpActivity extends AppCompatActivity {
     }
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-
-        //onVerificationCompleted method called by android when the verification of otp is verified inside this method we get sms and auto
-        //verify the user by calling
         @Override
         public void onVerificationCompleted(PhoneAuthCredential credential) {
             Log.d(TAG, "onVerificationCompleted:" + credential);
@@ -252,7 +249,7 @@ public class OtpActivity extends AppCompatActivity {
             }
 
             if (code != null) {
-                dialog.setMessage("Wait while generating account");
+//                dialog.setMessage("Wait while generating account");
                 dialog.show();
                 binding.otp.setText(code);
 //              verifying the code

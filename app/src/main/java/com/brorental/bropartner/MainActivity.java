@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView headerWalletTV, viewProfileTV, headerNameTV;
     private ImageView headerImageView;
     private LinearLayout headerWalletLL;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,8 +96,7 @@ public class MainActivity extends AppCompatActivity {
         headerWalletTV.setText("\u20B9 " + appClass.sharedPref.getUser().getWallet());
         headerNameTV.setText(appClass.sharedPref.getUser().getName());
 
-        Glide.with(this).load(appClass.sharedPref.getUser().getProfileUrl()).placeholder(R.drawable.profile_24).into(headerImageView);
-
+        Glide.with(this).load(appClass.sharedPref.getUser().getProfileUrl()).placeholder(R.drawable.default_profile).into(headerImageView);
         setListeners();
         //REGISTER BROADCAST RECEIVER FOR INTERNET
         Utility.registerConnectivityBR(MainActivity.this, appClass);
@@ -122,26 +120,11 @@ public class MainActivity extends AppCompatActivity {
 
             bar.show();
         }
-
-        adapter = new RentListAdapter(this);
-        binding.recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        binding.recyclerView.setAdapter(adapter);
-        adapter.submitList(list);
     }
 
     private void setListeners() {
         //header listeners and dynamic text.
-        View headerView = binding.navigationView.getHeaderView(0);
-        TextView walletTV = headerView.findViewById(R.id.walletTV);
-        ImageView imageView = headerView.findViewById(R.id.profileIV);
-        TextView viewProfileTV = headerView.findViewById(R.id.viewProfileTV);
-        TextView nameTV = headerView.findViewById(R.id.nameTV);
-        LinearLayout walletLL = headerView.findViewById(R.id.walletLL);
-        walletTV.setText("\u20B9 " + appClass.sharedPref.getUser().getWallet());
-        nameTV.setText(appClass.sharedPref.getUser().getName());
-
-        Glide.with(this).load(appClass.sharedPref.getUser().getProfileUrl()).placeholder(R.drawable.profile_24).into(imageView);
-        imageView.setOnClickListener(new View.OnClickListener() {
+        headerImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, ProfileActivity.class);
@@ -157,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        binding.addCashBtn.setOnClickListener(new View.OnClickListener() {
+        binding.withdrawalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 BottomSheetDialog sheet = new BottomSheetDialog(MainActivity.this);
@@ -169,11 +152,11 @@ public class MainActivity extends AppCompatActivity {
                 submitBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent(MainActivity.this, PaymentActivity.class);
-                        i.putExtra("addCash", true);
-                        i.putExtra("amt", rechargeET.getText().toString());
-                        startActivityForRes(i);
-                        sheet.dismiss();
+//                        Intent i = new Intent(MainActivity.this, PaymentActivity.class);
+//                        i.putExtra("addCash", true);
+//                        i.putExtra("amt", rechargeET.getText().toString());
+//                        startActivityForRes(i);
+//                        sheet.dismiss();
                     }
                 });
                 cancelBtn.setOnClickListener(new View.OnClickListener() {
@@ -185,14 +168,8 @@ public class MainActivity extends AppCompatActivity {
                 sheet.show();
             }
         });
-        binding.searchLL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openFragment(new SearchFragment());
-            }
-        });
 
-        walletLL.setOnClickListener(new View.OnClickListener() {
+        headerWalletTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, PaymentHistory.class);
@@ -232,13 +209,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getData(String selectedState, String category) {
-        Log.d(TAG, "getData: " + selectedState + "," + category);
+//        Log.d(TAG, "getData: " + selectedState + "," + category);
         binding.shimmer.setVisibility(View.VISIBLE);
-        binding.recyclerView.setVisibility(View.GONE);
-        Query query = mFirestore.collection("rent").limit(10);
+        binding.mainContentLl.setVisibility(View.GONE);
+        Query query = mFirestore.collection("rent").whereEqualTo("broPartnerId", appClass.sharedPref.getUser().getPin()).limit(10);
         if (!selectedState.isEmpty()) {
-            query = mFirestore.collection("rent").whereEqualTo("state", selectedState)
-                    .whereEqualTo("category", category).limit(10);
+            query = mFirestore.collection("rent").whereEqualTo("broPartnerId", appClass.sharedPref.getUser().getPin()).limit(10);
         }
         query.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -246,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         binding.swipeRef.setRefreshing(false);
                         binding.shimmer.setVisibility(View.GONE);
-                        binding.recyclerView.setVisibility(View.VISIBLE);
+                        binding.mainContentLl.setVisibility(View.VISIBLE);
                         if (task.isSuccessful()) {
                             list.clear();
                             List<DocumentSnapshot> docList = task.getResult().getDocuments();
