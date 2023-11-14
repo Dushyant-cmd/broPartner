@@ -1,10 +1,8 @@
 package com.brorental.bropartner.activities;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -14,12 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
-import com.brorental.bropartner.broadcasts.ConnectionBroadcast;
-import com.brorental.bropartner.models.User;
-import com.brorental.bropartner.utilities.AppClass;
 import com.brorental.bropartner.MainActivity;
 import com.brorental.bropartner.R;
 import com.brorental.bropartner.databinding.ActivitySplashBinding;
+import com.brorental.bropartner.models.User;
+import com.brorental.bropartner.utilities.AppClass;
 import com.brorental.bropartner.utilities.Utility;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -63,7 +60,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void getProfile() {
-        appClass.firestore.collection("users").document(appClass.sharedPref.getUser().getPin())
+        Log.d(TAG, "getProfile: " + appClass.sharedPref.getUser().getPin());
+        appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot d) {

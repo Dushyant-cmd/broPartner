@@ -1,6 +1,5 @@
 package com.brorental.bropartner.activities;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,7 +14,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -149,7 +147,6 @@ public class OtpActivity extends AppCompatActivity {
                                         i.putExtra("phone", phone);//with +91 code in phone variable.
                                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(i);
-                                        finish();
                                         sharedPreferences.setLogin(true);
                                         sharedPreferences.setAadhaarImg(aadhaarImgUrl);
                                         sharedPreferences.setAadhaarPath(aadhaarImgPath);
@@ -160,6 +157,7 @@ public class OtpActivity extends AppCompatActivity {
                                         sharedPreferences.setEmail(email);
                                         sharedPreferences.saveUser(new User(name, phone, pin, totalRent,
                                                 totalRide, true, profileUrl, wallet));
+                                        finish();
                                         Log.d(TAG, "onComplete: " + task.getResult());
                                     } else {
                                         Log.d(TAG, "onComplete: " + task.getException());
@@ -386,8 +384,6 @@ public class OtpActivity extends AppCompatActivity {
                         i.putExtra("phone", phone);//with +91 code in phone variable.
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(i);
-                        finish();
-                        dialog.dismiss();
                         sharedPreferences.setLogin(true);
                         sharedPreferences.setAadhaarImg(d.getString("aadhaarImgUrl"));
                         sharedPreferences.setAadhaarPath(d.getString("aadhaarImgPath"));
@@ -399,6 +395,8 @@ public class OtpActivity extends AppCompatActivity {
                         sharedPreferences.saveUser(new User(d.getString("name"), phone, d.getString("pin"),
                                 d.getString("totalRent"),
                                 d.getString("totalRide"), true, d.getString("profileUrl"), d.getString("wallet")));
+                        finish();
+                        dialog.dismiss();
                     } else {
                         dialog.dismiss();
                         name = d.getString("name");
@@ -428,7 +426,7 @@ public class OtpActivity extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             pin = task.getResult().getString("broPartnerPin");
                                             HashMap<String, Object> map = new HashMap<>();
-                                            map.put("broPartnerPin", "" + Long.parseLong(pin) + 1);
+                                            map.put("broPartnerPin", "" + (Long.parseLong(pin) + 1));
                                             mFirestore.collection("ids").document("pins")
                                                     .update(map)
                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -449,7 +447,7 @@ public class OtpActivity extends AppCompatActivity {
                                                             map2.put("drivingLicenseImg", "");
                                                             map2.put("drivingLicImgPath", "");
                                                             map2.put("status", "pending");
-                                                            mFirestore.collection("users")
+                                                            mFirestore.collection("partners")
                                                                     .document(pin).set(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                         @Override
                                                                         public void onSuccess(Void unused) {

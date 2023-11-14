@@ -22,13 +22,12 @@ import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.brorental.bropartner.activities.HistoryActivity;
-import com.brorental.bropartner.activities.PaymentActivity;
 import com.brorental.bropartner.activities.PaymentHistory;
 import com.brorental.bropartner.activities.ProfileActivity;
+import com.brorental.bropartner.activities.RentActivity;
 import com.brorental.bropartner.activities.RideActivity;
 import com.brorental.bropartner.adapters.RentListAdapter;
 import com.brorental.bropartner.databinding.ActivityMainBinding;
@@ -101,14 +100,14 @@ public class MainActivity extends AppCompatActivity {
         //REGISTER BROADCAST RECEIVER FOR INTERNET
         Utility.registerConnectivityBR(MainActivity.this, appClass);
         if (Utility.isNetworkAvailable(this)) {
-            getData("", "");
+            getData();
         } else {
             Snackbar bar = Snackbar.make(binding.getRoot(), "No Connection", Snackbar.LENGTH_INDEFINITE);
             bar.setAction("Refresh", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (Utility.isNetworkAvailable(MainActivity.this)) {
-                        getData("", "");
+                        getData();
                         bar.dismiss();
                         Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT).show();
                     } else {
@@ -185,7 +184,8 @@ public class MainActivity extends AppCompatActivity {
                     Intent i = new Intent(MainActivity.this, ProfileActivity.class);
                     startActivity(i);
                 } else if (id == R.id.rent) {
-                    binding.drawerLayout.close();
+                    Intent i = new Intent(MainActivity.this, RentActivity.class);
+                    startActivity(i);
                 } else if (id == R.id.driving) {
                     Intent i = new Intent(MainActivity.this, RideActivity.class);
                     startActivity(i);
@@ -196,6 +196,8 @@ public class MainActivity extends AppCompatActivity {
                     DialogCustoms.showSnackBar(MainActivity.this, "Terms & Conditions", binding.getRoot());
                 }
 
+                binding.drawerLayout.close();
+
                 return true;
             }
         });
@@ -203,19 +205,16 @@ public class MainActivity extends AppCompatActivity {
         binding.swipeRef.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getData("", "");
+                getData();
             }
         });
     }
 
-    public void getData(String selectedState, String category) {
+    public void getData() {
 //        Log.d(TAG, "getData: " + selectedState + "," + category);
         binding.shimmer.setVisibility(View.VISIBLE);
         binding.mainContentLl.setVisibility(View.GONE);
         Query query = mFirestore.collection("rent").whereEqualTo("broPartnerId", appClass.sharedPref.getUser().getPin()).limit(10);
-        if (!selectedState.isEmpty()) {
-            query = mFirestore.collection("rent").whereEqualTo("broPartnerId", appClass.sharedPref.getUser().getPin()).limit(10);
-        }
         query.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -232,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                                 list.add(model);
                             }
 
-                            adapter.notifyDataSetChanged();
+//                            adapter.notifyDataSetChanged();
                             Log.d(TAG, "onComplete: " + docList.size());
                         } else {
                             Log.d(TAG, "onComplete: " + task.getException());

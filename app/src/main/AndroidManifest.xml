@@ -28,6 +28,11 @@
             android:name=".activities.PaymentHistory"
             android:screenOrientation="portrait"
             android:exported="false" />
+
+        <activity
+            android:name=".activities.UploadRentItem"
+            android:screenOrientation="portrait"
+            android:exported="false" />
         <activity
             android:name=".activities.PaymentActivity"
             android:screenOrientation="portrait"

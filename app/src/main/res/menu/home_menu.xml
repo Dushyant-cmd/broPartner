@@ -7,11 +7,11 @@
     <item
         android:id="@+id/rent"
         android:icon="@drawable/rent_24"
-        android:title="Rent"/>
+        android:title="Add Rent Item"/>
     <item
         android:id="@+id/driving"
-        android:icon="@drawable/baseline_directions_bike_24"
-        android:title="Ride"/>
+        android:icon="@drawable/baseline_add_box_24"
+        android:title="Start Driving"/>
     <item
         android:id="@+id/history"
         android:icon="@drawable/baseline_history_24"

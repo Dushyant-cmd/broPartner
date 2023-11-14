@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
@@ -16,12 +15,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.brorental.bropartner.MainActivity;
 import com.brorental.bropartner.R;
 import com.brorental.bropartner.adapters.HintAdapter;
 import com.brorental.bropartner.databinding.FragmentSearchBinding;
 import com.brorental.bropartner.interfaces.UtilsInterface;
-import com.brorental.bropartner.localdb.SharedPref;
 import com.brorental.bropartner.utilities.AppClass;
 import com.brorental.bropartner.utilities.DialogCustoms;
 import com.brorental.bropartner.utilities.Utility;
@@ -104,11 +101,11 @@ public class SearchFragment extends Fragment {
             public void refresh(int catePosition) {
                 if(!stateList.isEmpty()) {
                     try {
-                        MainActivity hostAct = (MainActivity) getActivity();
-                        hostAct.getData((String) binding.spinner.getSelectedItem(), hintList.get(catePosition));
-                        appClass.sharedPref.setState((String) binding.spinner.getSelectedItem());
-                        Utility.hideKeyboardFrom(getActivity(), getContext(), binding.getRoot(), true);
-                        hostAct.getSupportFragmentManager().popBackStackImmediate();
+//                        MainActivity hostAct = (MainActivity) getActivity();
+//                        hostAct.getData();
+//                        appClass.sharedPref.setState((String) binding.spinner.getSelectedItem());
+//                        Utility.hideKeyboardFrom(getActivity(), getContext(), binding.getRoot(), true);
+//                        hostAct.getSupportFragmentManager().popBackStackImmediate();
                     } catch (IndexOutOfBoundsException e) {
                         DialogCustoms.showSnackBar(getActivity(), "Select Valid Category", binding.getRoot());
                     } catch (Exception e) {

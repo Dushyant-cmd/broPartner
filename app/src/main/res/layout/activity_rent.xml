@@ -1,9 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.RentActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/primary"
+            app:navigationIcon="@drawable/baseline_arrow_back_ios_24"
+            app:title="Add Rent Item"
+            app:titleTextColor="@color/white">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bro Partner"
+                    android:theme="@style/textStyle"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:textSize="20sp"/>
+
+                <TextView
+                    android:background="@drawable/dotted_border_card_white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_8dp"
+                    android:drawableStart="@drawable/baseline_add_24"
+                    android:contentDescription="@null"
+                    android:drawableTint="@color/black"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/_15dp"
+                    android:id="@+id/addBtn"/>
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar"
+            android:orientation="vertical"
+            tools:context=".activities.RentActivity">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--            android:id="@+id/fabBtn"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_marginStart="@dimen/_15dp"-->
+<!--            android:layout_marginTop="@dimen/_15dp"-->
+<!--            android:layout_marginEnd="@dimen/_15dp"-->
+<!--            android:layout_marginBottom="@dimen/_15dp"-->
+<!--            android:backgroundTint="@color/primary"-->
+<!--            android:src="@drawable/baseline_add_24"-->
+<!--            tools:ignore="MissingConstraints" />-->
+    </RelativeLayout>
+</layout>

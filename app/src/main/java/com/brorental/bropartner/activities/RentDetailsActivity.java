@@ -23,20 +23,14 @@ import com.brorental.bropartner.localdb.SharedPref;
 import com.brorental.bropartner.utilities.AppClass;
 import com.brorental.bropartner.utilities.DialogCustoms;
 import com.brorental.bropartner.utilities.Utility;
-import com.denzcoskun.imageslider.constants.ScaleTypes;
-import com.denzcoskun.imageslider.interfaces.ItemClickListener;
-import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class RentDetailsActivity extends AppCompatActivity {
@@ -65,57 +59,57 @@ public class RentDetailsActivity extends AppCompatActivity {
 
     private void getData() {
         try {
-            JSONObject data = new JSONObject(Objects.requireNonNull(getIntent().getStringExtra("data")));
-            Log.d(TAG, "onCreate: " + data);
-            ArrayList<SlideModel> list = new ArrayList<>();
-            String[] images = data.getString("adsImageUrl").split(",");
-            for (String url : images) {
-                list.add(new SlideModel(url, ScaleTypes.FIT));
-            }
-            list.add(new SlideModel(images[0], ScaleTypes.FIT));
-            list.add(new SlideModel(images[0], ScaleTypes.FIT));
-            binding.imageSlider.setImageList(list, ScaleTypes.FIT);
-            binding.imageSlider.setItemClickListener(new ItemClickListener() {
-                @Override
-                public void onItemSelected(int i) {
-                    Log.d(TAG, "onItemSelected: " + list.get(i));
-                }
-            });
-
-            String perHourCharge = data.getString("perHourCharge");
-            String extraCharge = data.getString("extraCharge");
-            binding.advertId.setText("Ads Id: " + data.getString("advertisementId"));
-            binding.amountTV.setText("\u20B9 " + perHourCharge);
-            binding.nameTV.setText(data.getString("name"));
-            binding.ownerDesc.setText(data.getString("ownerDescription"));
-            binding.addressTV.setText(data.getString("address"));
-            binding.timingsTV.setText(data.getString("timings"));
-            binding.extraChargeTV.setText("\u20B9 " + extraCharge + " /hour");
-            binding.yearTV.setText(data.getString("year"));
-            binding.pdColor.setText(data.getString("productColor"));
-            binding.pdHealth.setText(data.getString("productHealth"));
-
-            binding.rentBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //Display a bottom sheet to select from - to and total cost, extra charge,
-                    //terms & conditions with a complete payment button.
-                    try {
-                        if (sharedPref.getStatus().matches("pending")) {
-                            DialogCustoms.showSnackBar(RentDetailsActivity.this, "KYC not completed", binding.getRoot());
-                            return;
-                        }
-                        if (Long.parseLong(sharedPref.getUser().getWallet()) < 2500) {
-                            DialogCustoms.showSnackBar(RentDetailsActivity.this, "Balance must be 2500 Rs.", binding.getRoot());
-                        } else {
-                            PayBottomSheet sheet = new PayBottomSheet(data.getString("advertisementId"), perHourCharge, extraCharge, data);
-                            sheet.show(getSupportFragmentManager(), PayBottomSheet.TAG);
-                        }
-                    } catch (Exception e) {
-                        Log.d(TAG, "onClick: json " + e);
-                    }
-                }
-            });
+//            JSONObject data = new JSONObject(Objects.requireNonNull(getIntent().getStringExtra("data")));
+//            Log.d(TAG, "onCreate: " + data);
+//            ArrayList<SlideModel> list = new ArrayList<>();
+//            String[] images = data.getString("adsImageUrl").split(",");
+//            for (String url : images) {
+//                list.add(new SlideModel(url, ScaleTypes.FIT));
+//            }
+//            list.add(new SlideModel(images[0], ScaleTypes.FIT));
+//            list.add(new SlideModel(images[0], ScaleTypes.FIT));
+//            binding.imageSlider.setImageList(list, ScaleTypes.FIT);
+//            binding.imageSlider.setItemClickListener(new ItemClickListener() {
+//                @Override
+//                public void onItemSelected(int i) {
+//                    Log.d(TAG, "onItemSelected: " + list.get(i));
+//                }
+//            });
+//
+//            String perHourCharge = data.getString("perHourCharge");
+//            String extraCharge = data.getString("extraCharge");
+//            binding.advertId.setText("Ads Id: " + data.getString("advertisementId"));
+//            binding.amountTV.setText("\u20B9 " + perHourCharge);
+//            binding.nameTV.setText(data.getString("name"));
+//            binding.ownerDesc.setText(data.getString("ownerDescription"));
+//            binding.addressTV.setText(data.getString("address"));
+//            binding.timingsTV.setText(data.getString("timings"));
+//            binding.extraChargeTV.setText("\u20B9 " + extraCharge + " /hour");
+//            binding.yearTV.setText(data.getString("year"));
+//            binding.pdColor.setText(data.getString("productColor"));
+//            binding.pdHealth.setText(data.getString("productHealth"));
+//
+//            binding.rentBtn.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    //Display a bottom sheet to select from - to and total cost, extra charge,
+//                    //terms & conditions with a complete payment button.
+//                    try {
+//                        if (sharedPref.getStatus().matches("pending")) {
+//                            DialogCustoms.showSnackBar(RentDetailsActivity.this, "KYC not completed", binding.getRoot());
+//                            return;
+//                        }
+//                        if (Long.parseLong(sharedPref.getUser().getWallet()) < 2500) {
+//                            DialogCustoms.showSnackBar(RentDetailsActivity.this, "Balance must be 2500 Rs.", binding.getRoot());
+//                        } else {
+//                            PayBottomSheet sheet = new PayBottomSheet(data.getString("advertisementId"), perHourCharge, extraCharge, data);
+//                            sheet.show(getSupportFragmentManager(), PayBottomSheet.TAG);
+//                        }
+//                    } catch (Exception e) {
+//                        Log.d(TAG, "onClick: json " + e);
+//                    }
+//                }
+//            });
         } catch (Exception e) {
             Log.d(TAG, "onCreate: " + e);
         }

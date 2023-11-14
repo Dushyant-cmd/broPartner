@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.brorental.bropartner.activities.UploadRentItem" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            tools:context=".activities.UploadRentItem">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/actionBarSize"
+                android:background="@color/primary"
+                app:navigationIcon="@drawable/baseline_arrow_back_ios_24"
+                app:title="Upload Rent Item"
+                app:titleTextColor="@color/white" />
+
+            <Spinner
+                android:id="@+id/cate_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/toolbar"
+                android:orientation="vertical"
+                android:padding="@dimen/_8dp">
+
+                <RelativeLayout
+                    android:id="@+id/rl_select_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:background="@drawable/dotted_border_card_white">
+
+                    <TextView
+                        android:id="@+id/image_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:text="Add Product Image"
+                        android:theme="@style/textStyle"
+                        android:visibility="visible"
+                        tools:visibility="gone" />
+
+                    <com.denzcoskun.imageslider.ImageSlider
+                        android:id="@+id/slider"
+                        android:layout_width="match_parent"
+                        android:visibility="gone"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter owner name"
+                        android:inputType="text"
+                        android:text="@={model.ownName}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_rc_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter rc number"
+                        android:inputType="text"
+                        android:text="@={model.rcNum}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_bike_num"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter bike number"
+                        android:inputType="text"
+                        android:text="@={model.bikeNum}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_aad_num"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter owner aadhaar number"
+                        android:inputType="text"
+                        android:text="@={model.aadhaarNum}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/pickup_timings_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:background="@drawable/dotted_border_card_white"
+                    android:padding="@dimen/_15dp"
+                    android:text="@={model.pickupTimings}"
+                    android:theme="@style/textStyle" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_hour_charge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter per hour charge"
+                        android:inputType="number"
+                        android:text="@={model.perHourCharge}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_ex_charge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter extra charge"
+                        android:inputType="text"
+                        android:text="@={model.extraHourCharge}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_own_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter owner description"
+                        android:inputType="text"
+                        android:text="@={model.ownerDesc}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_pd_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter product name"
+                        android:inputType="text"
+                        android:text="@={model.productName}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_pickup_loc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter pickup location"
+                        android:inputType="text"
+                        android:text="@={model.pickUpLoc}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <Spinner
+                    android:id="@+id/spinner_year_pd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:selectedItemPosition="@={model.productYearPos}" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_color"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter color"
+                        android:inputType="text"
+                        android:text="@={model.color}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <Spinner
+                    android:id="@+id/spinner_health"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:selectedItemPosition="@={model.healthPos}" />
+
+                <Button
+                    android:id="@+id/uploadBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:text="Upload"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>
