@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -338,6 +337,7 @@ public class ProfileEditDetails extends Fragment {
                 }
             }
         });
+
         binding.aadhaarTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -427,7 +427,7 @@ public class ProfileEditDetails extends Fragment {
         }
 
         if (photoFile != null) {
-            Uri photoURI = FileProvider.getUriForFile(getActivity(), "com.brorental.bropartner.provider", photoFile);
+            Uri photoURI = FileProvider.getUriForFile(requireActivity(), "com.brorental.bropartner.provider", photoFile);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
         }
         return takePictureIntent;

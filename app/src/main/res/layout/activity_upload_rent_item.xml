@@ -142,6 +142,7 @@
                         android:id="@+id/et_hour_charge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:maxLength="6"
                         android:hint="Enter per hour charge"
                         android:inputType="number"
                         android:text="@={model.perHourCharge}" />
@@ -157,7 +158,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Enter extra charge"
-                        android:inputType="text"
+                        android:inputType="number"
+                        android:maxLength="3"
                         android:text="@={model.extraHourCharge}" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -203,13 +205,28 @@
                         android:text="@={model.pickUpLoc}" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-
-                <Spinner
-                    android:id="@+id/spinner_year_pd"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_15dp"
-                    android:selectedItemPosition="@={model.productYearPos}" />
+                    android:layout_marginTop="@dimen/_15dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_year"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter Year Model"
+                        android:inputType="number"
+                        android:maxLength="4"
+                        android:text="@={model.productYear}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <!--                <Spinner-->
+<!--                    android:id="@+id/spinner_year_pd"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="@dimen/_15dp"-->
+<!--                    android:selectedItemPosition="@={model.productYearPos}" />-->
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -232,6 +249,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15dp"
                     android:selectedItemPosition="@={model.healthPos}" />
+
+                <Spinner
+                    android:id="@+id/spinner_state"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp"/>
 
                 <Button
                     android:id="@+id/uploadBtn"
