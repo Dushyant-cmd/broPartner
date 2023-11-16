@@ -4,13 +4,16 @@ import java.util.Objects;
 
 public class RentItemModel {
     public String advertisementId;
-    private String address, adsImageUrl, broPartnerId, category, docId, extraCharge, ownerDescription, perHourCharge, state, status, vehicleNumber, timings, year, productHealth, productColor, name, broPartnerMobile;
+    private String address, adsImageUrl, broPartnerId, category, docId, extraCharge,
+            ownerDescription, perHourCharge, state, status, vehicleNumber, timings,
+            year, productHealth, productColor, name, broPartnerMobile;
+    private boolean liveStatus;
 
     public RentItemModel() {
-        //Mandatory
+        //Mandatory for deserialization
     }
 
-    public RentItemModel(String advertisementId, String address, String adsImageUrl, String broPartnerId, String category, String docId, String extraCharge, String ownerDescription, String perHourCharge, String state, String status, String vehicleNumber, String timings, String year, String productHealth, String productColor, String name, String broPartnerMobile) {
+    public RentItemModel(String advertisementId, String address, String adsImageUrl, String broPartnerId, String category, String docId, String extraCharge, String ownerDescription, String perHourCharge, String state, String status, String vehicleNumber, String timings, String year, String productHealth, String productColor, String name, String broPartnerMobile, boolean liveStatus) {
         this.advertisementId = advertisementId;
         this.address = address;
         this.adsImageUrl = adsImageUrl;
@@ -29,6 +32,15 @@ public class RentItemModel {
         this.productColor = productColor;
         this.name = name;
         this.broPartnerMobile = broPartnerMobile;
+        this.liveStatus = liveStatus;
+    }
+
+    public boolean getLiveStatus() {
+        return liveStatus;
+    }
+
+    public void setLiveStatus(boolean liveStatus) {
+        this.liveStatus = liveStatus;
     }
 
     public String getAdvertisementId() {

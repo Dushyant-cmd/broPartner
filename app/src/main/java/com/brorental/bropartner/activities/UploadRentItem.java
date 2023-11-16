@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TimePicker;
@@ -101,7 +102,7 @@ public class UploadRentItem extends AppCompatActivity {
                 ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, list);
         binding.spinnerHealth.setAdapter(adapter);
         if (Utility.isNetworkAvailable(ctx)) {
-            getState();
+            queries();
         } else {
             noNetworkDialog();
         }
@@ -116,7 +117,7 @@ public class UploadRentItem extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (Utility.isNetworkAvailable(activity)) {
-                    getState();
+                    queries();
                 } else {
                     dialog.dismiss();
                     noNetworkDialog();
@@ -126,7 +127,7 @@ public class UploadRentItem extends AppCompatActivity {
         builder.create().show();
     }
 
-    private void getState() {
+    private void queries() {
         appClass.firestore.collection("appData").document("constants")
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -142,6 +143,52 @@ public class UploadRentItem extends AppCompatActivity {
                             binding.spinnerState.setVisibility(View.VISIBLE);
                         } else {
                             Log.d(TAG, "onComplete: " + task.getException());
+                        }
+                    }
+                });
+
+        appClass.firestore.collection("appData").document("constants")
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        try {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot d = task.getResult();
+                                ArrayList<String> cateList = new ArrayList<>();
+                                cateList.add("Select a category");
+                                Collections.addAll(cateList, d.getString("categories").split(","));
+                                ArrayAdapter<String> adapter = new ArrayAdapter<>(UploadRentItem.this, android.R.layout.simple_spinner_dropdown_item, cateList);
+                                binding.cateSpinner.setAdapter(adapter);
+                                binding.cateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                        category = binding.cateSpinner.getSelectedItem().toString();
+                                        if (!category.toLowerCase().contains("select")) {
+                                            binding.formLl.setVisibility(View.VISIBLE);
+                                            if(category.toLowerCase().matches("bike")) {
+                                                binding.etRcNumber.setVisibility(View.VISIBLE);
+                                                binding.etBikeNum.setVisibility(View.VISIBLE);
+                                                binding.etAadNum.setVisibility(View.VISIBLE);
+                                            } else {
+                                                binding.etRcNumber.setVisibility(View.GONE);
+                                                binding.etBikeNum.setVisibility(View.GONE);
+                                                binding.etAadNum.setVisibility(View.GONE);
+                                            }
+                                        } else {
+                                            binding.formLl.setVisibility(View.GONE);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                                    }
+                                });
+                            } else {
+                                Log.d(TAG, "onError: " + task.getException());
+                            }
+                        } catch (Exception e) {
+                            Log.d(TAG, "onComplete: " + e);
                         }
                     }
                 });
@@ -244,168 +291,353 @@ public class UploadRentItem extends AppCompatActivity {
         binding.uploadBtn.setOnClickListener(view -> {
             String health = binding.spinnerHealth.getSelectedItem().toString();
             String state = binding.spinnerState.getSelectedItem().toString();
-            Log.d(TAG, "setListeners: " + health + "," + state + "," + isImageUploaded + "," + ownName + "," + rcNum + ","
-                    + bikeNum + "," + aadhaarNum + "," + pickupTimings + "," + perHourCharge + "," +
-                    extraHourCharge + "," + ownerDesc + "," + productName + "," + pickUpLoc + "," + productYear + "," + color);
-            if (isImageUploaded && !ownName.isEmpty() && !rcNum.isEmpty() && !bikeNum.isEmpty() &&
-                    !aadhaarNum.isEmpty() && !pickupTimings.toLowerCase().contains("pickup timings") &&
-                    !perHourCharge.isEmpty() && !extraHourCharge.isEmpty() && !ownerDesc.isEmpty() &&
-                    !productName.isEmpty() && !pickUpLoc.isEmpty() && !productYear.isEmpty() && !color.isEmpty()
-                    && !health.toLowerCase().contains("select") && !state.toLowerCase().contains("select")) {
-                String firstImgPath = "productImages/" + UUID.randomUUID().toString();
-                String secImgPath = "productImages/" + UUID.randomUUID().toString();
-                String thirdImgPath = "productImages/" + UUID.randomUUID().toString();
-                StorageReference rootRef = appClass.storage.getReference();
-                StorageReference firstRef = rootRef.child(firstImgPath);
-                StorageReference secRef = rootRef.child(secImgPath);
-                StorageReference thirdRef = rootRef.child(thirdImgPath);
-                if (Utility.isNetworkAvailable(ctx)) {
-                    AlertDialog dialog = ProgressDialog.createAlertDialog(ctx);
-                    dialog.show();
-                    appClass.firestore.collection("ids").document("appid")
-                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        String rentId = task.getResult().getString("rentid");
-                                        HashMap<String, Object> map = new HashMap<>();
-                                        map.put("rentid", String.valueOf(Long.parseLong(rentId) + 1));
-                                        appClass.firestore.collection("ids")
-                                                .document("appid")
-                                                .update(map)
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void unused) {
-                                                        firstRef.putStream(mFirstImg).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    firstRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                                        @Override
-                                                                        public void onSuccess(Uri uri) {
-                                                                            String firstImgUrl = uri.toString();
-                                                                            secRef.putStream(mSecImg).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                                                                @Override
-                                                                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                                                                    if (task.isSuccessful()) {
-                                                                                        secRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                                                            @Override
-                                                                                            public void onSuccess(Uri uri) {
-                                                                                                String secImgUrl = uri.toString();
-                                                                                                thirdRef.putStream(mThirdImg).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                                                                                    @Override
-                                                                                                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                                                                                        if (task.isSuccessful()) {
-                                                                                                            thirdRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                                                                                @Override
-                                                                                                                public void onSuccess(Uri uri) {
-                                                                                                                    String thirdImgUrl = uri.toString();
-                                                                                                                    HashMap<String, Object> map = new HashMap<>();
-                                                                                                                    map.put("address", pickUpLoc);
-                                                                                                                    map.put("adsImageUrl", firstImgUrl + "," + secImgUrl + "," + thirdImgUrl);
-                                                                                                                    map.put("advertisementId", rentId);
-                                                                                                                    map.put("broPartnerId", appClass.sharedPref.getUser().getPin());
-                                                                                                                    map.put("broPartnerMobile", appClass.sharedPref.getUser().getMobile());
-                                                                                                                    map.put("category", category);
-                                                                                                                    map.put("docId", rentId);
-                                                                                                                    map.put("extraCharge", extraHourCharge);
-                                                                                                                    map.put("name", productName);
-                                                                                                                    map.put("ownerName", ownName);
-                                                                                                                    map.put("ownerDescription", ownerDesc);
-                                                                                                                    map.put("perHourCharge", perHourCharge);
-                                                                                                                    map.put("productColor", color);
-                                                                                                                    map.put("productHealth", health);
-                                                                                                                    map.put("state", state);
-                                                                                                                    map.put("status", "pending");
-                                                                                                                    map.put("liveStatus", "live");
-                                                                                                                    map.put("timings", pickupTimings);
-                                                                                                                    map.put("rcNumber", rcNum);
-                                                                                                                    map.put("vehicleNumber", bikeNum);
-                                                                                                                    map.put("ownerAadhaarNumber", aadhaarNum);
-                                                                                                                    map.put("year", productYear);
-                                                                                                                    map.put("productImagePaths", firstImgPath + "," + secImgPath + "," + thirdImgPath);
-                                                                                                                    appClass.firestore.collection("rent")
-                                                                                                                            .document(rentId)
-                                                                                                                            .set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                                                                @Override
-                                                                                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                                                                                    if (task.isSuccessful()) {
-                                                                                                                                        dialog.dismiss();
-                                                                                                                                        Toast.makeText(UploadRentItem.this, "Add Uploaded Successfully", Toast.LENGTH_SHORT).show();
-                                                                                                                                        onBackPressed();
-                                                                                                                                    } else {
-                                                                                                                                        dialog.dismiss();
-                                                                                                                                        DialogCustoms.showSnackBar(ctx, task.getException().getMessage(), binding.getRoot());
-                                                                                                                                        Log.d(TAG, "onComplete: " + task.isSuccessful());
+//            Log.d(TAG, "setListeners: " + health + "," + state + "," + isImageUploaded + "," + ownName + "," + rcNum + ","
+//                    + bikeNum + "," + aadhaarNum + "," + pickupTimings + "," + perHourCharge + "," +
+//                    extraHourCharge + "," + ownerDesc + "," + productName + "," + pickUpLoc + "," + productYear + "," + color);
+            if(category.equalsIgnoreCase("bike")) {
+                if (isImageUploaded && !ownName.isEmpty() && !rcNum.isEmpty() && !bikeNum.isEmpty() &&
+                        !aadhaarNum.isEmpty() && !pickupTimings.toLowerCase().contains("pickup timings") &&
+                        !perHourCharge.isEmpty() && !extraHourCharge.isEmpty() && !ownerDesc.isEmpty() &&
+                        !productName.isEmpty() && !pickUpLoc.isEmpty() && !productYear.isEmpty() && !color.isEmpty()
+                        && !health.toLowerCase().contains("select") && !state.toLowerCase().contains("select")) {
+                    String firstImgPath = "productImages/" + UUID.randomUUID().toString();
+                    String secImgPath = "productImages/" + UUID.randomUUID().toString();
+                    String thirdImgPath = "productImages/" + UUID.randomUUID().toString();
+                    StorageReference rootRef = appClass.storage.getReference();
+                    StorageReference firstRef = rootRef.child(firstImgPath);
+                    StorageReference secRef = rootRef.child(secImgPath);
+                    StorageReference thirdRef = rootRef.child(thirdImgPath);
+                    binding.uploadBtn.setEnabled(false);
+                    if (Utility.isNetworkAvailable(ctx)) {
+                        AlertDialog dialog = ProgressDialog.createAlertDialog(ctx);
+                        dialog.show();
+                        appClass.firestore.collection("ids").document("appid")
+                                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            String rentId = task.getResult().getString("rentid");
+                                            HashMap<String, Object> map = new HashMap<>();
+                                            map.put("rentid", String.valueOf(Long.parseLong(rentId) + 1));
+                                            appClass.firestore.collection("ids")
+                                                    .document("appid")
+                                                    .update(map)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void unused) {
+                                                            firstRef.putStream(mFirstImg).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        firstRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                                            @Override
+                                                                            public void onSuccess(Uri uri) {
+                                                                                String firstImgUrl = uri.toString();
+                                                                                secRef.putStream(mSecImg).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                                                                    @Override
+                                                                                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                                                        if (task.isSuccessful()) {
+                                                                                            secRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                                                                @Override
+                                                                                                public void onSuccess(Uri uri) {
+                                                                                                    String secImgUrl = uri.toString();
+                                                                                                    thirdRef.putStream(mThirdImg).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                                                                                        @Override
+                                                                                                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                                                                            if (task.isSuccessful()) {
+                                                                                                                thirdRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                                                                                    @Override
+                                                                                                                    public void onSuccess(Uri uri) {
+                                                                                                                        String thirdImgUrl = uri.toString();
+                                                                                                                        HashMap<String, Object> map = new HashMap<>();
+                                                                                                                        map.put("address", pickUpLoc);
+                                                                                                                        map.put("adsImageUrl", firstImgUrl + "," + secImgUrl + "," + thirdImgUrl);
+                                                                                                                        map.put("advertisementId", rentId);
+                                                                                                                        map.put("broPartnerId", appClass.sharedPref.getUser().getPin());
+                                                                                                                        map.put("broPartnerMobile", appClass.sharedPref.getUser().getMobile());
+                                                                                                                        map.put("category", category.toLowerCase());
+                                                                                                                        map.put("docId", rentId);
+                                                                                                                        map.put("extraCharge", extraHourCharge);
+                                                                                                                        map.put("name", productName);
+                                                                                                                        map.put("ownerName", ownName);
+                                                                                                                        map.put("ownerDescription", ownerDesc);
+                                                                                                                        map.put("perHourCharge", perHourCharge);
+                                                                                                                        map.put("productColor", color);
+                                                                                                                        map.put("productHealth", health);
+                                                                                                                        map.put("state", state);
+                                                                                                                        map.put("status", "pending");
+                                                                                                                        map.put("liveStatus", true);
+                                                                                                                        map.put("timings", pickupTimings);
+                                                                                                                        map.put("rcNumber", rcNum);
+                                                                                                                        map.put("vehicleNumber", bikeNum);
+                                                                                                                        map.put("ownerAadhaarNumber", aadhaarNum);
+                                                                                                                        map.put("year", productYear);
+                                                                                                                        map.put("timestamp", System.currentTimeMillis());
+                                                                                                                        map.put("productImagePaths", firstImgPath + "," + secImgPath + "," + thirdImgPath);
+                                                                                                                        appClass.firestore.collection("rent")
+                                                                                                                                .document(rentId)
+                                                                                                                                .set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                    @Override
+                                                                                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                                                                                        if (task.isSuccessful()) {
+                                                                                                                                            dialog.dismiss();
+                                                                                                                                            Toast.makeText(UploadRentItem.this, "Add Uploaded Successfully", Toast.LENGTH_SHORT).show();
+                                                                                                                                            onBackPressed();
+                                                                                                                                        } else {
+                                                                                                                                            binding.uploadBtn.setEnabled(true);
+                                                                                                                                            dialog.dismiss();
+                                                                                                                                            DialogCustoms.showSnackBar(ctx, task.getException().getMessage(), binding.getRoot());
+                                                                                                                                            Log.d(TAG, "onComplete: " + task.isSuccessful());
+                                                                                                                                        }
                                                                                                                                     }
-                                                                                                                                }
-                                                                                                                            });
-                                                                                                                }
-                                                                                                            }).addOnFailureListener(new OnFailureListener() {
-                                                                                                                @Override
-                                                                                                                public void onFailure(@NonNull Exception e) {
-                                                                                                                    dialog.dismiss();
-                                                                                                                }
-                                                                                                            });
-                                                                                                        } else {
-                                                                                                            dialog.dismiss();
-                                                                                                            DialogCustoms.showSnackBar(ctx, task.getException().getMessage(), binding.getRoot());
-                                                                                                            Log.d(TAG, "onComplete: " + task.isSuccessful());
+                                                                                                                                });
+                                                                                                                    }
+                                                                                                                }).addOnFailureListener(new OnFailureListener() {
+                                                                                                                    @Override
+                                                                                                                    public void onFailure(@NonNull Exception e) {
+                                                                                                                        binding.uploadBtn.setEnabled(true);
+                                                                                                                        dialog.dismiss();
+                                                                                                                    }
+                                                                                                                });
+                                                                                                            } else {
+                                                                                                                binding.uploadBtn.setEnabled(true);
+                                                                                                                dialog.dismiss();
+                                                                                                                DialogCustoms.showSnackBar(ctx, task.getException().getMessage(), binding.getRoot());
+                                                                                                                Log.d(TAG, "onComplete: " + task.isSuccessful());
+                                                                                                            }
                                                                                                         }
-                                                                                                    }
-                                                                                                });
-                                                                                            }
-                                                                                        }).addOnFailureListener(new OnFailureListener() {
-                                                                                            @Override
-                                                                                            public void onFailure(@NonNull Exception e) {
-                                                                                                dialog.dismiss();
-                                                                                            }
-                                                                                        });
-                                                                                        ;
+                                                                                                    });
+                                                                                                }
+                                                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                                                                @Override
+                                                                                                public void onFailure(@NonNull Exception e) {
+                                                                                                    binding.uploadBtn.setEnabled(true);
+                                                                                                    dialog.dismiss();
+                                                                                                }
+                                                                                            });
+                                                                                            ;
+                                                                                        }
                                                                                     }
-                                                                                }
-                                                                            });
-                                                                        }
-                                                                    }).addOnFailureListener(new OnFailureListener() {
-                                                                        @Override
-                                                                        public void onFailure(@NonNull Exception e) {
-                                                                            dialog.dismiss();
-                                                                        }
-                                                                    });
-                                                                    ;
-                                                                } else {
-                                                                    dialog.dismiss();
-                                                                    DialogCustoms.showSnackBar(ctx, task.getException().getMessage(), binding.getRoot());
-                                                                    Log.d(TAG, "onComplete: " + task.isSuccessful());
+                                                                                });
+                                                                            }
+                                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                                            @Override
+                                                                            public void onFailure(@NonNull Exception e) {
+                                                                                binding.uploadBtn.setEnabled(true);
+                                                                                dialog.dismiss();
+                                                                            }
+                                                                        });
+                                                                        ;
+                                                                    } else {
+                                                                        binding.uploadBtn.setEnabled(true);
+                                                                        dialog.dismiss();
+                                                                        DialogCustoms.showSnackBar(ctx, task.getException().getMessage(), binding.getRoot());
+                                                                        Log.d(TAG, "onComplete: " + task.isSuccessful());
+                                                                    }
                                                                 }
-                                                            }
-                                                        });
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        dialog.dismiss();
-                                                    }
-                                                });
-                                        ;
-                                    } else {
-                                        dialog.dismiss();
-                                        DialogCustoms.showSnackBar(ctx, task.getException().getMessage(), binding.getRoot());
-                                        Log.d(TAG, "onComplete: " + task.isSuccessful());
+                                                            });
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            binding.uploadBtn.setEnabled(true);
+                                                            dialog.dismiss();
+                                                        }
+                                                    });
+                                            ;
+                                        } else {
+                                            binding.uploadBtn.setEnabled(true);
+                                            dialog.dismiss();
+                                            DialogCustoms.showSnackBar(ctx, task.getException().getMessage(), binding.getRoot());
+                                            Log.d(TAG, "onComplete: " + task.isSuccessful());
+                                        }
                                     }
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    dialog.dismiss();
-                                }
-                            });;
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        binding.uploadBtn.setEnabled(true);
+                                        dialog.dismiss();
+                                    }
+                                });
+                        ;
+                    } else {
+                        noNetworkDialog();
+                    }
                 } else {
-                    noNetworkDialog();
+                    DialogCustoms.showSnackBar(ctx, "Fill All Details", binding.getRoot());
                 }
             } else {
-                DialogCustoms.showSnackBar(ctx, "Fill All Details", binding.getRoot());
+                if (isImageUploaded && !ownName.isEmpty() && !pickupTimings.toLowerCase().contains("pickup timings") &&
+                        !perHourCharge.isEmpty() && !extraHourCharge.isEmpty() && !ownerDesc.isEmpty() &&
+                        !productName.isEmpty() && !pickUpLoc.isEmpty() && !productYear.isEmpty() && !color.isEmpty()
+                        && !health.toLowerCase().contains("select") && !state.toLowerCase().contains("select")) {
+                    String firstImgPath = "productImages/" + UUID.randomUUID().toString();
+                    String secImgPath = "productImages/" + UUID.randomUUID().toString();
+                    String thirdImgPath = "productImages/" + UUID.randomUUID().toString();
+                    StorageReference rootRef = appClass.storage.getReference();
+                    StorageReference firstRef = rootRef.child(firstImgPath);
+                    StorageReference secRef = rootRef.child(secImgPath);
+                    StorageReference thirdRef = rootRef.child(thirdImgPath);
+                    binding.uploadBtn.setEnabled(false);
+                    if (Utility.isNetworkAvailable(ctx)) {
+                        AlertDialog dialog = ProgressDialog.createAlertDialog(ctx);
+                        dialog.show();
+                        appClass.firestore.collection("ids").document("appid")
+                                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            String rentId = task.getResult().getString("rentid");
+                                            HashMap<String, Object> map = new HashMap<>();
+                                            map.put("rentid", String.valueOf(Long.parseLong(rentId) + 1));
+                                            appClass.firestore.collection("ids")
+                                                    .document("appid")
+                                                    .update(map)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void unused) {
+                                                            firstRef.putStream(mFirstImg).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        firstRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                                            @Override
+                                                                            public void onSuccess(Uri uri) {
+                                                                                String firstImgUrl = uri.toString();
+                                                                                secRef.putStream(mSecImg).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                                                                    @Override
+                                                                                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                                                        if (task.isSuccessful()) {
+                                                                                            secRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                                                                @Override
+                                                                                                public void onSuccess(Uri uri) {
+                                                                                                    String secImgUrl = uri.toString();
+                                                                                                    thirdRef.putStream(mThirdImg).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                                                                                        @Override
+                                                                                                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                                                                            if (task.isSuccessful()) {
+                                                                                                                thirdRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                                                                                    @Override
+                                                                                                                    public void onSuccess(Uri uri) {
+                                                                                                                        String thirdImgUrl = uri.toString();
+                                                                                                                        HashMap<String, Object> map = new HashMap<>();
+                                                                                                                        map.put("address", pickUpLoc);
+                                                                                                                        map.put("adsImageUrl", firstImgUrl + "," + secImgUrl + "," + thirdImgUrl);
+                                                                                                                        map.put("advertisementId", rentId);
+                                                                                                                        map.put("broPartnerId", appClass.sharedPref.getUser().getPin());
+                                                                                                                        map.put("broPartnerMobile", appClass.sharedPref.getUser().getMobile());
+                                                                                                                        map.put("category", category.toLowerCase());
+                                                                                                                        map.put("docId", rentId);
+                                                                                                                        map.put("extraCharge", extraHourCharge);
+                                                                                                                        map.put("name", productName);
+                                                                                                                        map.put("ownerName", ownName);
+                                                                                                                        map.put("ownerDescription", ownerDesc);
+                                                                                                                        map.put("perHourCharge", perHourCharge);
+                                                                                                                        map.put("productColor", color);
+                                                                                                                        map.put("productHealth", health);
+                                                                                                                        map.put("state", state);
+                                                                                                                        map.put("status", "pending");
+                                                                                                                        map.put("liveStatus", "live");
+                                                                                                                        map.put("timings", pickupTimings);
+                                                                                                                        map.put("rcNumber", rcNum);
+                                                                                                                        map.put("vehicleNumber", bikeNum);
+                                                                                                                        map.put("ownerAadhaarNumber", aadhaarNum);
+                                                                                                                        map.put("year", productYear);
+                                                                                                                        map.put("productImagePaths", firstImgPath + "," + secImgPath + "," + thirdImgPath);
+                                                                                                                        appClass.firestore.collection("rent")
+                                                                                                                                .document(rentId)
+                                                                                                                                .set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                    @Override
+                                                                                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                                                                                        if (task.isSuccessful()) {
+                                                                                                                                            dialog.dismiss();
+                                                                                                                                            Toast.makeText(UploadRentItem.this, "Add Uploaded Successfully", Toast.LENGTH_SHORT).show();
+                                                                                                                                            onBackPressed();
+                                                                                                                                        } else {
+                                                                                                                                            binding.uploadBtn.setEnabled(true);
+                                                                                                                                            dialog.dismiss();
+                                                                                                                                            DialogCustoms.showSnackBar(ctx, task.getException().getMessage(), binding.getRoot());
+                                                                                                                                            Log.d(TAG, "onComplete: " + task.isSuccessful());
+                                                                                                                                        }
+                                                                                                                                    }
+                                                                                                                                });
+                                                                                                                    }
+                                                                                                                }).addOnFailureListener(new OnFailureListener() {
+                                                                                                                    @Override
+                                                                                                                    public void onFailure(@NonNull Exception e) {
+                                                                                                                        binding.uploadBtn.setEnabled(true);
+                                                                                                                        dialog.dismiss();
+                                                                                                                    }
+                                                                                                                });
+                                                                                                            } else {
+                                                                                                                binding.uploadBtn.setEnabled(true);
+                                                                                                                dialog.dismiss();
+                                                                                                                DialogCustoms.showSnackBar(ctx, task.getException().getMessage(), binding.getRoot());
+                                                                                                                Log.d(TAG, "onComplete: " + task.isSuccessful());
+                                                                                                            }
+                                                                                                        }
+                                                                                                    });
+                                                                                                }
+                                                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                                                                @Override
+                                                                                                public void onFailure(@NonNull Exception e) {
+                                                                                                    binding.uploadBtn.setEnabled(true);
+                                                                                                    dialog.dismiss();
+                                                                                                }
+                                                                                            });
+                                                                                            ;
+                                                                                        }
+                                                                                    }
+                                                                                });
+                                                                            }
+                                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                                            @Override
+                                                                            public void onFailure(@NonNull Exception e) {
+                                                                                binding.uploadBtn.setEnabled(true);
+                                                                                dialog.dismiss();
+                                                                            }
+                                                                        });
+                                                                        ;
+                                                                    } else {
+                                                                        binding.uploadBtn.setEnabled(true);
+                                                                        dialog.dismiss();
+                                                                        DialogCustoms.showSnackBar(ctx, task.getException().getMessage(), binding.getRoot());
+                                                                        Log.d(TAG, "onComplete: " + task.isSuccessful());
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            binding.uploadBtn.setEnabled(true);
+                                                            dialog.dismiss();
+                                                        }
+                                                    });
+                                            ;
+                                        } else {
+                                            binding.uploadBtn.setEnabled(true);
+                                            dialog.dismiss();
+                                            DialogCustoms.showSnackBar(ctx, task.getException().getMessage(), binding.getRoot());
+                                            Log.d(TAG, "onComplete: " + task.isSuccessful());
+                                        }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        binding.uploadBtn.setEnabled(true);
+                                        dialog.dismiss();
+                                    }
+                                });
+                        ;
+                    } else {
+                        noNetworkDialog();
+                    }
+                } else {
+                    DialogCustoms.showSnackBar(ctx, "Fill All Details", binding.getRoot());
+                }
             }
+
         });
     }
 

@@ -6,6 +6,11 @@ public interface UtilsInterface {
 
         void refresh(int catePosition);
     }
+
+    interface RentRefreshListener {
+        void updateLiveStatus(boolean status, String docId, int pos);
+        void refresh();
+    }
 }
 
 

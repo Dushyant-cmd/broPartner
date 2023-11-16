@@ -7,10 +7,10 @@
     </data>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:id="@+id/root"
         app:cardCornerRadius="8dp">
 
         <LinearLayout
@@ -24,25 +24,59 @@
                 android:background="@color/white"
                 android:orientation="vertical">
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="@dimen/_8dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/monserrat_semibold"
+                            android:text="Status: "
+                            android:textColor="@color/primary"
+                            android:textSize="12sp"
+                            android:theme="@style/textStyle" />
+
+                        <TextView
+                            android:id="@+id/pd_status_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Approved"
+                            android:textSize="12sp"
+                            android:theme="@style/textStyle" />
+                    </LinearLayout>
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:id="@+id/live_sc"
+                        android:theme="@style/Color1SwitchStyle"/>
+                </RelativeLayout>
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="120dp"
+                        android:layout_height="150dp"
+                        android:paddingBottom="@dimen/_10dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        android:paddingBottom="@dimen/_10dp"
-                        app:layout_constraintTop_toTopOf="parent" >
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <ImageView
                             android:id="@+id/pdImgView"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:contentDescription="@null"
-                            android:scaleType="center"
-                            android:src="@drawable/ic_launcher_background"/>
+                            android:scaleType="centerInside"
+                            android:src="@drawable/ic_launcher_background" />
 
                     </FrameLayout>
 
