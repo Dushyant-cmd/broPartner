@@ -48,24 +48,6 @@ public class RentHistoryAdapter extends ListAdapter<HistoryModel, RentHistoryAda
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HistoryModel data = getItem(position);
-        String[] imageArr = data.rentImages.split(",");
-        Glide.with(context).load(imageArr[0]).placeholder(com.denzcoskun.imageslider.R.drawable.placeholder).into(holder.binding.pdImgView);
-        holder.binding.perHourTV.setText("Total Cost: \u20B9 " + data.totalRentCost);
-        holder.binding.pin.setText("Pin: " + data.id.substring(0, 4) + " share it with BroPartner");
-        holder.binding.timingsTV.setText("From: " + data.rentStartTime + " To: " + data.rentEndTime);
-        holder.binding.extraHourCh.setText("\u20B9 Extra charge per hour");
-        holder.binding.payStatus.setText("Payment Completed " + data.paymentMode);
-        holder.binding.advertId.setText("Advertisement Id: " + data.advertisementId);
-        holder.binding.statusTV.setText("Status: " + data.status);
-
-        holder.binding.callOwnerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_DIAL);
-                i.setData(Uri.parse("tel:" + data.broPartnerMobile));
-                context.startActivity(i);
-            }
-        });
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
