@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -165,14 +167,14 @@ public class UploadRentItem extends AppCompatActivity {
                                         category = binding.cateSpinner.getSelectedItem().toString();
                                         if (!category.toLowerCase().contains("select")) {
                                             binding.formLl.setVisibility(View.VISIBLE);
-                                            if(category.toLowerCase().matches("bike")) {
-                                                binding.etRcNumber.setVisibility(View.VISIBLE);
-                                                binding.etBikeNum.setVisibility(View.VISIBLE);
-                                                binding.etAadNum.setVisibility(View.VISIBLE);
+                                            if (category.toLowerCase().matches("bike")) {
+                                                binding.rcIl.setVisibility(View.VISIBLE);
+                                                binding.bikeIl.setVisibility(View.VISIBLE);
+                                                binding.aadhaarIl.setVisibility(View.VISIBLE);
                                             } else {
-                                                binding.etRcNumber.setVisibility(View.GONE);
-                                                binding.etBikeNum.setVisibility(View.GONE);
-                                                binding.etAadNum.setVisibility(View.GONE);
+                                                binding.rcIl.setVisibility(View.GONE);
+                                                binding.bikeIl.setVisibility(View.GONE);
+                                                binding.aadhaarIl.setVisibility(View.GONE);
                                             }
                                         } else {
                                             binding.formLl.setVisibility(View.GONE);
@@ -294,7 +296,7 @@ public class UploadRentItem extends AppCompatActivity {
 //            Log.d(TAG, "setListeners: " + health + "," + state + "," + isImageUploaded + "," + ownName + "," + rcNum + ","
 //                    + bikeNum + "," + aadhaarNum + "," + pickupTimings + "," + perHourCharge + "," +
 //                    extraHourCharge + "," + ownerDesc + "," + productName + "," + pickUpLoc + "," + productYear + "," + color);
-            if(category.equalsIgnoreCase("bike")) {
+            if (category.equalsIgnoreCase("bike")) {
                 if (isImageUploaded && !ownName.isEmpty() && !rcNum.isEmpty() && !bikeNum.isEmpty() &&
                         !aadhaarNum.isEmpty() && !pickupTimings.toLowerCase().contains("pickup timings") &&
                         !perHourCharge.isEmpty() && !extraHourCharge.isEmpty() && !ownerDesc.isEmpty() &&
@@ -537,7 +539,8 @@ public class UploadRentItem extends AppCompatActivity {
                                                                                                                         map.put("productHealth", health);
                                                                                                                         map.put("state", state);
                                                                                                                         map.put("status", "pending");
-                                                                                                                        map.put("liveStatus", "live");
+                                                                                                                        map.put("liveStatus", true);
+                                                                                                                        map.put("timestamp", System.currentTimeMillis());
                                                                                                                         map.put("timings", pickupTimings);
                                                                                                                         map.put("rcNumber", rcNum);
                                                                                                                         map.put("vehicleNumber", bikeNum);
@@ -739,9 +742,20 @@ public class UploadRentItem extends AppCompatActivity {
                     isGallery = false;
                 } else if (isCamera) {
                     if (REQUEST_IMAGE_CAPTURE == 3) {
+                        InputStream stream = getContentResolver().openInputStream(Uri.fromFile(photoFile));
+                        Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                        if (bitmap != null) {
+                            capFileList.add(photoFile);
+                            Log.d(TAG, "onActivityResult: " + bitmap);
+                        } else {
+                            Log.d(TAG, "onActivityResult: camera else" + bitmap);
+                            REQUEST_IMAGE_CAPTURE = 1;
+                            capFileList.clear();
+                            DialogCustoms.showSnackBar(ctx, "Please select 3 product images", binding.getRoot());
+                            return;
+                        }
                         REQUEST_IMAGE_CAPTURE = 1;
                         isCamera = false;
-                        capFileList.add(photoFile);
                         mFirstImg = getContentResolver().openInputStream(Uri.fromFile(capFileList.get(0)));
                         mSecImg = getContentResolver().openInputStream(Uri.fromFile(capFileList.get(1)));
                         mThirdImg = getContentResolver().openInputStream(Uri.fromFile(capFileList.get(2)));
@@ -756,11 +770,14 @@ public class UploadRentItem extends AppCompatActivity {
                         isImageUploaded = true;
                         Log.d(TAG, "onActivityResult: " + result.getData());
                     } else {
-                        if (result.getData() != null) {
+                        InputStream stream = getContentResolver().openInputStream(Uri.fromFile(photoFile));
+                        Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                        if (bitmap != null) {
                             capFileList.add(photoFile);
-                            Log.d(TAG, "onActivityResult: camera if " + photoFile);
+                            Log.d(TAG, "onActivityResult: " + bitmap);
                         } else {
-                            Log.d(TAG, "onActivityResult: camera else");
+                            Log.d(TAG, "onActivityResult: camera else" + bitmap);
+                            REQUEST_IMAGE_CAPTURE = 1;
                             capFileList.clear();
                             DialogCustoms.showSnackBar(ctx, "Please select 3 product images", binding.getRoot());
                             return;

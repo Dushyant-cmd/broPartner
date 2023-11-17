@@ -1,5 +1,6 @@
 package com.brorental.bropartner.activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.brorental.bropartner.interfaces.UtilsInterface;
 import com.brorental.bropartner.models.RentItemModel;
 import com.brorental.bropartner.utilities.AppClass;
 import com.brorental.bropartner.utilities.DialogCustoms;
+import com.brorental.bropartner.utilities.ProgressDialog;
 import com.brorental.bropartner.utilities.Utility;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,6 +37,7 @@ public class RentActivity extends AppCompatActivity {
     private ActivityRentBinding binding;
     private String TAG = "RentActivity.java";
     private ArrayList<RentItemModel> list = new ArrayList<>();
+    private AlertDialog pDialog;
     private RentListAdapter adapter;
 
     @Override
@@ -47,6 +50,7 @@ public class RentActivity extends AppCompatActivity {
         adapter = new RentListAdapter(this);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerView.setAdapter(adapter);
+        pDialog = ProgressDialog.createAlertDialog(RentActivity.this);
         queries();
         setListeners();
     }
@@ -61,6 +65,7 @@ public class RentActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         binding.shimmer.setVisibility(View.GONE);
                         binding.recyclerView.setVisibility(View.VISIBLE);
+                        binding.swipeRef.setRefreshing(false);
                         if(task.isSuccessful()) {
                             list.clear();
                             List<DocumentSnapshot> docList = task.getResult().getDocuments();
@@ -74,6 +79,7 @@ public class RentActivity extends AppCompatActivity {
                             adapter.addRentRefreshListener(new UtilsInterface.RentRefreshListener() {
                                 @Override
                                 public void updateLiveStatus(boolean status, String docId, int pos) {
+                                    pDialog.show();
                                     HashMap<String, Object> map = new HashMap<>();
                                     map.put("liveStatus", status);
                                     appClass.firestore.collection("rent")
@@ -82,7 +88,7 @@ public class RentActivity extends AppCompatActivity {
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
-                                                    binding.swipeRef.setRefreshing(false);
+                                                    pDialog.dismiss();
                                                     list.get(pos).setLiveStatus(status);
                                                     adapter.notifyDataSetChanged();
                                                     Log.d(TAG, "onSuccess: ");
@@ -90,7 +96,7 @@ public class RentActivity extends AppCompatActivity {
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
-                                                    binding.swipeRef.setRefreshing(false);
+                                                    pDialog.dismiss();
                                                     Log.d(TAG, "onFailure: " + e);
                                                 }
                                             });
@@ -112,6 +118,7 @@ public class RentActivity extends AppCompatActivity {
         binding.swipeRef.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+
                 queries();
             }
         });

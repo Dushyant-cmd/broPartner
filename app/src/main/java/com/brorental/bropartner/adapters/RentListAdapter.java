@@ -64,7 +64,7 @@ public class RentListAdapter extends ListAdapter<RentItemModel, RentListAdapter.
 
         Log.d(TAG, "onBindViewHolder: " + data.getAdsImageUrl());
         String thumbnail = data.getAdsImageUrl().split(",")[0];
-        Glide.with(ctx).load(thumbnail).placeholder(R.drawable.american_flag)
+        Glide.with(ctx).load(thumbnail).placeholder(com.denzcoskun.imageslider.R.drawable.placeholder)
                 .into(holder.binding.pdImgView);
 
         if(data.getLiveStatus()) {
