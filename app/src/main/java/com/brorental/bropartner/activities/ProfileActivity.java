@@ -54,6 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
                         startActivity(i);
                         finish();
                         dialog.dismiss();
+                        appClass.sharedPref.logout();
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

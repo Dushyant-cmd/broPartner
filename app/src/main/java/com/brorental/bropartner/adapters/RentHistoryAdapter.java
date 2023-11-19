@@ -1,8 +1,6 @@
 package com.brorental.bropartner.adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +12,14 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brorental.bropartner.R;
-import com.brorental.bropartner.databinding.PaymentHistoryListItemBinding;
 import com.brorental.bropartner.databinding.RentHistoryListItemBinding;
+import com.brorental.bropartner.interfaces.UtilsInterface;
 import com.brorental.bropartner.models.HistoryModel;
-import com.brorental.bropartner.models.PaymentHistoryModel;
-import com.bumptech.glide.Glide;
 
 public class RentHistoryAdapter extends ListAdapter<HistoryModel, RentHistoryAdapter.ViewHolder> {
     private String TAG = "PaymentAdapter.java";
     private Context context;
+    private UtilsInterface.RentStatusListener rentStatusListener;
 
     public RentHistoryAdapter(Context ctx) {
         super(new DiffUtil.ItemCallback<HistoryModel>() {
@@ -48,6 +45,38 @@ public class RentHistoryAdapter extends ListAdapter<HistoryModel, RentHistoryAda
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HistoryModel data = getItem(position);
+        String[] imageArr = data.rentImages.split(",");
+//        List<SlideModel> list = new ArrayList<>();
+//        for(String url: imageArr) {
+//            list.add(new SlideModel(url, ScaleTypes.FIT));
+//        }
+//        Glide.with(context).load(imageArr[0]).placeholder(com.denzcoskun.imageslider.R.drawable.placeholder).into(holder.binding.imageSlider);
+
+        if(data.status.equalsIgnoreCase("pending")) {
+            holder.binding.completeBtn.setVisibility(View.GONE);
+            holder.binding.pendingLy.setVisibility(View.VISIBLE);
+        } else if(data.status.equalsIgnoreCase("ongoing")) {
+            holder.binding.completeBtn.setVisibility(View.VISIBLE);
+            holder.binding.pendingLy.setVisibility(View.GONE);
+        } else {
+            holder.binding.completeBtn.setVisibility(View.GONE);
+            holder.binding.pendingLy.setVisibility(View.GONE);
+        }
+        holder.binding.nameTv.setText(data.name);
+        holder.binding.advertIdTv.setText(data.advertisementId);
+        holder.binding.ttlChgTv.setText("Total cost: \u20B9" + data.totalRentCost + "(as per \u20B9" + data.perHourCharge + " /hour)");
+        holder.binding.extChgTv.setText("Extra charge: " + data.extraCharge);
+        holder.binding.payStaModeTv.setText("Payment completed " + data.paymentMode);
+        holder.binding.dateTimeTv.setText("From " + data.rentStartTime + " To " + data.rentEndTime);
+        holder.binding.totalHourTv.setText("Total hour: " + data.totalHours);
+
+        holder.binding.rejectBtn.setOnClickListener(view -> {
+            rentStatusListener.updateStatus("reject", data);
+        });
+
+        holder.binding.acceptBtn.setOnClickListener(view -> {
+            rentStatusListener.updateStatus("ongoing", data);
+        });
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -56,5 +85,9 @@ public class RentHistoryAdapter extends ListAdapter<HistoryModel, RentHistoryAda
             super(binding.getRoot());
             this.binding = binding;
         }
+    }
+
+    public void setRentStatusListener(UtilsInterface.RentStatusListener statusListener) {
+        this.rentStatusListener = statusListener;
     }
 }

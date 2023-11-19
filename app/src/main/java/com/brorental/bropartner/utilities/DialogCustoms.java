@@ -19,6 +19,7 @@ public class DialogCustoms {
     /**Below method will display a snackbar */
     public static void showSnackBar(Context ctx, String msg, View root) {
         try {
+//            Log.d(TAG, "showSnackBar: " + msg);
             Snackbar bar = Snackbar.make(root, msg, Snackbar.LENGTH_SHORT);
             bar.setAction("Contact-Us", view -> {
                 Intent i = new Intent(Intent.ACTION_DIAL);
