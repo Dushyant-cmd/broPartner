@@ -447,6 +447,7 @@ public class OtpActivity extends AppCompatActivity {
                                                             map2.put("drivingLicenseImg", "");
                                                             map2.put("drivingLicImgPath", "");
                                                             map2.put("status", "pending");
+                                                            map2.put("wallet", "0");
                                                             mFirestore.collection("partners")
                                                                     .document(pin).set(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                         @Override

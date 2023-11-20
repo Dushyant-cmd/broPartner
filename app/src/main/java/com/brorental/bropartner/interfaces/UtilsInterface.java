@@ -16,6 +16,7 @@ public interface UtilsInterface {
 
     interface RentStatusListener {
         void updateStatus(String status, HistoryModel data);
+        void contactListener(String type);
     }
 }
 

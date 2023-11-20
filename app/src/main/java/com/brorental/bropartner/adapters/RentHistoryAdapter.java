@@ -55,17 +55,21 @@ public class RentHistoryAdapter extends ListAdapter<HistoryModel, RentHistoryAda
         if(data.status.equalsIgnoreCase("pending")) {
             holder.binding.completeBtn.setVisibility(View.GONE);
             holder.binding.pendingLy.setVisibility(View.VISIBLE);
+            holder.binding.callBtn.setVisibility(View.GONE);
         } else if(data.status.equalsIgnoreCase("ongoing")) {
             holder.binding.completeBtn.setVisibility(View.VISIBLE);
             holder.binding.pendingLy.setVisibility(View.GONE);
+            holder.binding.callBtn.setVisibility(View.GONE);
         } else {
             holder.binding.completeBtn.setVisibility(View.GONE);
             holder.binding.pendingLy.setVisibility(View.GONE);
+            holder.binding.callBtn.setVisibility(View.VISIBLE);
         }
+        
         holder.binding.nameTv.setText(data.name);
         holder.binding.advertIdTv.setText(data.advertisementId);
         holder.binding.ttlChgTv.setText("Total cost: \u20B9" + data.totalRentCost + "(as per \u20B9" + data.perHourCharge + " /hour)");
-        holder.binding.extChgTv.setText("Extra charge: " + data.extraCharge);
+        holder.binding.extChgTv.setText("Extra charge: /u20B9" + data.extraCharge);
         holder.binding.payStaModeTv.setText("Payment completed " + data.paymentMode);
         holder.binding.dateTimeTv.setText("From " + data.rentStartTime + " To " + data.rentEndTime);
         holder.binding.totalHourTv.setText("Total hour: " + data.totalHours);
@@ -76,6 +80,14 @@ public class RentHistoryAdapter extends ListAdapter<HistoryModel, RentHistoryAda
 
         holder.binding.acceptBtn.setOnClickListener(view -> {
             rentStatusListener.updateStatus("ongoing", data);
+        });
+
+        holder.binding.completeBtn.setOnClickListener(view -> {
+            rentStatusListener.updateStatus("completed", data);
+        });
+
+        holder.binding.callBtn.setOnClickListener(view -> {
+            rentStatusListener.contactListener("dial");
         });
     }
 

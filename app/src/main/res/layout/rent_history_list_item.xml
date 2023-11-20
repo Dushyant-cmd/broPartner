@@ -17,7 +17,7 @@
         android:layout_margin="4dp"
         android:background="@drawable/primary_stroke_bg"
         android:orientation="vertical"
-        android:paddingHorizontal="@dimen/_8dp"
+        android:paddingHorizontal="12dp"
         android:paddingVertical="4dp">
 
 <!--        <ImageView-->
@@ -46,7 +46,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:background="@drawable/dotted_border_card_white"
-                android:padding="@dimen/_8dp"
+                android:paddingVertical="4dp"
+                android:paddingHorizontal="@dimen/_8dp"
                 android:text="2000"
                 android:theme="@style/textStyle" />
         </RelativeLayout>
@@ -90,6 +91,7 @@
             android:layout_marginTop="@dimen/_8dp"
             android:fontFamily="@font/monserrat_semibold"
             android:text="Payment completed online."
+            android:layout_marginBottom="@dimen/_8dp"
             android:textColor="@color/primary"
             android:theme="@style/textStyle" />
 
@@ -100,6 +102,15 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/_8dp"
             android:text="Complete"
+            android:theme="@style/textStyle" />
+
+        <Button
+            android:id="@+id/call_btn"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_8dp"
+            android:text="Contact-Us"
             android:theme="@style/textStyle" />
 
         <LinearLayout
