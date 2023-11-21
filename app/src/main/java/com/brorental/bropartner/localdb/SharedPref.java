@@ -129,12 +129,36 @@ public class SharedPref {
         sharedPreferences.edit().putString("dLicenseImgPath", path).apply();
     }
 
+    public String getPanImgPath() {
+        return sharedPreferences.getString("panImgPath", "");
+    }
+
+    public void setPanImgPath(String path) {
+        sharedPreferences.edit().putString("panImgPath", path).apply();
+    }
+
+    public String getPanImgUrl() {
+        return sharedPreferences.getString("panImgUrl", "");
+    }
+
+    public void setPanImgUrl(String path) {
+        sharedPreferences.edit().putString("panImgUrl", path).apply();
+    }
+
     public String getStatus() {
         return sharedPreferences.getString("status", "");
     }
 
     public void setStatus(String status) {
         sharedPreferences.edit().putString("status", status).apply();
+    }
+
+    public void setAddress(String address) {
+        sharedPreferences.edit().putString("address", address).apply();
+    }
+
+    public String getAddress() {
+        return sharedPreferences.getString("address", "");
     }
 
     public void logout() {

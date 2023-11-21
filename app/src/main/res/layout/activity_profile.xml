@@ -193,6 +193,56 @@
                     </FrameLayout>
                 </RelativeLayout>
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:layout_marginEnd="@dimen/_15dp"
+                    android:background="@drawable/right_curve_shape">
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/pastel_orange">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:background="@color/primary"
+                            android:padding="8dp"
+                            android:id="@+id/add_tv"
+                            android:text="Address: Delhi India"
+                            android:textColor="@color/white"
+                            android:theme="@style/textStyle" />
+                    </FrameLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:layout_marginEnd="@dimen/_15dp"
+                    android:background="@drawable/right_curve_shape">
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/pastel_orange">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:background="@color/primary"
+                            android:padding="8dp"
+                            android:id="@+id/state_tv"
+                            android:text="Email: Dushyant.977360@gmail.com"
+                            android:textColor="@color/white"
+                            android:theme="@style/textStyle" />
+                    </FrameLayout>
+                </RelativeLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

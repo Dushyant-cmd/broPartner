@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -32,14 +33,23 @@ import androidx.fragment.app.Fragment;
 import com.brorental.bropartner.R;
 import com.brorental.bropartner.databinding.FragmentProfileDetailsBinding;
 import com.brorental.bropartner.interfaces.UtilsInterface;
+import com.brorental.bropartner.retrofit.ApiService;
+import com.brorental.bropartner.retrofit.RetrofitClient;
 import com.brorental.bropartner.utilities.AppClass;
 import com.brorental.bropartner.utilities.DialogCustoms;
+import com.brorental.bropartner.utilities.ErrorDialog;
+import com.brorental.bropartner.utilities.Utility;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -47,12 +57,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProfileEditDetails extends Fragment {
     private FragmentProfileDetailsBinding binding;
@@ -63,6 +78,7 @@ public class ProfileEditDetails extends Fragment {
     private String currentPhotoPath, profilePath, dLPath, aadhaarPath;
     private AlertDialog dialog;
     private UtilsInterface.RefreshInterface refreshInterface;
+    private ApiService apiService;
     private boolean isKyc = false;
     public ProfileEditDetails(UtilsInterface.RefreshInterface refreshInterface) {
         this.refreshInterface = refreshInterface;
@@ -76,8 +92,50 @@ public class ProfileEditDetails extends Fragment {
         appClass = (AppClass) getActivity().getApplication();
         dialog = com.brorental.bropartner.utilities.ProgressDialog.createAlertDialog(requireActivity());
         dialog.setCancelable(false);
+        apiService = RetrofitClient.getInstance().create(ApiService.class);
+        getStates();
         setListeners();
         return binding.getRoot();
+    }
+
+    private void getStates() {
+        try {
+            JSONObject json = new JSONObject();
+            json.put("country", "india");
+            String url = "https://countriesnow.space/api/v0.1/countries/states";
+            apiService.getCountryState(url, json.toString())
+                    .enqueue(new Callback<JsonObject>() {
+                        @Override
+                        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                            if(response.isSuccessful()) {
+                                try {
+                                    JSONObject json1 = new JSONObject(response.body().toString());
+                                    JSONObject dataJs = json1.getJSONObject("data");
+                                    JSONArray jsonArray1 = dataJs.getJSONArray("states");
+                                    ArrayList<String> stateList = new ArrayList<>();
+                                    stateList.add("Select state");
+                                    for(int i=0; i<jsonArray1.length(); i++) {
+                                        JSONObject js = jsonArray1.getJSONObject(i);
+                                        stateList.add(js.getString("name"));
+                                    }
+
+                                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, stateList);
+                                    binding.spinner.setAdapter(adapter);
+                                } catch (Exception e) {
+                                    ErrorDialog.createErrorDialog(requireActivity(), e.getMessage());
+                                    Log.d(TAG, "onResponse: " + e);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<JsonObject> call, Throwable t) {
+                            ErrorDialog.createErrorDialog(requireActivity(), t.getMessage());
+                        }
+                    });
+        } catch (Exception e) {
+            Log.d(TAG, "getStates: " + e);
+        }
     }
 
     private void setListeners() {
@@ -115,8 +173,11 @@ public class ProfileEditDetails extends Fragment {
                 String name = binding.nameET.getText().toString();
                 String altMob = binding.altMobET.getText().toString();
                 String email = binding.emailEt.getText().toString();
+                String state = binding.spinner.getSelectedItem().toString();
+                String address = binding.addTv.getText().toString();
 
-                if (name.isEmpty() && altMob.isEmpty() && fileAadhaarImage == null && fileProfileImage == null && fileDLImage == null && email.isEmpty()) {
+                if (name.isEmpty() && altMob.isEmpty() && fileAadhaarImage == null && fileProfileImage == null
+                        && fileDLImage == null && email.isEmpty() && state.isEmpty() && address.isEmpty()) {
                     DialogCustoms.showSnackBar(getActivity(), "Enter details to edit.", binding.getRoot());
                     dialog.dismiss();
                     binding.saveTV.setEnabled(true);
@@ -124,6 +185,10 @@ public class ProfileEditDetails extends Fragment {
                 }
 
                 HashMap<String, Object> map = new HashMap<>();
+
+                if (!name.isEmpty())
+                    map.put("name", name);
+
                 if (!altMob.isEmpty()) {
                     if (Long.parseLong(String.valueOf(altMob.charAt(0))) >= 6 && altMob.length() > 9) {
                         map.put("alternateMobile", altMob);
@@ -149,11 +214,16 @@ public class ProfileEditDetails extends Fragment {
                     }
                 }
 
-                if (!name.isEmpty())
-                    map.put("name", name);
+                if(!state.contains("select")) {
+                    map.put("state", state);
+                }
+
+                if(!address.isEmpty()) {
+                    map.put("address", address);
+                }
 
                 if (!map.isEmpty()) {
-                    appClass.firestore.collection("users").document(appClass.sharedPref.getUser().getPin())
+                    appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
                             .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -165,6 +235,10 @@ public class ProfileEditDetails extends Fragment {
                                             appClass.sharedPref.setName(name);
                                         if (!email.isEmpty())
                                             appClass.sharedPref.setEmail(email);
+                                        if(!state.contains("select"))
+                                            appClass.sharedPref.setState(state);
+                                        if(!address.isEmpty())
+                                            appClass.sharedPref.setAddress(address);
                                         Log.d(TAG, "onComplete: success");
                                         if (fileDLImage == null && fileAadhaarImage == null && fileProfileImage == null)
                                             getActivity().onBackPressed();
@@ -237,7 +311,7 @@ public class ProfileEditDetails extends Fragment {
                                     @Override
                                     public void onSuccess(Uri uri) {
                                         fileDLImage = null;
-                                        saveImageUrl("drivingLicenseImg", uri, "drivingLicImgPath", dLPath);
+                                        saveImageUrl("panImgUrl", uri, "panImgPath", dLPath);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -386,7 +460,7 @@ public class ProfileEditDetails extends Fragment {
         map.put(key, uri.toString());
         map.put(imagePathKey, imagePath);
 
-        appClass.firestore.collection("users").document(appClass.sharedPref.getUser().getPin())
+        appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
                 .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -397,9 +471,9 @@ public class ProfileEditDetails extends Fragment {
                             } else if (key.matches("aadhaarImgUrl")) {
                                 appClass.sharedPref.setAadhaarImg(uri.toString());
                                 appClass.sharedPref.setAadhaarPath(imagePath);
-                            } else if (key.matches("drivingLicenseImg")) {
-                                appClass.sharedPref.setDLImg(uri.toString());
-                                appClass.sharedPref.setDLPath(imagePath);
+                            } else if (key.matches("panImgUrl")) {
+                                appClass.sharedPref.setPanImgUrl(uri.toString());
+                                appClass.sharedPref.setPanImgPath(imagePath);
                             }
 
                             dialog.dismiss();
@@ -663,7 +737,7 @@ public class ProfileEditDetails extends Fragment {
                 appClass.sharedPref.setStatus("approved");
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("status", "approved");
-                appClass.firestore.collection("users")
+                appClass.firestore.collection("partners")
                         .document(appClass.sharedPref.getUser().getPin())
                         .update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override

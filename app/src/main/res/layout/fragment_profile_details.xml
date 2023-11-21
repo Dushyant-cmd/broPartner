@@ -110,6 +110,26 @@
                     android:inputType="textEmailAddress"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="@dimen/_8dp"
+                android:layout_marginTop="15dp"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/add_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter address"
+                    android:inputType="text"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="@dimen/_15dp"
+                android:id="@+id/spinner"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -117,7 +137,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="@dimen/_15dp"
                 android:fontFamily="@font/monserrat_semibold"
-                android:text="Driving License:"
+                android:text="Pancard:"
                 android:theme="@style/textStyle" />
 
             <RelativeLayout
@@ -137,7 +157,7 @@
                     android:theme="@style/textStyle"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="Add Driving License Image"
+                    android:text="Add Pancard Image"
                     android:padding="16dp" />
 
             </RelativeLayout>

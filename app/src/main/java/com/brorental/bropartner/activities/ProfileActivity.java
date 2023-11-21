@@ -33,6 +33,8 @@ public class ProfileActivity extends AppCompatActivity {
         binding.mobTV.setText("Mobile: " + appClass.sharedPref.getUser().getMobile());
         binding.altMobTV.setText("Alternate Mobile: " + appClass.sharedPref.getAlternateMob());
         binding.emailTv.setText("Email Id: " + appClass.sharedPref.getEmail());
+        binding.stateTv.setText("State: " + appClass.sharedPref.getState());
+        binding.addTv.setText("Address: " + appClass.sharedPref.getAddress());
 
         Glide.with(this).load(appClass.sharedPref.getUser().getProfileUrl()).placeholder(R.drawable.default_profile).into(binding.profileCirIV);
         Glide.with(this).load(appClass.sharedPref.getAadhaarImg()).placeholder(R.drawable.no_pictures).into(binding.aadharIV);
