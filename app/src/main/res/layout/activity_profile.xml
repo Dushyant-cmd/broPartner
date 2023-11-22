@@ -249,7 +249,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="@dimen/_15dp"
                     android:fontFamily="@font/monserrat_semibold"
-                    android:text="Driving License:"
+                    android:text="Pan card:"
                     android:theme="@style/textStyle" />
 
                 <RelativeLayout

@@ -61,6 +61,7 @@ public class RentListAdapter extends ListAdapter<RentItemModel, RentListAdapter.
         holder.binding.perHourTV.setText("\u20B9 " + Html.fromHtml(spanned));
         holder.binding.timingsTV.setText(data.getTimings());
         holder.binding.pdStatusTv.setText(data.getStatus());
+        holder.binding.advertTv.setText("Advertisement Id: " + data.getAdvertisementId());
 
         Log.d(TAG, "onBindViewHolder: " + data.getAdsImageUrl());
         String thumbnail = data.getAdsImageUrl().split(",")[0];

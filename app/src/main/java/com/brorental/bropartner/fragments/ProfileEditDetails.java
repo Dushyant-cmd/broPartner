@@ -65,6 +65,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -102,8 +104,9 @@ public class ProfileEditDetails extends Fragment {
         try {
             JSONObject json = new JSONObject();
             json.put("country", "india");
+            RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),(json).toString());
             String url = "https://countriesnow.space/api/v0.1/countries/states";
-            apiService.getCountryState(url, json.toString())
+            apiService.getCountryState(url, body)
                     .enqueue(new Callback<JsonObject>() {
                         @Override
                         public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -149,181 +152,188 @@ public class ProfileEditDetails extends Fragment {
         binding.saveTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //save user details
-                dialog.setMessage("Please wait.");
-                dialog.show();
-                binding.saveTV.setEnabled(false);
-                StorageReference rootRef = appClass.storage.getReference();
+                try {
+                    //save user details
+                    if(Utility.isNetworkAvailable(requireContext())) {
+                        dialog.show();
+                        binding.saveTV.setEnabled(false);
+                        StorageReference rootRef = appClass.storage.getReference();
 
-                profilePath = "profile/" + UUID.randomUUID().toString();
-                if (!appClass.sharedPref.getProfilePath().isEmpty())
-                    profilePath = appClass.sharedPref.getProfilePath();
+                        profilePath = "profile/" + UUID.randomUUID().toString();
+                        if (!appClass.sharedPref.getProfilePath().isEmpty())
+                            profilePath = appClass.sharedPref.getProfilePath();
 
-                dLPath = "drivingLicense/" + UUID.randomUUID().toString();
-                if (!appClass.sharedPref.getDLPath().isEmpty())
-                    dLPath = appClass.sharedPref.getDLPath();
+                        dLPath = "drivingLicense/" + UUID.randomUUID().toString();
+                        if (!appClass.sharedPref.getDLPath().isEmpty())
+                            dLPath = appClass.sharedPref.getDLPath();
 
-                aadhaarPath = "aadhaar/" + UUID.randomUUID().toString();
-                if (!appClass.sharedPref.getAadhaarPath().isEmpty())
-                    aadhaarPath = appClass.sharedPref.getAadhaarPath();
+                        aadhaarPath = "aadhaar/" + UUID.randomUUID().toString();
+                        if (!appClass.sharedPref.getAadhaarPath().isEmpty())
+                            aadhaarPath = appClass.sharedPref.getAadhaarPath();
 
-                StorageReference profileRef = rootRef.child(profilePath);
-                StorageReference dLRef = rootRef.child(dLPath);
-                StorageReference aadhaarRef = rootRef.child(aadhaarPath);
-                String name = binding.nameET.getText().toString();
-                String altMob = binding.altMobET.getText().toString();
-                String email = binding.emailEt.getText().toString();
-                String state = binding.spinner.getSelectedItem().toString();
-                String address = binding.addTv.getText().toString();
+                        StorageReference profileRef = rootRef.child(profilePath);
+                        StorageReference dLRef = rootRef.child(dLPath);
+                        StorageReference aadhaarRef = rootRef.child(aadhaarPath);
+                        String name = binding.nameET.getText().toString();
+                        String altMob = binding.altMobET.getText().toString();
+                        String email = binding.emailEt.getText().toString();
+                        String state = binding.spinner.getSelectedItem().toString();
+                        String address = binding.addTv.getText().toString();
 
-                if (name.isEmpty() && altMob.isEmpty() && fileAadhaarImage == null && fileProfileImage == null
-                        && fileDLImage == null && email.isEmpty() && state.isEmpty() && address.isEmpty()) {
-                    DialogCustoms.showSnackBar(getActivity(), "Enter details to edit.", binding.getRoot());
-                    dialog.dismiss();
-                    binding.saveTV.setEnabled(true);
-                    return;
-                }
+                        if (name.isEmpty() && altMob.isEmpty() && fileAadhaarImage == null && fileProfileImage == null
+                                && fileDLImage == null && email.isEmpty() && state.contains("state") && address.isEmpty()) {
+                            DialogCustoms.showSnackBar(getActivity(), "Enter details to edit.", binding.getRoot());
+                            dialog.dismiss();
+                            binding.saveTV.setEnabled(true);
+                            return;
+                        }
 
-                HashMap<String, Object> map = new HashMap<>();
+                        HashMap<String, Object> map = new HashMap<>();
 
-                if (!name.isEmpty())
-                    map.put("name", name);
+                        if (!name.isEmpty())
+                            map.put("name", name);
 
-                if (!altMob.isEmpty()) {
-                    if (Long.parseLong(String.valueOf(altMob.charAt(0))) >= 6 && altMob.length() > 9) {
-                        map.put("alternateMobile", altMob);
-                    } else {
-                        binding.altMobET.setError("Invalid");
-                        binding.saveTV.setEnabled(true);
-                        dialog.dismiss();
-                        return;
-                    }
-                }
+                        if (!altMob.isEmpty()) {
+                            if (Long.parseLong(String.valueOf(altMob.charAt(0))) >= 6 && altMob.length() > 9) {
+                                map.put("alternateMobile", altMob);
+                            } else {
+                                binding.altMobET.setError("Invalid");
+                                binding.saveTV.setEnabled(true);
+                                dialog.dismiss();
+                                return;
+                            }
+                        }
 
-                if (!email.isEmpty()) {
-                    Pattern pattern = Pattern.compile("^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$");
-                    Matcher matcher = pattern.matcher(email);
-                    if (matcher.matches()) {
-                        map.put("email", email);
-                    } else {
-                        dialog.dismiss();
-                        binding.saveTV.setEnabled(true);
-                        binding.emailEt.setError("Invalid");
-                        binding.emailEt.requestFocus();
-                        return;
-                    }
-                }
+                        if (!email.isEmpty()) {
+                            Pattern pattern = Pattern.compile("^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$");
+                            Matcher matcher = pattern.matcher(email);
+                            if (matcher.matches()) {
+                                map.put("email", email);
+                            } else {
+                                dialog.dismiss();
+                                binding.saveTV.setEnabled(true);
+                                binding.emailEt.setError("Invalid");
+                                binding.emailEt.requestFocus();
+                                return;
+                            }
+                        }
 
-                if(!state.contains("select")) {
-                    map.put("state", state);
-                }
+                        if(!state.contains("select")) {
+                            map.put("state", state);
+                        }
 
-                if(!address.isEmpty()) {
-                    map.put("address", address);
-                }
+                        if(!address.isEmpty()) {
+                            map.put("address", address);
+                        }
 
-                if (!map.isEmpty()) {
-                    appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
-                            .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        if (!map.isEmpty()) {
+                            appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
+                                    .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                dialog.dismiss();
+                                                if (!altMob.isEmpty())
+                                                    appClass.sharedPref.setAlternateMob(altMob);
+                                                if (!name.isEmpty())
+                                                    appClass.sharedPref.setName(name);
+                                                if (!email.isEmpty())
+                                                    appClass.sharedPref.setEmail(email);
+                                                if(!state.contains("select"))
+                                                    appClass.sharedPref.setState(state);
+                                                if(!address.isEmpty())
+                                                    appClass.sharedPref.setAddress(address);
+                                                Log.d(TAG, "onComplete: success");
+                                                if (fileDLImage == null && fileAadhaarImage == null && fileProfileImage == null)
+                                                    requireActivity().onBackPressed();
+                                            } else {
+                                                dialog.dismiss();
+                                                Log.d(TAG, "onComplete: " + task.getException());
+                                            }
+                                        }
+                                    });
+                        }
+
+                        if (fileAadhaarImage != null) {
+                            aadhaarRef.putFile(Uri.fromFile(fileAadhaarImage)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
-                                public void onComplete(@NonNull Task<Void> task) {
+                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                     if (task.isSuccessful()) {
-                                        dialog.dismiss();
-                                        if (!altMob.isEmpty())
-                                            appClass.sharedPref.setAlternateMob(altMob);
-                                        if (!name.isEmpty())
-                                            appClass.sharedPref.setName(name);
-                                        if (!email.isEmpty())
-                                            appClass.sharedPref.setEmail(email);
-                                        if(!state.contains("select"))
-                                            appClass.sharedPref.setState(state);
-                                        if(!address.isEmpty())
-                                            appClass.sharedPref.setAddress(address);
-                                        Log.d(TAG, "onComplete: success");
-                                        if (fileDLImage == null && fileAadhaarImage == null && fileProfileImage == null)
-                                            getActivity().onBackPressed();
+                                        aadhaarRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                fileAadhaarImage = null;
+                                                saveImageUrl("aadhaarImgUrl", uri, "aadhaarImgPath", aadhaarPath);
+                                                Log.d(TAG, "onComplete: aadhaar success");
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.d(TAG, "onFailure aadhaar image.: " + e);
+                                                dialog.dismiss();
+                                            }
+                                        });
                                     } else {
-                                        dialog.dismiss();
                                         Log.d(TAG, "onComplete: " + task.getException());
                                     }
                                 }
                             });
-                }
-
-                if (fileAadhaarImage != null) {
-                    aadhaarRef.putFile(Uri.fromFile(fileAadhaarImage)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                aadhaarRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        fileAadhaarImage = null;
-                                        saveImageUrl("aadhaarImgUrl", uri, "aadhaarImgPath", aadhaarPath);
-                                        Log.d(TAG, "onComplete: aadhaar success");
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.d(TAG, "onFailure aadhaar image.: " + e);
-                                        dialog.dismiss();
-                                    }
-                                });
-                            } else {
-                                Log.d(TAG, "onComplete: " + task.getException());
-                            }
                         }
-                    });
-                }
 
-                if (fileProfileImage != null) {
-                    profileRef.putFile(Uri.fromFile(fileProfileImage)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        fileProfileImage = null;
-                                        saveImageUrl("profileUrl", uri, "profileImgPath", profilePath);
-                                        Log.d(TAG, "onComplete: profile success");
+                        if (fileProfileImage != null) {
+                            profileRef.putFile(Uri.fromFile(fileProfileImage)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                fileProfileImage = null;
+                                                saveImageUrl("profileUrl", uri, "profileImgPath", profilePath);
+                                                Log.d(TAG, "onComplete: profile success");
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(Exception e) {
+                                                Log.d(TAG, "onFailure: " + e);
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                    } else {
+                                        Log.d(TAG, "onComplete: " + task.getException());
                                     }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(Exception e) {
-                                        Log.d(TAG, "onFailure: " + e);
-                                        dialog.dismiss();
-                                    }
-                                });
-                            } else {
-                                Log.d(TAG, "onComplete: " + task.getException());
-                            }
+                                }
+                            });
                         }
-                    });
-                }
 
-                if (fileDLImage != null) {
-                    dLRef.putFile(Uri.fromFile(fileDLImage)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                dLRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        fileDLImage = null;
-                                        saveImageUrl("panImgUrl", uri, "panImgPath", dLPath);
+                        if (fileDLImage != null) {
+                            dLRef.putFile(Uri.fromFile(fileDLImage)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        dLRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                fileDLImage = null;
+                                                saveImageUrl("panImgUrl", uri, "panImgPath", dLPath);
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                    } else {
+                                        Log.d(TAG, "onComplete: " + task.getException());
                                     }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                            } else {
-                                Log.d(TAG, "onComplete: " + task.getException());
-                            }
+                                }
+                            });
                         }
-                    });
+                    } else {
+                        ErrorDialog.createErrorDialog(requireActivity(), "No Connection!");
+                    }
+                } catch (Exception e) {
+                    Log.d(TAG, "onClick: " + e);
                 }
             }
         });
