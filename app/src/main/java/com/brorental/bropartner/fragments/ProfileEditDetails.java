@@ -33,6 +33,8 @@ import androidx.fragment.app.Fragment;
 import com.brorental.bropartner.R;
 import com.brorental.bropartner.databinding.FragmentProfileDetailsBinding;
 import com.brorental.bropartner.interfaces.UtilsInterface;
+import com.brorental.bropartner.localdb.RoomDb;
+import com.brorental.bropartner.localdb.StateEntity;
 import com.brorental.bropartner.retrofit.ApiService;
 import com.brorental.bropartner.retrofit.RetrofitClient;
 import com.brorental.bropartner.utilities.AppClass;
@@ -45,7 +47,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -60,13 +61,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -74,14 +75,19 @@ import retrofit2.Response;
 public class ProfileEditDetails extends Fragment {
     private FragmentProfileDetailsBinding binding;
     private String TAG = "ProfileEditDet.java";
-    private boolean isAadhaarUpload = false, isDLUpload = false, isProfileUpload = false;
+    private boolean isAadhaarUpload = false, isPanUpload = false, isProfileUpload = false;
     private AppClass appClass;
-    private File fileAadhaarImage, fileDLImage, fileProfileImage;
-    private String currentPhotoPath, profilePath, dLPath, aadhaarPath;
+    private File fileAadhaarImage, filePanImage, fileProfileImage;
+    private String currentPhotoPath, profilePath, panPath, aadhaarPath;
     private AlertDialog dialog;
     private UtilsInterface.RefreshInterface refreshInterface;
     private ApiService apiService;
     private boolean isKyc = false;
+    private RoomDb roomDb;
+    private List<StateEntity> statesList = new ArrayList<>();
+    private ArrayList<String> list = new ArrayList<>();
+    private ArrayAdapter<String> adapter;
+
     public ProfileEditDetails(UtilsInterface.RefreshInterface refreshInterface) {
         this.refreshInterface = refreshInterface;
     }
@@ -95,7 +101,18 @@ public class ProfileEditDetails extends Fragment {
         dialog = com.brorental.bropartner.utilities.ProgressDialog.createAlertDialog(requireActivity());
         dialog.setCancelable(false);
         apiService = RetrofitClient.getInstance().create(ApiService.class);
-        getStates();
+        roomDb = RoomDb.getInstance(requireContext());
+        statesList = roomDb.getStateDao().getStates();
+        list.add("Select your state");
+        if (statesList.isEmpty())
+            getStates();
+        else {
+            for(int i=0; i<statesList.size(); i++) {
+                list.add(statesList.get(i).getState());
+            }
+            adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, list);
+            binding.spinner.setAdapter(adapter);
+        }
         setListeners();
         return binding.getRoot();
     }
@@ -104,25 +121,25 @@ public class ProfileEditDetails extends Fragment {
         try {
             JSONObject json = new JSONObject();
             json.put("country", "india");
-            RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),(json).toString());
+            RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), (json).toString());
             String url = "https://countriesnow.space/api/v0.1/countries/states";
             apiService.getCountryState(url, body)
                     .enqueue(new Callback<JsonObject>() {
                         @Override
                         public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                            if(response.isSuccessful()) {
+                            if (response.isSuccessful()) {
                                 try {
+                                    roomDb.getStateDao().deleteStates();
                                     JSONObject json1 = new JSONObject(response.body().toString());
                                     JSONObject dataJs = json1.getJSONObject("data");
                                     JSONArray jsonArray1 = dataJs.getJSONArray("states");
-                                    ArrayList<String> stateList = new ArrayList<>();
-                                    stateList.add("Select state");
-                                    for(int i=0; i<jsonArray1.length(); i++) {
+                                    for (int i = 0; i < jsonArray1.length(); i++) {
                                         JSONObject js = jsonArray1.getJSONObject(i);
-                                        stateList.add(js.getString("name"));
+                                        roomDb.getStateDao().insertState(new StateEntity(js.getString("name")));
+                                        list.add(js.getString("name"));
                                     }
 
-                                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, stateList);
+                                    adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, list);
                                     binding.spinner.setAdapter(adapter);
                                 } catch (Exception e) {
                                     ErrorDialog.createErrorDialog(requireActivity(), e.getMessage());
@@ -154,7 +171,7 @@ public class ProfileEditDetails extends Fragment {
             public void onClick(View v) {
                 try {
                     //save user details
-                    if(Utility.isNetworkAvailable(requireContext())) {
+                    if (Utility.isNetworkAvailable(requireContext())) {
                         dialog.show();
                         binding.saveTV.setEnabled(false);
                         StorageReference rootRef = appClass.storage.getReference();
@@ -163,16 +180,16 @@ public class ProfileEditDetails extends Fragment {
                         if (!appClass.sharedPref.getProfilePath().isEmpty())
                             profilePath = appClass.sharedPref.getProfilePath();
 
-                        dLPath = "drivingLicense/" + UUID.randomUUID().toString();
+                        panPath = "pan/" + UUID.randomUUID().toString();
                         if (!appClass.sharedPref.getDLPath().isEmpty())
-                            dLPath = appClass.sharedPref.getDLPath();
+                            panPath = appClass.sharedPref.getDLPath();
 
                         aadhaarPath = "aadhaar/" + UUID.randomUUID().toString();
                         if (!appClass.sharedPref.getAadhaarPath().isEmpty())
                             aadhaarPath = appClass.sharedPref.getAadhaarPath();
 
                         StorageReference profileRef = rootRef.child(profilePath);
-                        StorageReference dLRef = rootRef.child(dLPath);
+                        StorageReference dLRef = rootRef.child(panPath);
                         StorageReference aadhaarRef = rootRef.child(aadhaarPath);
                         String name = binding.nameET.getText().toString();
                         String altMob = binding.altMobET.getText().toString();
@@ -181,7 +198,7 @@ public class ProfileEditDetails extends Fragment {
                         String address = binding.addTv.getText().toString();
 
                         if (name.isEmpty() && altMob.isEmpty() && fileAadhaarImage == null && fileProfileImage == null
-                                && fileDLImage == null && email.isEmpty() && state.contains("state") && address.isEmpty()) {
+                                && filePanImage == null && email.isEmpty() && state.contains("state") && address.isEmpty()) {
                             DialogCustoms.showSnackBar(getActivity(), "Enter details to edit.", binding.getRoot());
                             dialog.dismiss();
                             binding.saveTV.setEnabled(true);
@@ -218,11 +235,11 @@ public class ProfileEditDetails extends Fragment {
                             }
                         }
 
-                        if(!state.contains("select")) {
+                        if (!state.contains("select")) {
                             map.put("state", state);
                         }
 
-                        if(!address.isEmpty()) {
+                        if (!address.isEmpty()) {
                             map.put("address", address);
                         }
 
@@ -239,12 +256,12 @@ public class ProfileEditDetails extends Fragment {
                                                     appClass.sharedPref.setName(name);
                                                 if (!email.isEmpty())
                                                     appClass.sharedPref.setEmail(email);
-                                                if(!state.contains("select"))
+                                                if (!state.contains("select"))
                                                     appClass.sharedPref.setState(state);
-                                                if(!address.isEmpty())
+                                                if (!address.isEmpty())
                                                     appClass.sharedPref.setAddress(address);
                                                 Log.d(TAG, "onComplete: success");
-                                                if (fileDLImage == null && fileAadhaarImage == null && fileProfileImage == null)
+                                                if (filePanImage == null && fileAadhaarImage == null && fileProfileImage == null)
                                                     requireActivity().onBackPressed();
                                             } else {
                                                 dialog.dismiss();
@@ -306,16 +323,16 @@ public class ProfileEditDetails extends Fragment {
                             });
                         }
 
-                        if (fileDLImage != null) {
-                            dLRef.putFile(Uri.fromFile(fileDLImage)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        if (filePanImage != null) {
+                            dLRef.putFile(Uri.fromFile(filePanImage)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                     if (task.isSuccessful()) {
                                         dLRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                             @Override
                                             public void onSuccess(Uri uri) {
-                                                fileDLImage = null;
-                                                saveImageUrl("panImgUrl", uri, "panImgPath", dLPath);
+                                                filePanImage = null;
+                                                saveImageUrl("panImgUrl", uri, "panImgPath", panPath);
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
                                             @Override
@@ -393,7 +410,7 @@ public class ProfileEditDetails extends Fragment {
 
                         uploadFileLayout.setOnClickListener(v1 ->
                         {
-                            isDLUpload = true;
+                            isPanUpload = true;
                             uploadDialog.dismiss();
                             Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -401,7 +418,7 @@ public class ProfileEditDetails extends Fragment {
                         });
 
                         takePhotoLayout.setOnClickListener(v1 -> {
-                            isDLUpload = false;
+                            isPanUpload = false;
                             uploadDialog.dismiss();
                             Intent cameraIntent = getCameraIntent();
                             uploadDLImage.launch(cameraIntent);
@@ -475,19 +492,19 @@ public class ProfileEditDetails extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            if (key.matches("profileUrl")) {
+                            if (key.equalsIgnoreCase("profileUrl")) {
                                 appClass.sharedPref.setProfileUrl(uri.toString());
                                 appClass.sharedPref.setProfilePath(imagePath);
-                            } else if (key.matches("aadhaarImgUrl")) {
+                            } else if (key.equalsIgnoreCase("aadhaarImgUrl")) {
                                 appClass.sharedPref.setAadhaarImg(uri.toString());
                                 appClass.sharedPref.setAadhaarPath(imagePath);
-                            } else if (key.matches("panImgUrl")) {
+                            } else if (key.equalsIgnoreCase("panImgUrl")) {
                                 appClass.sharedPref.setPanImgUrl(uri.toString());
                                 appClass.sharedPref.setPanImgPath(imagePath);
                             }
 
                             dialog.dismiss();
-                            if (fileDLImage == null && fileAadhaarImage == null && fileProfileImage == null)
+                            if (filePanImage == null && fileAadhaarImage == null && fileProfileImage == null)
                                 requireActivity().onBackPressed();
                             Log.d(TAG, "onComplete: success");
                         } else {
@@ -596,7 +613,7 @@ public class ProfileEditDetails extends Fragment {
             result -> {
                 try {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        if (isDLUpload) {
+                        if (isPanUpload) {
                             Intent data = result.getData();
                             if (data != null && data.getData() != null) {
                                 Uri selectedImage = data.getData();
@@ -609,7 +626,7 @@ public class ProfileEditDetails extends Fragment {
 
                                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                                 String mediaPath = cursor.getString(columnIndex);
-                                fileDLImage = new File(mediaPath);
+                                filePanImage = new File(mediaPath);
                                 binding.dLTV.setText("Document Uploaded");
 
                                 cursor.close();
@@ -619,7 +636,7 @@ public class ProfileEditDetails extends Fragment {
                                 Log.d(TAG, "uri of camera image: " + currentPhotoPath);
                                 if (currentPhotoPath != null) {
                                     Uri uri = Uri.fromFile(new File(currentPhotoPath));
-                                    fileDLImage = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                                    filePanImage = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                                             , "Pan" + System.currentTimeMillis() + ".jpeg");
                                     binding.dLTV.setText("Document Uploaded");
 
@@ -629,7 +646,7 @@ public class ProfileEditDetails extends Fragment {
                                     bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
                                     byte[] bytes = baos.toByteArray();
 
-                                    FileOutputStream fileOutputStream = new FileOutputStream(fileDLImage);
+                                    FileOutputStream fileOutputStream = new FileOutputStream(filePanImage);
                                     fileOutputStream.write(bytes);
                                     fileOutputStream.flush();
                                     fileOutputStream.close();
@@ -644,7 +661,7 @@ public class ProfileEditDetails extends Fragment {
                         }
 
                     } else {
-                        fileDLImage = null;
+                        filePanImage = null;
                     }
                 } catch (Exception e) {
                     Log.d(TAG, "onCatch: " + e);
@@ -738,12 +755,13 @@ public class ProfileEditDetails extends Fragment {
     public void onPause() {
         super.onPause();
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         refreshInterface.refresh(0);
         if (!appClass.sharedPref.getEmail().isEmpty() && !appClass.sharedPref.getAlternateMob().isEmpty() && appClass.sharedPref.getAadhaarImg() != null && appClass.sharedPref.getUser().getProfileUrl() != null && appClass.sharedPref.getDLImg() != null) {
-            if(appClass.sharedPref.getStatus().matches("pending")) {
+            if (appClass.sharedPref.getStatus().matches("pending")) {
                 appClass.sharedPref.setStatus("approved");
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("status", "approved");

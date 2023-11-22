@@ -74,6 +74,8 @@ public class SplashActivity extends AppCompatActivity {
                         appClass.sharedPref.setDLPath(d.getString("drivingLicImgPath"));
                         appClass.sharedPref.setProfilePath(d.getString("profileImgPath"));
                         appClass.sharedPref.setStatus(d.getString("status"));
+                        appClass.sharedPref.setState(d.getString("state"));
+                        appClass.sharedPref.setAddress(d.getString("address"));
                         Intent i = new Intent(SplashActivity.this, MainActivity.class);
                         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);

@@ -237,7 +237,7 @@
                             android:background="@color/primary"
                             android:padding="8dp"
                             android:id="@+id/state_tv"
-                            android:text="Email: Dushyant.977360@gmail.com"
+                            android:text="State: Delhi"
                             android:textColor="@color/white"
                             android:theme="@style/textStyle" />
                     </FrameLayout>
@@ -259,7 +259,7 @@
                     android:layout_marginTop="@dimen/_15dp">
 
                     <ImageView
-                        android:id="@+id/dLImgView"
+                        android:id="@+id/pan_iv"
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:layout_marginStart="8dp"
@@ -287,7 +287,7 @@
                     android:layout_marginTop="@dimen/_15dp">
 
                     <ImageView
-                        android:id="@+id/aadharIV"
+                        android:id="@+id/aadhaar_iv"
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:padding="16dp"

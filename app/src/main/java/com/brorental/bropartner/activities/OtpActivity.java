@@ -53,7 +53,8 @@ public class OtpActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     //verificationId store verificationId returns from firebase auth when otp sent successfully
     private String mVerificationId;
-    private String name, pin, totalRide, totalRent, profileUrl, profileImgPath, wallet, aadhaarImgUrl, aadhaarImgPath, dLicenseImgUrl, dLicenseImgPath, status, email;
+    private String name, pin, totalRide, totalRent, profileUrl, profileImgPath, wallet, aadhaarImgUrl,
+            aadhaarImgPath, dLicenseImgUrl, dLicenseImgPath, status, email, state, address;
     private boolean termsCheck;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
     String phone;
@@ -155,6 +156,8 @@ public class OtpActivity extends AppCompatActivity {
                                         sharedPreferences.setProfilePath(profileImgPath);
                                         sharedPreferences.setStatus(status);
                                         sharedPreferences.setEmail(email);
+                                        appClass.sharedPref.setState(state);
+                                        appClass.sharedPref.setAddress(address);
                                         sharedPreferences.saveUser(new User(name, phone, pin, totalRent,
                                                 totalRide, true, profileUrl, wallet));
                                         finish();
@@ -392,6 +395,8 @@ public class OtpActivity extends AppCompatActivity {
                         sharedPreferences.setProfilePath(d.getString("profileImgPath"));
                         sharedPreferences.setStatus(d.getString("status"));
                         sharedPreferences.setEmail(d.getString("email"));
+                        appClass.sharedPref.setState(d.getString("state"));
+                        appClass.sharedPref.setAddress(d.getString("address"));
                         sharedPreferences.saveUser(new User(d.getString("name"), phone, d.getString("pin"),
                                 d.getString("totalRent"),
                                 d.getString("totalRide"), true, d.getString("profileUrl"), d.getString("wallet")));
@@ -413,6 +418,8 @@ public class OtpActivity extends AppCompatActivity {
                         dLicenseImgPath = d.getString("drivingLicImgPath");
                         status = d.getString("status");
                         email = d.getString("email");
+                        state = d.getString("state");
+                        state = d.getString("address");
                         binding.otpLl.setVisibility(View.GONE);
                         binding.termsLangLL.setVisibility(View.VISIBLE);
                     }
@@ -448,26 +455,15 @@ public class OtpActivity extends AppCompatActivity {
                                                             map2.put("drivingLicImgPath", "");
                                                             map2.put("status", "pending");
                                                             map2.put("wallet", "0");
+                                                            map2.put("state", "");
+                                                            map2.put("address", "");
+                                                            map2.put("isBikeAdded", false);
                                                             mFirestore.collection("partners")
                                                                     .document(pin).set(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                         @Override
                                                                         public void onSuccess(Void unused) {
-//                                                                            Intent i = new Intent(OtpActivity.this, MainActivity.class);
-//                                                                            i.putExtra("phone", phone);//with +91 code in phone variable.
-//                                                                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                                                                            startActivity(i);
-//                                                                            finish();
                                                                             name = username;
                                                                             dialog.dismiss();
-//                                                                            sharedPreferences.setLogin(true);
-//                                                                            sharedPreferences.setAadhaarImg("");
-//                                                                            sharedPreferences.setAadhaarPath("");
-//                                                                            sharedPreferences.setDLImg("");
-//                                                                            sharedPreferences.setDLPath("");
-//                                                                            sharedPreferences.setProfilePath("");
-//                                                                            sharedPreferences.setStatus("pending");
-//                                                                            sharedPreferences.setEmail("");
-//                                                                            sharedPreferences.saveUser(new User(username, phone, pin, "0", "0", false, "", "0"));
                                                                             binding.otpLl.setVisibility(View.GONE);
                                                                             binding.termsLangLL.setVisibility(View.VISIBLE);
                                                                             Toast.makeText(OtpActivity.this, "Sign-Up Successfully", Toast.LENGTH_SHORT).show();
