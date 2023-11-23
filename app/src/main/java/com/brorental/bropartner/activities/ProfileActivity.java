@@ -3,6 +3,7 @@ package com.brorental.bropartner.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
@@ -34,6 +35,7 @@ public class ProfileActivity extends AppCompatActivity {
         binding.altMobTV.setText("Alternate Mobile: " + appClass.sharedPref.getAlternateMob());
         binding.emailTv.setText("Email Id: " + appClass.sharedPref.getEmail());
         binding.stateTv.setText("State: " + appClass.sharedPref.getState());
+
         binding.addTv.setText("Address: " + appClass.sharedPref.getAddress());
 
         Glide.with(this).load(appClass.sharedPref.getUser().getProfileUrl()).placeholder(R.drawable.default_profile).into(binding.profileCirIV);

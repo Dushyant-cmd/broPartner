@@ -181,15 +181,15 @@ public class ProfileEditDetails extends Fragment {
                             profilePath = appClass.sharedPref.getProfilePath();
 
                         panPath = "pan/" + UUID.randomUUID().toString();
-                        if (!appClass.sharedPref.getDLPath().isEmpty())
-                            panPath = appClass.sharedPref.getDLPath();
+                        if (!appClass.sharedPref.getPanImgPath().isEmpty())
+                            panPath = appClass.sharedPref.getPanImgPath();
 
                         aadhaarPath = "aadhaar/" + UUID.randomUUID().toString();
                         if (!appClass.sharedPref.getAadhaarPath().isEmpty())
                             aadhaarPath = appClass.sharedPref.getAadhaarPath();
 
                         StorageReference profileRef = rootRef.child(profilePath);
-                        StorageReference dLRef = rootRef.child(panPath);
+                        StorageReference panRef = rootRef.child(panPath);
                         StorageReference aadhaarRef = rootRef.child(aadhaarPath);
                         String name = binding.nameET.getText().toString();
                         String altMob = binding.altMobET.getText().toString();
@@ -211,9 +211,16 @@ public class ProfileEditDetails extends Fragment {
                             map.put("name", name);
 
                         if (!altMob.isEmpty()) {
-                            if (Long.parseLong(String.valueOf(altMob.charAt(0))) >= 6 && altMob.length() > 9) {
-                                map.put("alternateMobile", altMob);
-                            } else {
+                            try {
+                                if (Long.parseLong(String.valueOf(altMob.charAt(0))) >= 6 && altMob.length() > 9) {
+                                    map.put("alternateMobile", altMob);
+                                } else {
+                                    binding.altMobET.setError("Invalid");
+                                    binding.saveTV.setEnabled(true);
+                                    dialog.dismiss();
+                                    return;
+                                }
+                            } catch (Exception e) {
                                 binding.altMobET.setError("Invalid");
                                 binding.saveTV.setEnabled(true);
                                 dialog.dismiss();
@@ -244,6 +251,8 @@ public class ProfileEditDetails extends Fragment {
                         }
 
                         if (!map.isEmpty()) {
+                            if(!dialog.isShowing())
+                                dialog.show();
                             appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
                                     .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
@@ -272,10 +281,14 @@ public class ProfileEditDetails extends Fragment {
                         }
 
                         if (fileAadhaarImage != null) {
+                            if(!dialog.isShowing())
+                                dialog.show();
                             aadhaarRef.putFile(Uri.fromFile(fileAadhaarImage)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                     if (task.isSuccessful()) {
+                                        if(!dialog.isShowing())
+                                            dialog.show();
                                         aadhaarRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                             @Override
                                             public void onSuccess(Uri uri) {
@@ -298,10 +311,14 @@ public class ProfileEditDetails extends Fragment {
                         }
 
                         if (fileProfileImage != null) {
+                            if(!dialog.isShowing())
+                                dialog.show();
                             profileRef.putFile(Uri.fromFile(fileProfileImage)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                     if (task.isSuccessful()) {
+                                        if(!dialog.isShowing())
+                                            dialog.show();
                                         profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                             @Override
                                             public void onSuccess(Uri uri) {
@@ -324,11 +341,15 @@ public class ProfileEditDetails extends Fragment {
                         }
 
                         if (filePanImage != null) {
-                            dLRef.putFile(Uri.fromFile(filePanImage)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            if(!dialog.isShowing())
+                                dialog.show();
+                            panRef.putFile(Uri.fromFile(filePanImage)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                     if (task.isSuccessful()) {
-                                        dLRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        if(!dialog.isShowing())
+                                            dialog.show();
+                                        panRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                             @Override
                                             public void onSuccess(Uri uri) {
                                                 filePanImage = null;
@@ -487,6 +508,8 @@ public class ProfileEditDetails extends Fragment {
         map.put(key, uri.toString());
         map.put(imagePathKey, imagePath);
 
+        if(!dialog.isShowing())
+            dialog.show();
         appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
                 .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -504,9 +527,8 @@ public class ProfileEditDetails extends Fragment {
                             }
 
                             dialog.dismiss();
-                            if (filePanImage == null && fileAadhaarImage == null && fileProfileImage == null)
+                            if (filePanImage == null && fileAadhaarImage == null && fileProfileImage == null && !requireActivity().isFinishing())
                                 requireActivity().onBackPressed();
-                            Log.d(TAG, "onComplete: success");
                         } else {
                             dialog.dismiss();
                             Log.d(TAG, "onComplete: " + task.getException());
