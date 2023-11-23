@@ -84,7 +84,7 @@ public class PaymentHistory extends AppCompatActivity {
     private void getTransactions() {
         binding.shimmer.setVisibility(View.VISIBLE);
         binding.recyclerView.setVisibility(View.GONE);
-        appClass.firestore.collection("transactions").whereEqualTo("broRentalId", appClass.sharedPref.getUser().getPin())
+        appClass.firestore.collection("transactions").whereEqualTo("broPartnerId", appClass.sharedPref.getUser().getPin())
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

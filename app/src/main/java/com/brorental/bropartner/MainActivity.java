@@ -139,6 +139,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        headerWalletLL.setOnClickListener(view -> {
+           Intent i = new Intent(MainActivity.this, PaymentHistory.class);
+           startActivity(i);
+        });
         binding.withdrawalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
