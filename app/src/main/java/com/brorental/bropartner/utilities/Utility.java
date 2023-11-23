@@ -2,7 +2,7 @@ package com.brorental.bropartner.utilities;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -10,10 +10,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.brorental.bropartner.broadcasts.ConnectionBroadcast;
+import com.brorental.bropartner.interfaces.UtilsInterface;
 
 public class Utility {
     public static String TAG = "Utility.java", rupeeIcon = "\u20B9";
+
     //To check connectivity with network
     public static boolean isNetworkAvailable(Context ctx) {
         try {
@@ -26,9 +30,30 @@ public class Utility {
         return false;
     }
 
+    public static void noNetworkDialog(Context ctx, UtilsInterface.RefreshInterface refreshInterface) {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+            builder.setMessage("No connection");
+            builder.setCancelable(false);
+            builder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    if (isNetworkAvailable(ctx)) {
+                        dialogInterface.dismiss();
+                        refreshInterface.refresh(0);
+                    } else
+                        noNetworkDialog(ctx, refreshInterface);
+                }
+            });
+            builder.create().show();
+        } catch (Exception e) {
+            Log.d(TAG, "noNetworkDialog: " + e);
+        }
+    }
+
     public static void hideKeyboardFrom(Activity activity, Context context, View view1, boolean isFragment) {
         try {
-            if(isFragment) {
+            if (isFragment) {
                 InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
             } else {

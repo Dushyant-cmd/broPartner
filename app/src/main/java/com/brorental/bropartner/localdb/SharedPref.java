@@ -161,6 +161,14 @@ public class SharedPref {
         return sharedPreferences.getString("address", "");
     }
 
+    public String getRideBikeNum() {
+        return sharedPreferences.getString("rideBikeNum", "");
+    }
+
+    public String setRideBikeNum() {
+        return sharedPreferences.getString("rideBikeNum", "");
+    }
+
     public void logout() {
         sharedPreferences.edit().clear().apply();
     }
