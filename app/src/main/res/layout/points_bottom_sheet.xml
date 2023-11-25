@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="60dp"
+            android:layout_height="2dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:background="#C6BABA" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8dp"
+            app:cardBackgroundColor="#FDF8F8"
+            app:cardCornerRadius="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/_8dp"
+                android:orientation="vertical">
+
+                <Spinner
+                    android:id="@+id/spinner_from"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="From"
+                    android:paddingHorizontal="@dimen/_8dp"
+                    android:paddingVertical="4dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_15dp"
+                    android:layout_marginVertical="8dp">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_centerInParent="true"
+                        android:background="#CABEBE" />
+
+                    <FrameLayout
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="15dp"
+                        android:background="@drawable/grey_circle">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+
+                            android:src="@drawable/baseline_keyboard_double_arrow_down_24" />
+                    </FrameLayout>
+                </RelativeLayout>
+
+
+                <Spinner
+                    android:id="@+id/spinner_to"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="To"
+                    android:paddingHorizontal="@dimen/_8dp"
+                    android:paddingVertical="4dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/textLL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_8dp"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tv_ttl_head"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_8dp"
+                            android:fontFamily="@font/monserrat_semibold"
+                            android:text="Ride Amount:"
+                            android:textColor="@color/black"
+                            android:theme="@style/textStyle" />
+
+                        <TextView
+                            android:id="@+id/tv_ride_amt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="@dimen/_8dp"
+                            android:fontFamily="@font/monserrat_semibold"
+                            android:text=" \u20B9 15"
+                            android:textColor="@color/black"
+                            android:theme="@style/textStyle" />
+
+                        <TextView
+                            android:id="@+id/tv_dis_head"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tv_ttl_head"
+                            android:layout_marginTop="@dimen/_8dp"
+                            android:fontFamily="@font/montserrat_regular"
+                            android:text="Ride Distance: "
+                            android:textColor="@color/black"
+                            android:theme="@style/textStyle" />
+
+                        <TextView
+                            android:id="@+id/tv_dis"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tv_ride_amt"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="@dimen/_8dp"
+                            android:fontFamily="@font/montserrat_regular"
+                            android:text="2 /km"
+                            android:textColor="@color/black"
+                            android:theme="@style/textStyle" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tv_dis_head"
+                            android:layout_marginTop="@dimen/_8dp"
+                            android:text="@string/agree_to_our_terms_amp_conditions"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            android:theme="@style/textStyle" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_8dp"
+            android:layout_marginTop="@dimen/_8dp"
+            android:backgroundTint="@color/primary"
+            android:text="Add Point"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</layout>

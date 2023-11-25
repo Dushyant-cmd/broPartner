@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:theme="@style/textStyle"
+            android:fontFamily="@font/monserrat_semibold"
+            android:text="Add Bike Details"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="16dp"
+            android:id="@+id/tv_heading"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        <LinearLayout
+            android:layout_marginTop="@dimen/_8dp"
+            android:paddingHorizontal="@dimen/_8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_marginTop="@dimen/_15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enter Bike Number"
+                android:theme="@style/textStyle"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_marginTop="@dimen/_8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="30"
+                    android:id="@+id/et_bike_num"
+                    android:hint="DL-INBA-2266"
+                    android:inputType="text"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:layout_marginTop="@dimen/_15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Submit"
+                android:backgroundTint="@color/primary"
+                android:textColor="@color/white"
+                android:fontFamily="@font/monserrat_semibold"
+                android:id="@+id/submit_btn"/>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

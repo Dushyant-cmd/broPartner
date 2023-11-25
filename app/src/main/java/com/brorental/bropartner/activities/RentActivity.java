@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -60,6 +61,7 @@ public class RentActivity extends AppCompatActivity {
         binding.recyclerView.setVisibility(View.GONE);
         appClass.firestore.collection("rent")
                 .whereEqualTo("broPartnerId", appClass.sharedPref.getUser().getPin())
+                .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {

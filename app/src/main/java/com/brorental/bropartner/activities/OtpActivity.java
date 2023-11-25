@@ -455,6 +455,7 @@ public class OtpActivity extends AppCompatActivity {
                                                             map2.put("drivingLicImgPath", "");
                                                             map2.put("status", "pending");
                                                             map2.put("wallet", "0");
+                                                            map2.put("rideBikeNum", "");
                                                             map2.put("state", "");
                                                             map2.put("address", "");
                                                             map2.put("isBikeAdded", false);

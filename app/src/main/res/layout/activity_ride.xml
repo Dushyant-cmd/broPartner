@@ -22,14 +22,15 @@
                 android:layout_height="?android:attr/actionBarSize"
                 android:background="@color/primary"
                 app:navigationIcon="@drawable/baseline_arrow_back_ios_24"
-                app:title="BroRental"
+                app:title="Start Driving"
                 app:titleTextColor="@color/white" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRef"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="?android:attr/actionBarSize">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -38,36 +39,102 @@
                 android:paddingHorizontal="@dimen/_8dp"
                 android:paddingVertical="@dimen/_8dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/no_data_ly"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:orientation="vertical"
+                        tools:visibility="visible"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@null"
+                            android:src="@drawable/no_internet" />
+
+                        <TextView
+                            android:id="@+id/add_point_btn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No points found"
+                            android:textSize="20sp"
+                            android:gravity="center"
+                            android:theme="@style/textStyle" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
                 <Button
                     android:id="@+id/add_bike_num_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:text="Add Bike number"
-                    android:theme="@style/textStyle" />
-
-                <LinearLayout
-                    android:id="@+id/no_data_ly"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@null"
-                        android:src="@drawable/no_internet" />
-
-                    <Button
-                        android:id="@+id/add_point_btn"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Add Bike number"
-                        android:theme="@style/textStyle" />
-                </LinearLayout>
+                    android:theme="@style/textStyle"
+                    android:visibility="gone" />
             </RelativeLayout>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <LinearLayout
+            android:id="@+id/ext_ly"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/ex_fab_add_points"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="@color/pastel_orange"
+                android:text="Add Point"
+                app:icon="@drawable/baseline_add_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/ex_fab_add_bike_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="@color/pastel_blue"
+                android:text="Add Bike"
+                app:icon="@drawable/baseline_add_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/add_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="@color/primary"
+                app:icon="@drawable/baseline_add_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </LinearLayout>
     </RelativeLayout>
 </layout>

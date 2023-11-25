@@ -32,8 +32,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.Source;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -77,7 +77,8 @@ public class RentHistoryFragment extends Fragment {
         binding.recyclerView.setVisibility(View.GONE);
         appClass.firestore.collection("rentHistory")
                 .whereEqualTo("broPartnerId", appClass.sharedPref.getUser().getPin())
-                .get(Source.SERVER).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         binding.swipeRef.setRefreshing(false);
