@@ -27,11 +27,12 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         android:layout_marginStart="@dimen/_8dp"
+                        android:layout_marginTop="8dp"
                         android:orientation="horizontal">
 
                         <TextView
@@ -51,13 +52,15 @@
                             android:textSize="12sp"
                             android:theme="@style/textStyle" />
                     </LinearLayout>
+
                     <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/live_sc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:id="@+id/live_sc"
-                        android:theme="@style/Color1SwitchStyle"/>
+                        android:theme="@style/Color1SwitchStyle" />
                 </RelativeLayout>
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -103,7 +106,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
                     android:layout_marginVertical="8dp"
@@ -132,47 +135,54 @@
                             android:theme="@style/textStyle" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/addTV"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:drawableStart="@drawable/loc_ic"
-                        android:drawablePadding="4dp"
-                        android:drawableTint="@color/primary"
-                        android:gravity="center"
-                        android:text="Delhi, India"
-                        android:textSize="12sp"
-                        android:theme="@style/textStyle" />
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/timingsTV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:drawableStart="@drawable/baseline_timer_24"
-                        android:drawablePadding="4dp"
-                        android:drawableTint="@color/primary"
-                        android:gravity="center"
-                        android:text="10:00AM - 11:00PM"
-                        android:textSize="12sp"
-                        android:theme="@style/textStyle" />
+                        <TextView
+                            android:id="@+id/addTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_weight="1"
+                            android:drawableStart="@drawable/loc_ic"
+                            android:drawablePadding="4dp"
+                            android:drawableTint="@color/primary"
+                            android:gravity="center_vertical"
+                            android:text="Delhi, India"
+                            android:textSize="12sp"
+                            android:theme="@style/textStyle" />
 
-                    <TextView
-                        android:id="@+id/advert_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center"
-                        android:paddingVertical="4dp"
-                        android:paddingHorizontal="@dimen/_8dp"
-                        android:background="@drawable/dotted_border_card_white"
-                        android:text="Advertisement Id: 2000"
-                        android:textSize="12sp"
-                        android:theme="@style/textStyle" />
+                        <TextView
+                            android:id="@+id/timingsTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_weight="1"
+                            android:drawableStart="@drawable/baseline_timer_24"
+                            android:drawablePadding="4dp"
+                            android:drawableTint="@color/primary"
+                            android:gravity="center_vertical"
+                            android:text="10:00AM - 11:00PM"
+                            android:textSize="12sp"
+                            android:theme="@style/textStyle" />
 
+                        <TextView
+                            android:id="@+id/advert_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/dotted_border_card_white"
+                            android:gravity="center"
+                            android:paddingHorizontal="@dimen/_8dp"
+                            android:paddingVertical="4dp"
+                            android:text="2000"
+                            android:textSize="12sp"
+                            android:theme="@style/textStyle" />
+                    </LinearLayout>
                 </LinearLayout>
-
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

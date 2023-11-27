@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,7 +49,7 @@ public class RentListAdapter extends ListAdapter<RentItemModel, RentListAdapter.
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int whichType) {
-        RentListItemBinding binding = RentListItemBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false);
+        com.brorental.bropartner.databinding.RentListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(viewGroup.getContext()), R.layout.rent_list_item, viewGroup, false);
         return new ViewHolder(binding);
     }
 
@@ -80,16 +81,6 @@ public class RentListAdapter extends ListAdapter<RentItemModel, RentListAdapter.
                 Log.d(TAG, "onCheckedChanged: " + b);
             }
         });
-//        holder.binding.root.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent i = new Intent(ctx, RentDetailsActivity.class);
-//                Gson gson = new Gson();
-//                String json = gson.toJson(data);
-//                i.putExtra("data", json);
-//                activity.startActivityForRes(i);
-//            }
-//        });
     }
     class ViewHolder extends RecyclerView.ViewHolder {
         public RentListItemBinding binding;

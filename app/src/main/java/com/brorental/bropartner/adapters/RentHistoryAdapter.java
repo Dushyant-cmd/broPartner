@@ -15,6 +15,7 @@ import com.brorental.bropartner.R;
 import com.brorental.bropartner.databinding.RentHistoryListItemBinding;
 import com.brorental.bropartner.interfaces.UtilsInterface;
 import com.brorental.bropartner.models.HistoryModel;
+import com.brorental.bropartner.utilities.Utility;
 
 public class RentHistoryAdapter extends ListAdapter<HistoryModel, RentHistoryAdapter.ViewHolder> {
     private String TAG = "PaymentAdapter.java";
@@ -68,8 +69,8 @@ public class RentHistoryAdapter extends ListAdapter<HistoryModel, RentHistoryAda
         
         holder.binding.nameTv.setText(data.name);
         holder.binding.advertIdTv.setText(data.advertisementId);
-        holder.binding.ttlChgTv.setText("Total cost: \u20B9" + data.totalRentCost + "(as per \u20B9" + data.perHourCharge + " /hour)");
-        holder.binding.extChgTv.setText("Extra charge: /u20B9" + data.extraCharge);
+        holder.binding.ttlChgTv.setText("Total cost: " + Utility.rupeeIcon + data.totalRentCost + "(as per " + Utility.rupeeIcon + data.perHourCharge + " /hour)");
+        holder.binding.extChgTv.setText("Extra charge: " + Utility.rupeeIcon + data.extraCharge);
         holder.binding.payStaModeTv.setText("Payment completed " + data.paymentMode);
         holder.binding.dateTimeTv.setText("From " + data.rentStartTime + " To " + data.rentEndTime);
         holder.binding.totalHourTv.setText("Total hour: " + data.totalHours);

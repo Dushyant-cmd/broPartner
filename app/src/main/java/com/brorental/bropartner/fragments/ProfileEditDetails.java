@@ -782,20 +782,20 @@ public class ProfileEditDetails extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         refreshInterface.refresh(0);
-        if (!appClass.sharedPref.getEmail().isEmpty() && !appClass.sharedPref.getAlternateMob().isEmpty() && appClass.sharedPref.getAadhaarImg() != null && appClass.sharedPref.getUser().getProfileUrl() != null && appClass.sharedPref.getDLImg() != null) {
-            if (appClass.sharedPref.getStatus().matches("pending")) {
-                appClass.sharedPref.setStatus("approved");
-                HashMap<String, Object> map = new HashMap<>();
-                map.put("status", "approved");
-                appClass.firestore.collection("partners")
-                        .document(appClass.sharedPref.getUser().getPin())
-                        .update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Log.d(TAG, "onSuccess: success");
-                            }
-                        });
-            }
-        }
+//        if (!appClass.sharedPref.getEmail().isEmpty() && !appClass.sharedPref.getAlternateMob().isEmpty() && appClass.sharedPref.getAadhaarImg() != null && appClass.sharedPref.getUser().getProfileUrl() != null && appClass.sharedPref.getDLImg() != null) {
+//            if (appClass.sharedPref.getStatus().matches("pending")) {
+//                appClass.sharedPref.setStatus("approved");
+//                HashMap<String, Object> map = new HashMap<>();
+//                map.put("status", "approved");
+//                appClass.firestore.collection("partners")
+//                        .document(appClass.sharedPref.getUser().getPin())
+//                        .update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                            @Override
+//                            public void onSuccess(Void unused) {
+//                                Log.d(TAG, "onSuccess: success");
+//                            }
+//                        });
+//            }
+//        }
     }
 }

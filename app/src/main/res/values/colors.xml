@@ -10,4 +10,6 @@
     <color name="placeholder_bg">#ECECEC</color>
     <color name="purple_500">#9FC13B</color>
     <color name="teal_200">#33AB51</color>
+    <color name="light_black">#535252</color>
+    <color name="light_grey">#F8F7F5</color>
 </resources>

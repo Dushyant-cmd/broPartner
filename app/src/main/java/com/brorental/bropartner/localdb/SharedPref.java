@@ -172,4 +172,28 @@ public class SharedPref {
     public void logout() {
         sharedPreferences.edit().clear().apply();
     }
+
+    public long getPartnerRentCom() {
+        return sharedPreferences.getLong("partnerRentCommission", 0L);
+    }
+
+    public void setPartnerRentCom(long partnerRentCom) {
+        sharedPreferences.edit().putLong("partnerRentCommission", partnerRentCom).apply();
+    }
+
+    public long getPartnerRideCom() {
+        return sharedPreferences.getLong("partnerRideCommission", 0L);
+    }
+
+    public void setPartnerRideCom(long partnerRideCom) {
+        sharedPreferences.edit().putLong("partnerRideCommission", partnerRideCom).apply();
+    }
+
+    public String getCustomerCareNum() {
+        return sharedPreferences.getString("customerCareNum", "");
+    }
+
+    public void setCustomerCareNum(String num) {
+        sharedPreferences.edit().putString("customerCareNum", num).apply();
+    }
 }

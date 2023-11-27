@@ -1,6 +1,7 @@
 package com.brorental.bropartner.interfaces;
 
 import com.brorental.bropartner.models.HistoryModel;
+import com.brorental.bropartner.models.RideHistoryModel;
 
 import java.util.HashMap;
 
@@ -22,6 +23,11 @@ public interface UtilsInterface {
 
     interface RentStatusListener {
         void updateStatus(String status, HistoryModel data);
+        void contactListener(String type);
+    }
+
+    interface RideHistoryListener {
+        void updateStatus(String status, String docId, int pos, RideHistoryModel data);
         void contactListener(String type);
     }
 }

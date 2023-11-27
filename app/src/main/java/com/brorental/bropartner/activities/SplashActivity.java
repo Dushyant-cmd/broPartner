@@ -18,8 +18,10 @@ import com.brorental.bropartner.databinding.ActivitySplashBinding;
 import com.brorental.bropartner.models.User;
 import com.brorental.bropartner.utilities.AppClass;
 import com.brorental.bropartner.utilities.Utility;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.Locale;
@@ -55,8 +57,31 @@ public class SplashActivity extends AppCompatActivity {
                     startActivity(i);
                     finish();
                 }
+
+                getBaseData();
             }
         }, 2000);
+    }
+
+    private void getBaseData() {
+        appClass.firestore.collection("appData")
+                .document("constants")
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()) {
+                            DocumentSnapshot d = task.getResult();
+                            long rentCom = d.getLong("partnerRentCommission");
+                            long rideCom = d.getLong("partnerRideCommission");
+                            String conNum = d.getString("customerCareNum");
+                            appClass.sharedPref.setPartnerRentCom(rentCom);
+                            appClass.sharedPref.setPartnerRideCom(rideCom);
+                            appClass.sharedPref.setCustomerCareNum(conNum);
+                        } else {
+                            Log.d(TAG, "onComplete: " + task.getException());
+                        }
+                    }
+                });
     }
 
     private void getProfile() {
@@ -70,8 +95,8 @@ public class SplashActivity extends AppCompatActivity {
                                 d.getString("profileUrl"), d.getString("wallet")));
                         appClass.sharedPref.setAadhaarImg(d.getString("aadhaarImgUrl"));
                         appClass.sharedPref.setAadhaarPath(d.getString("aadhaarImgPath"));
-                        appClass.sharedPref.setDLImg(d.getString("drivingLicenseImg"));
-                        appClass.sharedPref.setDLPath(d.getString("drivingLicImgPath"));
+                        appClass.sharedPref.setPanImgUrl(d.getString("panImgUrl"));
+                        appClass.sharedPref.setPanImgPath(d.getString("panImgPath"));
                         appClass.sharedPref.setProfilePath(d.getString("profileImgPath"));
                         appClass.sharedPref.setStatus(d.getString("status"));
                         appClass.sharedPref.setState(d.getString("state"));

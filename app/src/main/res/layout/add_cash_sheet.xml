@@ -16,7 +16,7 @@
             android:paddingBottom="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Cash"
+            android:text="Withdrawal"
             android:textColor="@color/black"
             android:textSize="24sp"/>
     </FrameLayout>
@@ -41,9 +41,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Amount"
+            android:maxLength="6"
             android:inputType="number"
             android:id="@+id/rechargeAmt"/>
     </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/extraHeadTV"
+        android:layout_marginTop="@dimen/_15dp"
+        android:layout_marginStart="@dimen/_15dp"
+        android:text="@string/withdrawal_will_take_5_working_days"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:theme="@style/textStyle" />
 
     <LinearLayout
         android:layout_marginTop="16dp"

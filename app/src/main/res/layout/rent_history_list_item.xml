@@ -5,12 +5,6 @@
 
     </data>
 
-    <!--    <androidx.cardview.widget.CardView-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        app:cardCornerRadius="@dimen/_8dp"-->
-    <!--        app:cardBackgroundColor="@color/primary">-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,13 +12,8 @@
         android:background="@drawable/primary_stroke_bg"
         android:orientation="vertical"
         android:paddingHorizontal="12dp"
+        android:backgroundTint="@color/white"
         android:paddingVertical="4dp">
-
-<!--        <ImageView-->
-<!--            android:id="@+id/image_slider"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="150dp"-->
-<!--            android:src="@drawable/placeholder"/>-->
 
         <RelativeLayout
             android:layout_marginTop="@dimen/_8dp"
@@ -141,5 +130,4 @@
                 android:theme="@style/textStyle" />
         </LinearLayout>
     </LinearLayout>
-    <!--    </androidx.cardview.widget.CardView>-->
 </layout>

@@ -54,7 +54,7 @@ public class OtpActivity extends AppCompatActivity {
     //verificationId store verificationId returns from firebase auth when otp sent successfully
     private String mVerificationId;
     private String name, pin, totalRide, totalRent, profileUrl, profileImgPath, wallet, aadhaarImgUrl,
-            aadhaarImgPath, dLicenseImgUrl, dLicenseImgPath, status, email, state, address;
+            aadhaarImgPath, panImgUrl, panImgPath, status, email, state, address;
     private boolean termsCheck;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
     String phone;
@@ -151,8 +151,8 @@ public class OtpActivity extends AppCompatActivity {
                                         sharedPreferences.setLogin(true);
                                         sharedPreferences.setAadhaarImg(aadhaarImgUrl);
                                         sharedPreferences.setAadhaarPath(aadhaarImgPath);
-                                        sharedPreferences.setDLImg(dLicenseImgUrl);
-                                        sharedPreferences.setDLPath(dLicenseImgPath);
+                                        sharedPreferences.setPanImgUrl(panImgUrl);
+                                        sharedPreferences.setPanImgPath(panImgPath);
                                         sharedPreferences.setProfilePath(profileImgPath);
                                         sharedPreferences.setStatus(status);
                                         sharedPreferences.setEmail(email);
@@ -390,8 +390,8 @@ public class OtpActivity extends AppCompatActivity {
                         sharedPreferences.setLogin(true);
                         sharedPreferences.setAadhaarImg(d.getString("aadhaarImgUrl"));
                         sharedPreferences.setAadhaarPath(d.getString("aadhaarImgPath"));
-                        sharedPreferences.setDLImg(d.getString("drivingLicenseImg"));
-                        sharedPreferences.setDLPath(d.getString("drivingLicImgPath"));
+                        sharedPreferences.setPanImgUrl(d.getString("panImgUrl"));
+                        sharedPreferences.setPanImgPath(d.getString("panImgPath"));
                         sharedPreferences.setProfilePath(d.getString("profileImgPath"));
                         sharedPreferences.setStatus(d.getString("status"));
                         sharedPreferences.setEmail(d.getString("email"));
@@ -414,8 +414,8 @@ public class OtpActivity extends AppCompatActivity {
                         wallet = d.getString("wallet");
                         aadhaarImgUrl = d.getString("aadhaarImgUrl");
                         aadhaarImgPath = d.getString("aadhaarImgPath");
-                        dLicenseImgUrl = d.getString("drivingLicenseImg");
-                        dLicenseImgPath = d.getString("drivingLicImgPath");
+                        panImgUrl = d.getString("panImgUrl");
+                        panImgPath = d.getString("panImgPath");
                         status = d.getString("status");
                         email = d.getString("email");
                         state = d.getString("state");
@@ -451,14 +451,15 @@ public class OtpActivity extends AppCompatActivity {
                                                             map2.put("profileImgPath", "");
                                                             map2.put("aadhaarImgUrl", "");
                                                             map2.put("aadhaarImgPath", "");
-                                                            map2.put("drivingLicenseImg", "");
-                                                            map2.put("drivingLicImgPath", "");
+                                                            map2.put("panImgUrl", "");
+                                                            map2.put("panImgPath", "");
                                                             map2.put("status", "pending");
                                                             map2.put("wallet", "0");
                                                             map2.put("rideBikeNum", "");
                                                             map2.put("state", "");
                                                             map2.put("address", "");
                                                             map2.put("isBikeAdded", false);
+                                                            map2.put("readyForRide", true);
                                                             mFirestore.collection("partners")
                                                                     .document(pin).set(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                         @Override

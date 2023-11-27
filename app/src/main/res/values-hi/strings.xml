@@ -5,4 +5,5 @@
     <string name="terms_str">I agree to <font color="#0077AC">Terms &amp; Conditions</font></string>
     <string name="profile">Profile</string>
     <string name="agree_to_our_terms_amp_conditions">Agree to our <font color="#0077AC">terms &amp; Conditions</font></string>
+    <string name="withdrawal_will_take_5_working_days">Withdrawal will take up-to <font color="#0077AC">5 working days</font>.</string>
 </resources>

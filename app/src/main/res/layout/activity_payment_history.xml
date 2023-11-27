@@ -80,8 +80,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
+                <LinearLayout
+                    android:id="@+id/wd_ly"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_bottom_round"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/_8dp"
+                    android:paddingTop="@dimen/_15dp"
+                    android:paddingBottom="@dimen/_15dp">
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_8dp"
+                        android:src="@drawable/withdrawal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_15dp"
+                        android:backgroundTint="@color/pastel_orange"
+                        android:text="Withdraw"
+                        android:theme="@style/textStyle" />
+                </LinearLayout>
+
                 <com.facebook.shimmer.ShimmerFrameLayout
                     android:id="@+id/shimmer"
+                    android:layout_below="@id/wd_ly"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#fff"
@@ -98,8 +126,11 @@
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_below="@id/wd_ly"
+                    android:layout_marginTop="@dimen/_8dp"
                     android:visibility="gone"
                     tools:visibility="visible" />
+
             </RelativeLayout>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_10dp"
+        android:background="@drawable/white_back">
+
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:src="@drawable/kyc_logo"
+            android:contentDescription="@null"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please Complete your kyc"
+            android:theme="@style/textStyle"
+            android:fontFamily="@font/monserrat_semibold"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/_15dp"
+            app:layout_constraintTop_toBottomOf="@id/img"
+            android:id="@+id/tv" />
+
+        <LinearLayout
+            android:layout_marginTop="@dimen/_15dp"
+            app:layout_constraintTop_toBottomOf="@id/tv"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="4dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_marginEnd="4dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_upload"
+                android:text="Complete KYC"
+                android:backgroundTint="@color/black"
+                android:theme="@style/textStyle" />
+
+            <Button
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_submit"
+                android:text="Contact-Us"
+                android:theme="@style/textStyle" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

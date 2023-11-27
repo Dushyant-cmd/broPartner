@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +30,7 @@ import com.brorental.bropartner.models.HistoryModel;
 import com.brorental.bropartner.utilities.AppClass;
 import com.brorental.bropartner.utilities.DialogCustoms;
 import com.brorental.bropartner.utilities.ProgressDialog;
+import com.brorental.bropartner.utilities.Utility;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -40,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 public class RentHistoryFragment extends Fragment {
@@ -49,6 +53,8 @@ public class RentHistoryFragment extends Fragment {
     private ArrayList<HistoryModel> list = new ArrayList<>();
     private RentHistoryAdapter adapter;
     private AlertDialog pDialog;
+    private DocumentSnapshot lastDoc;
+    private long page = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,9 +90,11 @@ public class RentHistoryFragment extends Fragment {
                         binding.swipeRef.setRefreshing(false);
                         binding.shimmer.setVisibility(View.GONE);
                         binding.recyclerView.setVisibility(View.VISIBLE);
+                        list.clear();
                         if (task.isSuccessful()) {
-                            list.clear();
-                            for (DocumentSnapshot d : task.getResult().getDocuments()) {
+                            page = 0;
+                            List<DocumentSnapshot> dList = task.getResult().getDocuments();
+                            for (DocumentSnapshot d : dList) {
                                 HistoryModel model = d.toObject(HistoryModel.class);
                                 list.add(model);
                             }
@@ -218,7 +226,8 @@ public class RentHistoryFragment extends Fragment {
                                                                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                                                         if (task.isSuccessful()) {
                                                                                             String currWalAmt = task.getResult().getString("wallet");
-                                                                                            String newWalAmt = String.valueOf(Long.parseLong(currWalAmt) + ((Long.parseLong(data.totalRentCost) * 5) / 100));
+                                                                                            long creditAmt = (Long.parseLong(data.totalRentCost) - (Long.parseLong(data.totalRentCost) * appClass.sharedPref.getPartnerRentCom()) / 100);
+                                                                                            String newWalAmt = String.valueOf(Long.parseLong(currWalAmt) + creditAmt);
                                                                                             HashMap<String, Object> map = new HashMap<>();
                                                                                             map.put("wallet", newWalAmt);
                                                                                             appClass.firestore.collection("partners")
@@ -230,16 +239,17 @@ public class RentHistoryFragment extends Fragment {
                                                                                                             if (task.isSuccessful()) {
                                                                                                                 appClass.sharedPref.setWallet(newWalAmt);
                                                                                                                 HashMap<String, Object> map = new HashMap<>();
-                                                                                                                map.put("amount", newWalAmt);
+                                                                                                                map.put("amount", String.valueOf(creditAmt));
                                                                                                                 map.put("date", dateAndTime);
                                                                                                                 map.put("info", null);
                                                                                                                 map.put("name", appClass.sharedPref.getUser().getName());
                                                                                                                 map.put("status", "completed");
-                                                                                                                map.put("type", "rentRefund");
+                                                                                                                map.put("type", "rent");
                                                                                                                 map.put("advertisementId", data.advertisementId);
                                                                                                                 map.put("timestamp", System.currentTimeMillis());
                                                                                                                 map.put("isBroRental", false);
                                                                                                                 map.put("broRentalId", data.broRentalId);
+                                                                                                                map.put("broPartnerId", data.broPartnerId);
                                                                                                                 appClass.firestore.collection("transactions").add(map)
                                                                                                                         .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                                                                                             @Override
@@ -294,10 +304,68 @@ public class RentHistoryFragment extends Fragment {
                                     }
                                 }
                             });
+                            if(!dList.isEmpty())
+                                lastDoc = dList.get(dList.size() - 1);
+
+                            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+                                binding.nestedSv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+                                    @Override
+                                    public void onScrollChange(@NonNull NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                                        //Check if user scrolled till bottom
+                                        if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
+                                            Log.v(TAG, "list scroll till bottom");
+                                            if (Utility.isNetworkAvailable(requireContext()) && page == 0) {
+                                                page++;
+                                                loadMoreGameResult();
+                                            } else if(!Utility.isNetworkAvailable(requireContext())) {
+                                                Toast.makeText(getActivity(), "Check internet connection", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+                                });
                         } else {
                             Log.d(TAG, "onComplete: " + task.getException());
                         }
                     }
                 });
+    }
+
+    private void loadMoreGameResult() {
+        try {
+            pDialog.show();
+            appClass.firestore.collection("rentHistory")
+                    .whereEqualTo("broPartnerId", appClass.sharedPref.getUser().getPin())
+                    .orderBy("timestamp", Query.Direction.DESCENDING)
+                    .startAfter(lastDoc)
+                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            page = 0;
+                            pDialog.dismiss();
+                            if(task.isSuccessful()) {
+                                List<DocumentSnapshot> dList = task.getResult().getDocuments();
+                                if(!dList.isEmpty()) {
+                                    for(DocumentSnapshot d: dList) {
+                                        HistoryModel model = d.toObject(HistoryModel.class);
+                                        list.add(model);
+                                    }
+
+                                    if(!dList.isEmpty())
+                                        lastDoc = dList.get(dList.size() - 1);
+
+                                    adapter.submitList(list);
+                                    adapter.notifyDataSetChanged();
+                                } else {
+                                    Toast.makeText(requireContext(), "No data found", Toast.LENGTH_SHORT).show();
+                                    page++;
+                                }
+                            } else {
+                                DialogCustoms.showSnackBar(requireContext(), "Please try again", binding.getRoot());
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            Log.d(TAG, "loadMoreGameResult: " + e);
+        }
     }
 }

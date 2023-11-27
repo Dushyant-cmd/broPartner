@@ -16,7 +16,7 @@ import com.brorental.bropartner.broadcasts.ConnectionBroadcast;
 import com.brorental.bropartner.interfaces.UtilsInterface;
 
 public class Utility {
-    public static String TAG = "Utility.java", rupeeIcon = "\u20B9";
+    public static String TAG = "Utility.java", rupeeIcon = "\u20B9 ";
 
     //To check connectivity with network
     public static boolean isNetworkAvailable(Context ctx) {

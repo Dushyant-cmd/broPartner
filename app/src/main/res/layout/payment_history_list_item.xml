@@ -86,11 +86,26 @@
                     android:textColor="#252525"
                     android:textSize="20dp" />
 
-
             </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bottom_round"
+                android:backgroundTint="@color/pastel_orange"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tv_status"
+                    android:layout_marginStart="@dimen/_8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:theme="@style/textStyle"
+                    android:text="Status: Pending"/>
+            </FrameLayout>
 
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
 </layout>

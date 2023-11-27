@@ -40,14 +40,17 @@ public class PaymentAdapter extends ListAdapter<PaymentHistoryModel, PaymentAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         PaymentHistoryModel data = getItem(position);
-        if (data.type.matches("rent"))
-            holder.binding.TType.setText("Debit");
-        else if (data.type.matches("addCash"))
+        String amtSym = "";
+        if (data.type.equalsIgnoreCase("rent") || data.type.equalsIgnoreCase("ride") || data.type.equalsIgnoreCase("withdrawRefund")) {
+            amtSym = "+";
             holder.binding.TType.setText("Credit");
-        else if (data.type.matches("ride"))
-            holder.binding.TType.setText("Debit");
+        } else if (data.type.equalsIgnoreCase("withdraw")) {
+            holder.binding.TType.setText("Credit");
+            amtSym = "-";
+        }
 
-        holder.binding.TAmount.setText(data.amount);
+        holder.binding.tvStatus.setText("Status: " + data.status);
+        holder.binding.TAmount.setText(amtSym + data.amount);
         holder.binding.TDate.setText(data.date);
         holder.binding.TRemark.setText(data.type);
     }
