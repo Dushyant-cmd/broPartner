@@ -162,12 +162,13 @@
 
                             <LinearLayout
                                 android:id="@+id/error_ride"
-                                android:visibility="gone"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_horizontal"
                                 android:layout_marginTop="@dimen/_8dp"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:visibility="gone"
+                                tools:visibility="visible">
 
                                 <ImageView
                                     android:layout_width="100dp"
@@ -219,12 +220,13 @@
 
                             <LinearLayout
                                 android:id="@+id/errorRent"
-                                android:visibility="gone"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_horizontal"
                                 android:layout_marginTop="@dimen/_8dp"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:visibility="gone"
+                                tools:visibility="visible">
 
                                 <ImageView
                                     android:layout_width="100dp"
