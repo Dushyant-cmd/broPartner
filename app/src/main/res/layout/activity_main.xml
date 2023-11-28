@@ -27,9 +27,9 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?android:attr/actionBarSize"
+                    android:background="@color/primary"
                     app:title="BroPartner"
-                    app:titleTextColor="@color/white"
-                    android:background="@color/primary">
+                    app:titleTextColor="@color/white">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -38,35 +38,35 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Bro Partner"
-                            android:theme="@style/textStyle"
                             android:layout_centerVertical="true"
-                            android:textColor="@color/white"
                             android:fontFamily="@font/montserrat_regular"
-                            android:textSize="20sp"/>
-<!--                        <LinearLayout-->
-<!--                            android:id="@+id/searchLL"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_marginVertical="4dp"-->
-<!--                            android:layout_marginEnd="8dp"-->
-<!--                            android:layout_weight="29"-->
-<!--                            android:background="@drawable/search_border"-->
-<!--                            android:gravity="center_vertical"-->
-<!--                            android:orientation="horizontal">-->
+                            android:text="Bro Partner"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:theme="@style/textStyle" />
+                        <!--                        <LinearLayout-->
+                        <!--                            android:id="@+id/searchLL"-->
+                        <!--                            android:layout_width="wrap_content"-->
+                        <!--                            android:layout_height="match_parent"-->
+                        <!--                            android:layout_marginVertical="4dp"-->
+                        <!--                            android:layout_marginEnd="8dp"-->
+                        <!--                            android:layout_weight="29"-->
+                        <!--                            android:background="@drawable/search_border"-->
+                        <!--                            android:gravity="center_vertical"-->
+                        <!--                            android:orientation="horizontal">-->
 
-<!--                            <TextView-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_marginStart="16dp"-->
-<!--                                android:drawableStart="@drawable/baseline_search_24"-->
-<!--                                android:drawablePadding="8dp"-->
-<!--                                android:fontFamily="@font/montserrat_regular"-->
-<!--                                android:text="Search"-->
-<!--                                android:textColor="@color/white"-->
-<!--                                android:textSize="16sp" />-->
+                        <!--                            <TextView-->
+                        <!--                                android:layout_width="wrap_content"-->
+                        <!--                                android:layout_height="wrap_content"-->
+                        <!--                                android:layout_marginStart="16dp"-->
+                        <!--                                android:drawableStart="@drawable/baseline_search_24"-->
+                        <!--                                android:drawablePadding="8dp"-->
+                        <!--                                android:fontFamily="@font/montserrat_regular"-->
+                        <!--                                android:text="Search"-->
+                        <!--                                android:textColor="@color/white"-->
+                        <!--                                android:textSize="16sp" />-->
 
-<!--                        </LinearLayout>-->
+                        <!--                        </LinearLayout>-->
 
                         <TextView
                             android:id="@+id/withdrawalBtn"
@@ -74,11 +74,11 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_marginEnd="4dp"
+                            android:background="@drawable/main_balance_gradient"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="@dimen/_8dp"
-                            android:textColor="@color/white"
-                            android:background="@drawable/main_balance_gradient"
-                            android:text="Wallet" />
+                            android:text="Wallet"
+                            android:textColor="@color/white" />
                     </RelativeLayout>
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
@@ -104,21 +104,21 @@
                             android:background="#fff"
                             android:elevation="1dp"
                             android:visibility="visible"
-                            tools:visibility="gone"
-                            app:duration="800">
+                            app:duration="800"
+                            tools:visibility="gone">
 
                             <include layout="@layout/placeholder_layout" />
 
                         </com.facebook.shimmer.ShimmerFrameLayout>
 
                         <LinearLayout
-                            android:background="@color/light_grey"
                             android:id="@+id/main_content_ll"
-                            android:paddingVertical="8dp"
-                            android:paddingHorizontal="8dp"
                             android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/light_grey"
                             android:orientation="vertical"
-                            android:layout_height="match_parent">
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="8dp">
 
                             <androidx.cardview.widget.CardView
                                 android:layout_width="match_parent"
@@ -128,75 +128,127 @@
                                 <ImageView
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
+                                    android:contentDescription="@null"
                                     android:scaleType="fitXY"
-                                    android:src="@drawable/placeholder"
-                                    android:contentDescription="@null"/>
+                                    android:src="@drawable/placeholder" />
 
                             </androidx.cardview.widget.CardView>
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
-                                android:layout_marginTop="@dimen/_10dp"
-                                android:layout_height="wrap_content">
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_10dp">
 
                                 <TextView
-                                    android:layout_centerVertical="true"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Recent Rides"
+                                    android:layout_centerVertical="true"
                                     android:fontFamily="@font/monserrat_semibold"
-                                    android:theme="@style/textStyle"/>
+                                    android:text="Recent Rides"
+                                    android:theme="@style/textStyle" />
 
                                 <TextView
-                                    android:layout_centerVertical="true"
                                     android:id="@+id/tv_ride_view_all"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginTop="@dimen/_10dp"
+                                    android:drawablePadding="4dp"
                                     android:text="View History"
                                     android:textColor="@color/pastel_blue"
-                                    android:layout_alignParentEnd="true"
-                                    android:drawablePadding="4dp"
-                                    android:layout_marginTop="@dimen/_10dp"
-                                    android:theme="@style/textStyle"/>
+                                    android:theme="@style/textStyle" />
                             </RelativeLayout>
+
+                            <LinearLayout
+                                android:id="@+id/error_ride"
+                                android:visibility="gone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginTop="@dimen/_8dp"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="100dp"
+                                    android:layout_height="100dp"
+                                    android:layout_gravity="center_horizontal"
+                                    android:src="@drawable/kyc_logo"
+                                    android:visibility="gone"
+                                    tools:visibility="visible" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:gravity="center"
+                                    android:text="No Rides Found!\nPlease try again later."
+                                    android:theme="@style/textStyle" />
+                            </LinearLayout>
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/recyclerViewRide"
-                                android:layout_marginTop="@dimen/_10dp"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_10dp" />
 
                             <RelativeLayout
-                                android:layout_marginTop="@dimen/_10dp"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_10dp">
 
                                 <TextView
-                                    android:layout_centerVertical="true"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Recent Rents"
+                                    android:layout_centerVertical="true"
                                     android:fontFamily="@font/monserrat_semibold"
-                                    android:theme="@style/textStyle"/>
+                                    android:text="Recent Rents"
+                                    android:theme="@style/textStyle" />
 
                                 <TextView
-                                    android:layout_centerVertical="true"
                                     android:id="@+id/tv_rent_view_all"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginTop="@dimen/_10dp"
                                     android:text="View All"
                                     android:textColor="@color/pastel_blue"
-                                    android:layout_alignParentEnd="true"
-                                    android:layout_marginTop="@dimen/_10dp"
-                                    android:theme="@style/textStyle"/>
+                                    android:theme="@style/textStyle" />
                             </RelativeLayout>
+
+                            <LinearLayout
+                                android:id="@+id/errorRent"
+                                android:visibility="gone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginTop="@dimen/_8dp"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="100dp"
+                                    android:layout_height="100dp"
+                                    android:layout_gravity="center_horizontal"
+                                    android:src="@drawable/kyc_logo"
+                                    android:visibility="gone"
+                                    tools:visibility="visible" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:gravity="center"
+                                    android:text="No Rents Found!\nPlease try again later."
+                                    android:theme="@style/textStyle" />
+                            </LinearLayout>
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/recyclerViewRent"
-                                android:layout_marginTop="@dimen/_10dp"
-                                android:nestedScrollingEnabled="false"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_10dp"
+                                android:nestedScrollingEnabled="false" />
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.core.widget.NestedScrollView>

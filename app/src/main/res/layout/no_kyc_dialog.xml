@@ -9,55 +9,66 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/_10dp"
-        android:background="@drawable/white_back">
+        android:background="@drawable/white_back"
+        android:padding="@dimen/_10dp">
 
-        <ImageView
-            android:id="@+id/img"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:src="@drawable/kyc_logo"
-            android:contentDescription="@null"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            app:layout_constraintEnd_toEndOf="parent"
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/kyc_lottie_ani" />
+
+        <!--        <ImageView-->
+        <!--            android:id="@+id/img"-->
+        <!--            android:layout_width="150dp"-->
+        <!--            android:layout_height="150dp"-->
+        <!--            android:src="@drawable/kyc_logo"-->
+        <!--            android:contentDescription="@null"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15dp"
+            android:fontFamily="@font/monserrat_semibold"
             android:text="Please Complete your kyc"
             android:theme="@style/textStyle"
-            android:fontFamily="@font/monserrat_semibold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="@dimen/_15dp"
-            app:layout_constraintTop_toBottomOf="@id/img"
-            android:id="@+id/tv" />
+            app:layout_constraintTop_toBottomOf="@id/animationView" />
 
         <LinearLayout
-            android:layout_marginTop="@dimen/_15dp"
-            app:layout_constraintTop_toBottomOf="@id/tv"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_width="match_parent"
-            android:layout_marginHorizontal="4dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginTop="@dimen/_15dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv">
 
             <Button
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_marginEnd="4dp"
-                android:layout_height="wrap_content"
                 android:id="@+id/btn_upload"
-                android:text="Complete KYC"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
                 android:backgroundTint="@color/black"
+                android:text="KYC"
                 android:theme="@style/textStyle" />
 
             <Button
-                android:layout_weight="1"
+                android:id="@+id/btn_submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/btn_submit"
+                android:layout_weight="1"
                 android:text="Contact-Us"
                 android:theme="@style/textStyle" />
         </LinearLayout>

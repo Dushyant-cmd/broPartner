@@ -127,9 +127,10 @@ public class MainActivity extends AppCompatActivity {
         //REGISTER BROADCAST RECEIVER FOR INTERNET
         Utility.registerConnectivityBR(MainActivity.this, appClass);
         String status = appClass.sharedPref.getStatus();
-        if(status.equalsIgnoreCase("pending")) {
-            DialogCustoms.noKycDialog(MainActivity.this, this, appClass);
-        }
+//        if(status.equalsIgnoreCase("pending")) {
+//            DialogCustoms.noKycDialog(MainActivity.this, this, appClass);
+//            Toast.makeText(this, "Upload Profile.", Toast.LENGTH_SHORT).show();
+//        }
         getData();
     }
     private void getData() {
@@ -165,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(MainActivity.this, HistoryActivity.class);
             startActivity(i);
         });
+
         //header listeners and dynamic text.
         headerImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,6 +260,10 @@ public class MainActivity extends AppCompatActivity {
                                 rentList.add(model);
                             }
 
+                            if(rentList.isEmpty())
+                                binding.errorRent.setVisibility(View.VISIBLE);
+                            else
+                                binding.errorRent.setVisibility(View.GONE);
                             rentListAdapter.submitList(rentList);
                             rentListAdapter.setRentStatusListener(new UtilsInterface.RentStatusListener() {
                                 @Override
@@ -483,6 +489,11 @@ public class MainActivity extends AppCompatActivity {
                             for (DocumentSnapshot d : dList) {
                                 rideList.add(d.toObject(RideHistoryModel.class));
                             }
+
+                            if(rideList.isEmpty())
+                                binding.errorRide.setVisibility(View.VISIBLE);
+                            else
+                                binding.errorRide.setVisibility(View.GONE);
 
                             rideListAdapter.submitList(rideList);
                             rideListAdapter.addRefreshListeners(new UtilsInterface.RideHistoryListener() {

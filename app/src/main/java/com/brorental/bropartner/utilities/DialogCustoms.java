@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.brorental.bropartner.R;
 import com.brorental.bropartner.activities.ProfileActivity;
 import com.brorental.bropartner.localdb.SharedPref;
@@ -61,6 +62,7 @@ public class DialogCustoms {
             View view = activity.getLayoutInflater().inflate(R.layout.no_kyc_dialog, null);
             Button uploadBtn = view.findViewById(R.id.btn_upload);
             Button contactBtn = view.findViewById(R.id.btn_submit);
+            LottieAnimationView lottieAnimationView = view.findViewById(R.id.animationView);
             builder.setView(view);
             uploadBtn.setOnClickListener(v -> {
                 Intent i = new Intent(ctx, ProfileActivity.class);
