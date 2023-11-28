@@ -38,6 +38,7 @@ import com.brorental.bropartner.utilities.Utility;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -127,10 +128,6 @@ public class RideHistoryFragment extends Fragment {
                             adapter.addRefreshListeners(new UtilsInterface.RideHistoryListener() {
                                 @Override
                                 public void updateStatus(String status, String docId, int pos, RideHistoryModel data) {
-                                    Calendar cal = Calendar.getInstance();
-                                    Date date = cal.getTime();
-                                    SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy, hh:mm:ss a", Locale.getDefault());
-                                    String dateAndTime = spf.format(date);
                                     String productPin = data.getDocId().substring(0, 4);
                                     androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(requireActivity());
                                     AuthPinDialogBinding dialogBinding = AuthPinDialogBinding.inflate(getLayoutInflater());
@@ -152,7 +149,7 @@ public class RideHistoryFragment extends Fragment {
                                             HashMap<String, Object> map = new HashMap<>();
                                             map.put("status", status);
                                             if(status.equalsIgnoreCase("completed")) {
-                                                completePayment(map, docId);
+                                                completePayment(map, docId, data);
                                             } else if(status.equalsIgnoreCase("ongoing")) {
                                                 map.put("startTimestamp", System.currentTimeMillis());
                                                 appclass.firestore.collection("rideHistory")
@@ -226,7 +223,7 @@ public class RideHistoryFragment extends Fragment {
                 });
 }
 
-    private void completePayment(HashMap<String, Object> map, String docId) {
+    private void completePayment(HashMap<String, Object> map, String docId, RideHistoryModel data) {
         androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(ctx);
         RidePayDialogBinding binding2 = DataBindingUtil.inflate(activity.getLayoutInflater(), R.layout.ride_pay_dialog, binding.nestedSv, false);
         builder1.setView(binding2.getRoot());
@@ -258,11 +255,16 @@ public class RideHistoryFragment extends Fragment {
             pDialog.dismiss();
         });
 
+        Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy, hh:mm:ss a", Locale.getDefault());
+        String dateAndTime = spf.format(date);
         binding2.btnSubmit.setOnClickListener(v -> {
             binding2.btnSubmit.setEnabled(false);
             builder1.setCancelable(false);
             String selectedPayMode = binding2.spinnerPay.getSelectedItem().toString();
             map.put("endTimestamp", System.currentTimeMillis());
+
             if(selectedPayMode.equalsIgnoreCase("cod")) {
                 map.put("paymentMode", "cod");
                 appclass.firestore.collection("rideHistory")
@@ -270,16 +272,39 @@ public class RideHistoryFragment extends Fragment {
                         .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                pDialog.dismiss();
-                                payDialog.dismiss();
-                                getData();
-                                if(task.isSuccessful()) {
-                                    DialogCustoms.showSnackBar(ctx, "Ride Completed", binding.getRoot());
-                                } else {
-                                    Toast.makeText(ctx, "Please try again", Toast.LENGTH_SHORT).show();
-                                }
+                                HashMap<String, Object> map = new HashMap<>();
+                                map.put("amount", data.getAmount());
+                                map.put("date", dateAndTime);
+                                map.put("info", null);
+                                map.put("name", appclass.sharedPref.getUser().getName());
+                                map.put("status", "pending");
+                                map.put("type", "ride");
+                                map.put("advertisementId", "");
+                                map.put("timestamp", System.currentTimeMillis());
+                                map.put("isBroRental", false);
+                                map.put("broRentalId", "");
+                                map.put("broPartnerId", appclass.sharedPref.getUser().getPin());
+                                appclass.firestore.collection("transactions").add(map)
+                                        .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                if(task.isSuccessful()) {
+                                                    pDialog.dismiss();
+                                                    payDialog.dismiss();
+                                                    getData();
+                                                    if(task.isSuccessful()) {
+                                                        DialogCustoms.showSnackBar(ctx, "Ride Completed", binding.getRoot());
+                                                    } else {
+                                                        Toast.makeText(ctx, "Please try again", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                } else {
+                                                    Log.d(TAG, "onComplete: " + task.getException());
+                                                }
+                                            }
+                                        });
                             }
                         });
+
             } else if(selectedPayMode.equalsIgnoreCase("online")) {
                 map.put("paymentMode", "online");
                 appclass.firestore.collection("rideHistory")
@@ -287,20 +312,43 @@ public class RideHistoryFragment extends Fragment {
                         .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                pDialog.dismiss();
-                                payDialog.dismiss();
-                                getData();
-                                if(task.isSuccessful()) {
-                                    DialogCustoms.showSnackBar(ctx, "Ride Completed", binding.getRoot());
-                                } else {
-                                    Toast.makeText(ctx, "Please try again", Toast.LENGTH_SHORT).show();
-                                }
+                                HashMap<String, Object> map = new HashMap<>();
+                                map.put("amount", data.getAmount());
+                                map.put("date", dateAndTime);
+                                map.put("info", null);
+                                map.put("name", appclass.sharedPref.getUser().getName());
+                                map.put("status", "pending");
+                                map.put("type", "ride");
+                                map.put("advertisementId", "");
+                                map.put("timestamp", System.currentTimeMillis());
+                                map.put("isBroRental", false);
+                                map.put("broRentalId", "");
+                                map.put("broPartnerId", appclass.sharedPref.getUser().getPin());
+                                appclass.firestore.collection("transactions").add(map)
+                                                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                        if(task.isSuccessful()) {
+                                                            pDialog.dismiss();
+                                                            payDialog.dismiss();
+                                                            getData();
+                                                            if(task.isSuccessful()) {
+                                                                DialogCustoms.showSnackBar(ctx, "Ride Completed", binding.getRoot());
+                                                            } else {
+                                                                Toast.makeText(ctx, "Please try again", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        } else {
+                                                            Log.d(TAG, "onComplete: " + task.getException());
+                                                        }
+                                                    }
+                                                });
                             }
                         });
             }
 
             HashMap<String, Object> updateMap = new HashMap<>();
             updateMap.put("readyForRide", true);
+            updateMap.put("wallet", (Long.parseLong(appclass.sharedPref.getUser().getWallet()) + data.getAmount()));
             appclass.firestore.collection("partners")
                     .document(appclass.sharedPref.getUser().getPin())
                     .update(updateMap).addOnCompleteListener(new OnCompleteListener<Void>() {

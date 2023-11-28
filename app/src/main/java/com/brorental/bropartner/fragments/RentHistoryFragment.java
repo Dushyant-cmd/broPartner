@@ -128,10 +128,12 @@ public class RentHistoryFragment extends Fragment {
                                                                             @Override
                                                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                                                 if (task.isSuccessful()) {
+                                                                                    String ttlRentItem = (Long.parseLong(task.getResult().getString("totalRentItem")) - 1) + "";
                                                                                     String currentWalAmt = task.getResult().getString("wallet");
-                                                                                    String newWalAmt = String.valueOf(Long.parseLong(currentWalAmt) + Long.parseLong(data.totalRentCost));
+                                                                                    String newWalAmt = String.valueOf(Long.parseLong(currentWalAmt) + Long.parseLong(data.totalRentCost) + 2500);
                                                                                     HashMap<String, Object> updateMap = new HashMap<>();
                                                                                     updateMap.put("wallet", newWalAmt);
+                                                                                    updateMap.put("totalRentItem", ttlRentItem);
                                                                                     appClass.firestore.collection("users")
                                                                                             .document(data.broRentalId)
                                                                                             .update(updateMap)
@@ -268,6 +270,35 @@ public class RentHistoryFragment extends Fragment {
                                                                                                             } else {
                                                                                                                 pDialog.dismiss();
                                                                                                                 DialogCustoms.showSnackBar(requireContext(), task.getException().getMessage(), binding.getRoot());
+                                                                                                            }
+                                                                                                        }
+                                                                                                    });
+
+                                                                                            //return security deposit
+                                                                                            appClass.firestore.collection("users").document(data.broRentalId)
+                                                                                                    .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                                                        @Override
+                                                                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                                                            if(task.isSuccessful()) {
+                                                                                                                String ttlRentItem = (Long.parseLong(task.getResult().getString("totalRentItem")) - 1) + "";
+                                                                                                                String currentWalAmt = task.getResult().getString("wallet");
+                                                                                                                String newWalAmt = String.valueOf(Long.parseLong(currentWalAmt) + 2500);
+                                                                                                                HashMap<String, Object> updateMap = new HashMap<>();
+                                                                                                                updateMap.put("wallet", newWalAmt);
+                                                                                                                updateMap.put("totalRentItem", ttlRentItem);
+                                                                                                                appClass.firestore.collection("users").document(data.broRentalId)
+                                                                                                                        .update(updateMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                            @Override
+                                                                                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                                                                                if(task.isSuccessful()) {
+                                                                                                                                    Log.d(TAG, "onComplete: success");
+                                                                                                                                } else {
+                                                                                                                                    Log.d(TAG, "onComplete: " + task.getException());
+                                                                                                                                }
+                                                                                                                            }
+                                                                                                                        });
+                                                                                                            } else {
+                                                                                                                Log.d(TAG, "onComplete: " + task.getException());
                                                                                                             }
                                                                                                         }
                                                                                                     });
