@@ -40,12 +40,15 @@ import com.brorental.bropartner.fragments.SearchFragment;
 import com.brorental.bropartner.interfaces.UtilsInterface;
 import com.brorental.bropartner.models.HistoryModel;
 import com.brorental.bropartner.models.RideHistoryModel;
+import com.brorental.bropartner.models.User;
 import com.brorental.bropartner.utilities.AppClass;
 import com.brorental.bropartner.utilities.DialogCustoms;
 import com.brorental.bropartner.utilities.ProgressDialog;
 import com.brorental.bropartner.utilities.Utility;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -76,7 +79,8 @@ public class MainActivity extends AppCompatActivity {
     private RentHistoryAdapter rentListAdapter;
     private RideHistoryAdapter rideListAdapter;
     private AlertDialog pDialog;
-//    private RideHistoryAdapter rentHistoryAdapter;
+
+    //    private RideHistoryAdapter rentHistoryAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
 //        }
         getData();
     }
+
     private void getData() {
         if (Utility.isNetworkAvailable(this)) {
             queries();
@@ -185,8 +190,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         headerWalletLL.setOnClickListener(view -> {
-           Intent i = new Intent(MainActivity.this, PaymentHistory.class);
-           startActivityForRes(i);
+            Intent i = new Intent(MainActivity.this, PaymentHistory.class);
+            startActivityForRes(i);
         });
         binding.withdrawalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -260,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
                                 rentList.add(model);
                             }
 
-                            if(rentList.isEmpty())
+                            if (rentList.isEmpty())
                                 binding.errorRent.setVisibility(View.VISIBLE);
                             else
                                 binding.errorRent.setVisibility(View.GONE);
@@ -293,10 +298,12 @@ public class MainActivity extends AppCompatActivity {
                                                                             @Override
                                                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                                                 if (task.isSuccessful()) {
+                                                                                    String ttlRentItem = (Long.parseLong(task.getResult().getString("totalRentItem")) - 1) + "";
                                                                                     String currentWalAmt = task.getResult().getString("wallet");
-                                                                                    String newWalAmt = String.valueOf(Long.parseLong(currentWalAmt) + Long.parseLong(data.totalRentCost));
+                                                                                    String newWalAmt = String.valueOf(Long.parseLong(currentWalAmt) + Long.parseLong(data.totalRentCost) + 2500);
                                                                                     HashMap<String, Object> updateMap = new HashMap<>();
                                                                                     updateMap.put("wallet", newWalAmt);
+                                                                                    updateMap.put("totalRentItem", ttlRentItem);
                                                                                     appClass.firestore.collection("users")
                                                                                             .document(data.broRentalId)
                                                                                             .update(updateMap)
@@ -436,6 +443,35 @@ public class MainActivity extends AppCompatActivity {
                                                                                                             }
                                                                                                         }
                                                                                                     });
+
+                                                                                            //return security deposit
+                                                                                            appClass.firestore.collection("users").document(data.broRentalId)
+                                                                                                    .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                                                        @Override
+                                                                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                                                            if (task.isSuccessful()) {
+                                                                                                                String ttlRentItem = (Long.parseLong(task.getResult().getString("totalRentItem")) - 1) + "";
+                                                                                                                String currentWalAmt = task.getResult().getString("wallet");
+                                                                                                                String newWalAmt = String.valueOf(Long.parseLong(currentWalAmt) + 2500);
+                                                                                                                HashMap<String, Object> updateMap = new HashMap<>();
+                                                                                                                updateMap.put("wallet", newWalAmt);
+                                                                                                                updateMap.put("totalRentItem", ttlRentItem);
+                                                                                                                appClass.firestore.collection("users").document(data.broRentalId)
+                                                                                                                        .update(updateMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                            @Override
+                                                                                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                                                                                if (task.isSuccessful()) {
+                                                                                                                                    Log.d(TAG, "onComplete: success");
+                                                                                                                                } else {
+                                                                                                                                    Log.d(TAG, "onComplete: " + task.getException());
+                                                                                                                                }
+                                                                                                                            }
+                                                                                                                        });
+                                                                                                            } else {
+                                                                                                                Log.d(TAG, "onComplete: " + task.getException());
+                                                                                                            }
+                                                                                                        }
+                                                                                                    });
                                                                                         } else {
                                                                                             pDialog.dismiss();
                                                                                             DialogCustoms.showSnackBar(MainActivity.this, task.getException().getMessage(), binding.getRoot());
@@ -476,6 +512,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+        //ride history.
         appClass.firestore.collection("rideHistory")
                 .whereEqualTo("status", "pending")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
@@ -490,7 +527,7 @@ public class MainActivity extends AppCompatActivity {
                                 rideList.add(d.toObject(RideHistoryModel.class));
                             }
 
-                            if(rideList.isEmpty())
+                            if (rideList.isEmpty())
                                 binding.errorRide.setVisibility(View.VISIBLE);
                             else
                                 binding.errorRide.setVisibility(View.GONE);
@@ -504,9 +541,9 @@ public class MainActivity extends AppCompatActivity {
                                             .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                    if(task.isSuccessful()) {
+                                                    if (task.isSuccessful()) {
                                                         boolean readyForRide = task.getResult().getBoolean("readyForRide");
-                                                        if(readyForRide) {
+                                                        if (readyForRide) {
                                                             HashMap<String, Object> map2 = new HashMap<>();
                                                             map2.put("readyForRide", false);
                                                             appClass.firestore.collection("partners")
@@ -514,7 +551,7 @@ public class MainActivity extends AppCompatActivity {
                                                                     .update(map2).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                         @Override
                                                                         public void onComplete(@NonNull Task<Void> task) {
-                                                                            if(task.isSuccessful()) {
+                                                                            if (task.isSuccessful()) {
                                                                                 HashMap<String, Object> map = new HashMap<>();
                                                                                 map.put("status", status);
                                                                                 appClass.firestore.collection("rideHistory")
@@ -522,7 +559,7 @@ public class MainActivity extends AppCompatActivity {
                                                                                         .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                             @Override
                                                                                             public void onComplete(@NonNull Task<Void> task) {
-                                                                                                if(task.isSuccessful()) {
+                                                                                                if (task.isSuccessful()) {
                                                                                                     rideList.remove(pos);
                                                                                                     rideListAdapter.submitList(rideList);
                                                                                                     rideListAdapter.notifyDataSetChanged();
@@ -563,6 +600,32 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             DialogCustoms.showSnackBar(MainActivity.this, "Please try again", binding.getRoot());
                         }
+                    }
+                });
+
+        //profile update.
+        appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot d) {
+                        appClass.sharedPref.saveUser(new User(d.getString("name"), d.getString("mobile"), d.getString("pin"),
+                                d.getString("totalRent"), d.getString("totalRide"), true,
+                                d.getString("profileUrl"), d.getString("wallet")));
+                        appClass.sharedPref.setAadhaarImg(d.getString("aadhaarImgUrl"));
+                        appClass.sharedPref.setAadhaarPath(d.getString("aadhaarImgPath"));
+                        appClass.sharedPref.setPanImgUrl(d.getString("panImgUrl"));
+                        appClass.sharedPref.setPanImgPath(d.getString("panImgPath"));
+                        appClass.sharedPref.setProfilePath(d.getString("profileImgPath"));
+                        appClass.sharedPref.setStatus(d.getString("status"));
+                        appClass.sharedPref.setState(d.getString("state"));
+                        appClass.sharedPref.setAddress(d.getString("address"));
+                        onActivityResult(101, RESULT_OK, null);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        getData();
+                        Log.d(TAG, "onFailure: " + e);
                     }
                 });
     }
