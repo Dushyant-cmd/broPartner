@@ -101,6 +101,7 @@ public class PaymentHistory extends AppCompatActivity {
             Date date = cal.getTime();
             SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy, hh:mm:ss a", Locale.getDefault());
             String dateAndTime = spf.format(date);
+
             BottomSheetDialog sheet = new BottomSheetDialog(PaymentHistory.this);
             View view = LayoutInflater.from(PaymentHistory.this).inflate(R.layout.add_cash_sheet, null);
             sheet.setContentView(view);
@@ -109,7 +110,7 @@ public class PaymentHistory extends AppCompatActivity {
             EditText rechargeET = view.findViewById(R.id.rechargeAmt);
             submitBtn.setOnClickListener(v -> {
                 String amt = rechargeET.getText().toString();
-                if(!amt.isEmpty()) {
+                if(Long.parseLong(amt) > 0) {
                     if (Long.parseLong(amt) < Long.parseLong(appClass.sharedPref.getUser().getWallet())) {
                         long newAmt = Long.parseLong(appClass.sharedPref.getUser().getWallet()) - Long.parseLong(amt);
                         HashMap<String, Object> map1 = new HashMap<>();

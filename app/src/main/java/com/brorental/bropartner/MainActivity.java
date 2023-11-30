@@ -131,10 +131,11 @@ public class MainActivity extends AppCompatActivity {
         //REGISTER BROADCAST RECEIVER FOR INTERNET
         Utility.registerConnectivityBR(MainActivity.this, appClass);
         String status = appClass.sharedPref.getStatus();
-//        if(status.equalsIgnoreCase("pending")) {
-//            DialogCustoms.noKycDialog(MainActivity.this, this, appClass);
-//            Toast.makeText(this, "Upload Profile.", Toast.LENGTH_SHORT).show();
-//        }
+        /** TODO kyc dialog */
+        if(status.equalsIgnoreCase("pending")) {
+            DialogCustoms.noKycDialog(MainActivity.this, this, appClass);
+            Toast.makeText(this, "Upload Profile.", Toast.LENGTH_SHORT).show();
+        }
         getData();
     }
 
