@@ -1,5 +1,7 @@
 package com.brorental.bropartner.interfaces;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.brorental.bropartner.models.HistoryModel;
 import com.brorental.bropartner.models.RideHistoryModel;
 
@@ -10,6 +12,11 @@ public interface UtilsInterface {
     interface RefreshInterface {
 
         void refresh(int catePosition);
+    }
+
+    interface NoKycRefresh {
+
+        void refresh(AlertDialog alertDialog);
     }
 
     interface RentRefreshListener {

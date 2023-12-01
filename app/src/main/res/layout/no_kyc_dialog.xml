@@ -12,6 +12,24 @@
         android:background="@drawable/white_back"
         android:padding="@dimen/_10dp">
 
+
+        <FrameLayout
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:id="@+id/refreshFM"
+            android:background="@drawable/white_back"
+            android:backgroundTint="@color/pastel_blue">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_refresh"
+                app:tint="@color/white"
+                android:contentDescription="@null"/>
+        </FrameLayout>
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/animationView"
             android:layout_width="wrap_content"

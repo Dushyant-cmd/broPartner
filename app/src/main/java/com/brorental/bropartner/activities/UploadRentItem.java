@@ -38,6 +38,8 @@ import androidx.databinding.DataBindingUtil;
 
 import com.brorental.bropartner.R;
 import com.brorental.bropartner.databinding.ActivityUploadRentItemBinding;
+import com.brorental.bropartner.localdb.RoomDb;
+import com.brorental.bropartner.localdb.StateEntity;
 import com.brorental.bropartner.utilities.AppClass;
 import com.brorental.bropartner.utilities.DialogCustoms;
 import com.brorental.bropartner.utilities.ProgressDialog;
@@ -82,6 +84,8 @@ public class UploadRentItem extends AppCompatActivity {
     private int REQUEST_IMAGE_CAPTURE = 1, REQUEST_PERM_CODE = 10;
     private boolean isPermissionGranted = false;
     private AppClass appClass;
+    private RoomDb room;
+    private List<String> stateList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +98,8 @@ public class UploadRentItem extends AppCompatActivity {
         cal = Calendar.getInstance();
         appClass = (AppClass) getApplication();
         spf = new SimpleDateFormat("hh:mm", Locale.getDefault());
+        room = RoomDb.getInstance(ctx);
+        stateList.add("Select your state");
         ArrayList<String> list = new ArrayList<>();
         list.add("Select product health");
         list.add("Good");
@@ -130,6 +136,8 @@ public class UploadRentItem extends AppCompatActivity {
     }
 
     private void queries() {
+        List<StateEntity> roomList = room.getStateDao().getStates();
+        if(roomList.isEmpty()) {
         appClass.firestore.collection("appData").document("constants")
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -137,8 +145,6 @@ public class UploadRentItem extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "onComplete: " + task.getResult().getString("state"));
                             String[] states = task.getResult().getString("state").split(",");
-                            ArrayList<String> stateList = new ArrayList<>();
-                            stateList.add("Select your state");
                             Collections.addAll(stateList, states);
                             ArrayAdapter<String> adapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_dropdown_item, stateList);
                             binding.spinnerState.setAdapter(adapter);
@@ -148,6 +154,14 @@ public class UploadRentItem extends AppCompatActivity {
                         }
                     }
                 });
+        } else {
+            for(StateEntity state: roomList) {
+                stateList.add(state.getState());
+            }
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_dropdown_item, stateList);
+            binding.spinnerState.setAdapter(adapter);
+            binding.spinnerState.setVisibility(View.VISIBLE);
+        }
 
         appClass.firestore.collection("appData").document("constants")
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

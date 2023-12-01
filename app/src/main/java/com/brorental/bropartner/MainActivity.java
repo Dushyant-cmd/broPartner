@@ -132,10 +132,16 @@ public class MainActivity extends AppCompatActivity {
         Utility.registerConnectivityBR(MainActivity.this, appClass);
         String status = appClass.sharedPref.getStatus();
         /** TODO kyc dialog */
-        if(status.equalsIgnoreCase("pending")) {
-            DialogCustoms.noKycDialog(MainActivity.this, this, appClass);
+        if (status.equalsIgnoreCase("pending")) {
+            DialogCustoms.noKycDialog(MainActivity.this, this, appClass, new UtilsInterface.NoKycRefresh() {
+                @Override
+                public void refresh(androidx.appcompat.app.AlertDialog alertDialog) {
+                    getProfile(alertDialog);
+                }
+            });
             Toast.makeText(this, "Upload Profile.", Toast.LENGTH_SHORT).show();
         }
+
         getData();
     }
 
@@ -603,7 +609,11 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+        //get updated profile.
+        getProfile(null);
+    }
 
+    private void getProfile(androidx.appcompat.app.AlertDialog alertDialog) {
         //profile update.
         appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -621,11 +631,13 @@ public class MainActivity extends AppCompatActivity {
                         appClass.sharedPref.setState(d.getString("state"));
                         appClass.sharedPref.setAddress(d.getString("address"));
                         onActivityResult(101, RESULT_OK, null);
+                        if(alertDialog != null)
+                        if(appClass.sharedPref.getStatus().equalsIgnoreCase("pending"))
+                            alertDialog.dismiss();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        getData();
                         Log.d(TAG, "onFailure: " + e);
                     }
                 });
