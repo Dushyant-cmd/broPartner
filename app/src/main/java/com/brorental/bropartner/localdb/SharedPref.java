@@ -169,10 +169,6 @@ public class SharedPref {
         return sharedPreferences.getString("rideBikeNum", "");
     }
 
-    public void logout() {
-        sharedPreferences.edit().clear().apply();
-    }
-
     public long getPartnerRentCom() {
         return sharedPreferences.getLong("partnerRentCommission", 0L);
     }
@@ -195,5 +191,17 @@ public class SharedPref {
 
     public void setCustomerCareNum(String num) {
         sharedPreferences.edit().putString("customerCareNum", num).apply();
+    }
+
+
+    public void setBannerImage(String url) {
+        sharedPreferences.edit().putString("bannerUrl", url).apply();
+    }
+
+    public String getBannerImage() {
+        return sharedPreferences.getString("bannerUrl", "");
+    }
+    public void logout() {
+        sharedPreferences.edit().clear().apply();
     }
 }

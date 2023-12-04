@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRef"
+        android:background="#FAFAFA"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?android:attr/actionBarSize">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nested_sv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            tools:context=".fragments.RidesFragment">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_marginTop="@dimen/_8dp"
+                    android:layout_width="match_parent"
+                    android:paddingHorizontal="@dimen/_8dp"
+                    android:paddingVertical="4dp"
+                    android:layout_height="wrap_content">
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:id="@+id/filterFM"
+                        android:background="@drawable/grey_border"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?android:selectableItemBackground"
+                            android:text="Filter"
+                            android:theme="@style/textStyle"
+                            android:padding="@dimen/_8dp"
+                            android:drawableStart="@drawable/baseline_filter_list_24"
+                            android:drawableTint="@color/primary"
+                            android:gravity="center_vertical"
+                            android:drawablePadding="8dp"/>
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/tv_ride_view_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:drawablePadding="4dp"
+                        android:text="History"
+                        android:textColor="@color/pastel_blue"
+                        android:theme="@style/textStyle" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/error_ride"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_8dp"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <ImageView
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@drawable/kyc_logo"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="No Rides Found!\nPlease try again later."
+                        android:theme="@style/textStyle" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewRide"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10dp" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</layout>

@@ -106,6 +106,7 @@ public class RideHistoryFragment extends Fragment {
         binding.shimmer.setVisibility(View.VISIBLE);
         binding.recyclerView.setVisibility(View.GONE);
         appclass.firestore.collection("rideHistory")
+                .whereGreaterThan("startTimestamp", "0")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .limit(10)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -128,7 +129,7 @@ public class RideHistoryFragment extends Fragment {
                             adapter.addRefreshListeners(new UtilsInterface.RideHistoryListener() {
                                 @Override
                                 public void updateStatus(String status, String docId, int pos, RideHistoryModel data) {
-                                    String productPin = data.getDocId().substring(0, 4);
+                                    String productPin = data.getPin().substring(0, 4);
                                     androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(requireActivity());
                                     AuthPinDialogBinding dialogBinding = AuthPinDialogBinding.inflate(getLayoutInflater());
                                     builder.setView(dialogBinding.getRoot());
@@ -369,12 +370,10 @@ public class RideHistoryFragment extends Fragment {
         try {
             pDialog.show();
             appclass.firestore.collection("rideHistory")
-                    .whereEqualTo("status", "started")
-                    .whereEqualTo("status", "ongoing")
-                    .whereEqualTo("status", "completed")
+                    .whereGreaterThan("startTimestamp", "0")
                     .orderBy("timestamp", Query.Direction.DESCENDING)
-                    .limit(10)
                     .startAfter(lastDoc)
+                    .limit(10)
                     .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {

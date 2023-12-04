@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -27,6 +28,7 @@ public class RideHistoryAdapter extends ListAdapter<RideHistoryModel, RideHistor
     private Context ctx;
     private UtilsInterface.RideHistoryListener rideStatusListener;
     private AppClass appClass;
+
     public RideHistoryAdapter(Context ctx, AppClass appClass) {
         super(new DiffUtil.ItemCallback<RideHistoryModel>() {
             @Override
@@ -42,6 +44,7 @@ public class RideHistoryAdapter extends ListAdapter<RideHistoryModel, RideHistor
         this.appClass = appClass;
         this.ctx = ctx;
     }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -87,24 +90,31 @@ public class RideHistoryAdapter extends ListAdapter<RideHistoryModel, RideHistor
         }
 
         holder.binding.btnSubmit.setOnClickListener(view -> {
-            rideStatusListener.updateStatus("started", data.getDocId(), position, data);
+            rideStatusListener.updateStatus("started", String.valueOf(data.getRideId()), position, data);
         });
 
         holder.binding.btnStart.setOnClickListener(view -> {
-            rideStatusListener.updateStatus("ongoing", data.getDocId(), position, data);
+            rideStatusListener.updateStatus("ongoing", String.valueOf(data.getRideId()), position, data);
         });
 
         holder.binding.btnComplete.setOnClickListener(view -> {
-            rideStatusListener.updateStatus("completed", data.getDocId(), position, data);
+            rideStatusListener.updateStatus("completed", String.valueOf(data.getRideId()), position, data);
         });
 
         holder.binding.tvDial.setOnClickListener(view -> {
-            rideStatusListener.contactListener(appClass.sharedPref.getCustomerCareNum());
+            if (data.getStatus().equalsIgnoreCase("pending")) {
+                Toast.makeText(ctx, "Calling customer care", Toast.LENGTH_SHORT).show();
+                rideStatusListener.contactListener(appClass.sharedPref.getCustomerCareNum());
+            } else {
+                Toast.makeText(ctx, "Calling " + data.getName(), Toast.LENGTH_SHORT).show();
+                rideStatusListener.contactListener(data.getBroRentalNumber());
+            }
         });
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public RideHistoryListItemBinding binding;
+
         public ViewHolder(RideHistoryListItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;

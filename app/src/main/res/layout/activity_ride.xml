@@ -53,11 +53,13 @@
                         tools:visibility="visible"
                         android:visibility="gone">
 
-                        <ImageView
-                            android:layout_width="match_parent"
+                        <com.airbnb.lottie.LottieAnimationView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:contentDescription="@null"
-                            android:src="@drawable/no_internet" />
+                            app:lottie_loop="true"
+                            app:lottie_autoPlay="true"
+                            android:visibility="visible"
+                            app:lottie_rawRes="@raw/error_lottie"/>
 
                         <TextView
                             android:id="@+id/add_point_btn"

@@ -44,29 +44,6 @@
                             android:textColor="@color/white"
                             android:textSize="20sp"
                             android:theme="@style/textStyle" />
-                        <!--                        <LinearLayout-->
-                        <!--                            android:id="@+id/searchLL"-->
-                        <!--                            android:layout_width="wrap_content"-->
-                        <!--                            android:layout_height="match_parent"-->
-                        <!--                            android:layout_marginVertical="4dp"-->
-                        <!--                            android:layout_marginEnd="8dp"-->
-                        <!--                            android:layout_weight="29"-->
-                        <!--                            android:background="@drawable/search_border"-->
-                        <!--                            android:gravity="center_vertical"-->
-                        <!--                            android:orientation="horizontal">-->
-
-                        <!--                            <TextView-->
-                        <!--                                android:layout_width="wrap_content"-->
-                        <!--                                android:layout_height="wrap_content"-->
-                        <!--                                android:layout_marginStart="16dp"-->
-                        <!--                                android:drawableStart="@drawable/baseline_search_24"-->
-                        <!--                                android:drawablePadding="8dp"-->
-                        <!--                                android:fontFamily="@font/montserrat_regular"-->
-                        <!--                                android:text="Search"-->
-                        <!--                                android:textColor="@color/white"-->
-                        <!--                                android:textSize="16sp" />-->
-
-                        <!--                        </LinearLayout>-->
 
                         <TextView
                             android:id="@+id/withdrawalBtn"
@@ -130,127 +107,139 @@
                                     android:layout_height="match_parent"
                                     android:contentDescription="@null"
                                     android:scaleType="fitXY"
+                                    android:id="@+id/bannerIV"
                                     android:src="@drawable/placeholder" />
 
                             </androidx.cardview.widget.CardView>
 
-                            <RelativeLayout
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/_10dp">
+                                android:orientation="vertical">
 
-                                <TextView
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_10dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:fontFamily="@font/monserrat_semibold"
+                                        android:text="Recent Rides"
+                                        android:theme="@style/textStyle" />
+
+                                    <TextView
+                                        android:id="@+id/tv_ride_view_all"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginTop="@dimen/_10dp"
+                                        android:drawablePadding="4dp"
+                                        android:text="View All Rides"
+                                        android:textColor="@color/pastel_blue"
+                                        android:theme="@style/textStyle" />
+                                </RelativeLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/error_ride"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerVertical="true"
-                                    android:fontFamily="@font/monserrat_semibold"
-                                    android:text="Recent Rides"
-                                    android:theme="@style/textStyle" />
-
-                                <TextView
-                                    android:id="@+id/tv_ride_view_all"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentEnd="true"
-                                    android:layout_centerVertical="true"
-                                    android:layout_marginTop="@dimen/_10dp"
-                                    android:drawablePadding="4dp"
-                                    android:text="View History"
-                                    android:textColor="@color/pastel_blue"
-                                    android:theme="@style/textStyle" />
-                            </RelativeLayout>
-
-                            <LinearLayout
-                                android:id="@+id/error_ride"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_marginTop="@dimen/_8dp"
-                                android:orientation="vertical"
-                                android:visibility="gone"
-                                tools:visibility="visible">
-
-                                <ImageView
-                                    android:layout_width="100dp"
-                                    android:layout_height="100dp"
                                     android:layout_gravity="center_horizontal"
-                                    android:src="@drawable/kyc_logo"
+                                    android:layout_marginTop="@dimen/_8dp"
+                                    android:orientation="vertical"
                                     android:visibility="gone"
-                                    tools:visibility="visible" />
+                                    tools:visibility="visible">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
+                                    <ImageView
+                                        android:layout_width="100dp"
+                                        android:layout_height="100dp"
+                                        android:layout_gravity="center_horizontal"
+                                        android:src="@drawable/kyc_logo"
+                                        android:visibility="gone"
+                                        tools:visibility="visible" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:gravity="center"
+                                        android:text="No Rides Found!\nPlease try again later."
+                                        android:theme="@style/textStyle" />
+                                </LinearLayout>
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/recyclerViewRide"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp"
-                                    android:gravity="center"
-                                    android:text="No Rides Found!\nPlease try again later."
-                                    android:theme="@style/textStyle" />
+                                    android:layout_marginTop="@dimen/_10dp" />
                             </LinearLayout>
 
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/recyclerViewRide"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/_10dp" />
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/_10dp">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_centerVertical="true"
-                                    android:fontFamily="@font/monserrat_semibold"
-                                    android:text="Recent Rents"
-                                    android:theme="@style/textStyle" />
-
-                                <TextView
-                                    android:id="@+id/tv_rent_view_all"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentEnd="true"
-                                    android:layout_centerVertical="true"
-                                    android:layout_marginTop="@dimen/_10dp"
-                                    android:text="View All"
-                                    android:textColor="@color/pastel_blue"
-                                    android:theme="@style/textStyle" />
-                            </RelativeLayout>
-
                             <LinearLayout
-                                android:id="@+id/errorRent"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_marginTop="@dimen/_8dp"
-                                android:orientation="vertical"
-                                android:visibility="gone"
-                                tools:visibility="visible">
-
-                                <ImageView
-                                    android:layout_width="100dp"
-                                    android:layout_height="100dp"
-                                    android:layout_gravity="center_horizontal"
-                                    android:src="@drawable/kyc_logo"
-                                    android:visibility="gone"
-                                    tools:visibility="visible" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp"
-                                    android:gravity="center"
-                                    android:text="No Rents Found!\nPlease try again later."
-                                    android:theme="@style/textStyle" />
-                            </LinearLayout>
-
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/recyclerViewRent"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/_10dp"
-                                android:nestedScrollingEnabled="false" />
+                                android:orientation="vertical">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_10dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:fontFamily="@font/monserrat_semibold"
+                                        android:text="Recent Rents"
+                                        android:theme="@style/textStyle" />
+
+                                    <TextView
+                                        android:id="@+id/tv_rent_view_all"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginTop="@dimen/_10dp"
+                                        android:text="View All"
+                                        android:textColor="@color/pastel_blue"
+                                        android:theme="@style/textStyle" />
+                                </RelativeLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/errorRent"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_marginTop="@dimen/_8dp"
+                                    android:orientation="vertical"
+                                    android:visibility="gone"
+                                    tools:visibility="visible" >
+
+                                    <ImageView
+                                        android:layout_width="100dp"
+                                        android:layout_height="100dp"
+                                        android:layout_gravity="center_horizontal"
+                                        android:src="@drawable/kyc_logo"
+                                        android:visibility="gone"
+                                        tools:visibility="visible" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:gravity="center"
+                                        android:text="No Rents Found!\nPlease try again later."
+                                        android:theme="@style/textStyle" />
+                                </LinearLayout>
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/recyclerViewRent"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_10dp" />
+                            </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.core.widget.NestedScrollView>

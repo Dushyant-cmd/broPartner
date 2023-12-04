@@ -419,7 +419,7 @@ public class OtpActivity extends AppCompatActivity {
                         status = d.getString("status");
                         email = d.getString("email");
                         state = d.getString("state");
-                        state = d.getString("address");
+                        address = d.getString("address");
                         binding.otpLl.setVisibility(View.GONE);
                         binding.termsLangLL.setVisibility(View.VISIBLE);
                     }
@@ -464,8 +464,13 @@ public class OtpActivity extends AppCompatActivity {
                                                                     .document(pin).set(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                         @Override
                                                                         public void onSuccess(Void unused) {
-                                                                            name = username;
                                                                             dialog.dismiss();
+                                                                            name = username;
+                                                                            totalRent = "0";
+                                                                            totalRide = "0";
+                                                                            termsCheck = false;
+                                                                            wallet = "0";
+                                                                            status = "pending";
                                                                             binding.otpLl.setVisibility(View.GONE);
                                                                             binding.termsLangLL.setVisibility(View.VISIBLE);
                                                                             Toast.makeText(OtpActivity.this, "Sign-Up Successfully", Toast.LENGTH_SHORT).show();

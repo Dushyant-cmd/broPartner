@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,7 +37,7 @@ import com.brorental.bropartner.adapters.RentHistoryAdapter;
 import com.brorental.bropartner.adapters.RideHistoryAdapter;
 import com.brorental.bropartner.databinding.ActivityMainBinding;
 import com.brorental.bropartner.databinding.AuthPinDialogBinding;
-import com.brorental.bropartner.fragments.SearchFragment;
+import com.brorental.bropartner.fragments.RidesFragment;
 import com.brorental.bropartner.interfaces.UtilsInterface;
 import com.brorental.bropartner.models.HistoryModel;
 import com.brorental.bropartner.models.RideHistoryModel;
@@ -79,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
     private RentHistoryAdapter rentListAdapter;
     private RideHistoryAdapter rideListAdapter;
     private AlertDialog pDialog;
+    private DocumentSnapshot rentLastDoc, rideLastDoc;
+    private long rentPage = 0, ridePage = 0;
 
     //    private RideHistoryAdapter rentHistoryAdapter;
     @Override
@@ -117,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         headerNameTV.setText(appClass.sharedPref.getUser().getName());
 
         Glide.with(this).load(appClass.sharedPref.getUser().getProfileUrl()).placeholder(R.drawable.default_profile).into(headerImageView);
+        Glide.with(this).load(appClass.sharedPref.getBannerImage()).placeholder(R.drawable.no_pictures).into(binding.bannerIV);
         setListeners();
 
         rentListAdapter = new RentHistoryAdapter(MainActivity.this);
@@ -175,8 +179,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.tvRideViewAll.setOnClickListener(view -> {
-            Intent i = new Intent(MainActivity.this, HistoryActivity.class);
-            startActivity(i);
+            openFragment(new RidesFragment());
+//            Intent i = new Intent(MainActivity.this, HistoryActivity.class);
+//            startActivity(i);
         });
 
         //header listeners and dynamic text.
@@ -263,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
                         binding.swipeRef.setRefreshing(false);
                         binding.shimmer.setVisibility(View.GONE);
                         binding.mainContentLl.setVisibility(View.VISIBLE);
+                        rentPage = 0;
                         if (task.isSuccessful()) {
                             rentList.clear();
                             List<DocumentSnapshot> docList = task.getResult().getDocuments();
@@ -276,6 +282,11 @@ public class MainActivity extends AppCompatActivity {
                                 binding.errorRent.setVisibility(View.VISIBLE);
                             else
                                 binding.errorRent.setVisibility(View.GONE);
+
+
+                            if (!docList.isEmpty())
+                                rentLastDoc = docList.get(docList.size() - 1);
+
                             rentListAdapter.submitList(rentList);
                             rentListAdapter.setRentStatusListener(new UtilsInterface.RentStatusListener() {
                                 @Override
@@ -512,7 +523,6 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-                            Log.d(TAG, "onComplete: " + docList.size());
                         } else {
                             Log.d(TAG, "onComplete: " + task.getException());
                         }
@@ -528,6 +538,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         binding.recyclerViewRide.setVisibility(View.VISIBLE);
+                        ridePage = 0;
                         if (task.isSuccessful()) {
                             List<DocumentSnapshot> dList = task.getResult().getDocuments();
                             for (DocumentSnapshot d : dList) {
@@ -539,59 +550,108 @@ public class MainActivity extends AppCompatActivity {
                             else
                                 binding.errorRide.setVisibility(View.GONE);
 
+                            if (!dList.isEmpty())
+                                rideLastDoc = dList.get(dList.size() - 1);
+
                             rideListAdapter.submitList(rideList);
                             rideListAdapter.addRefreshListeners(new UtilsInterface.RideHistoryListener() {
                                 @Override
                                 public void updateStatus(String status, String docId, int pos, RideHistoryModel data) {
+                                    pDialog.show();
                                     appClass.firestore.collection("partners")
                                             .document(appClass.sharedPref.getUser().getPin())
-                                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    binding.swipeRef.setRefreshing(false);
                                                     if (task.isSuccessful()) {
-                                                        boolean readyForRide = task.getResult().getBoolean("readyForRide");
-                                                        if (readyForRide) {
-                                                            HashMap<String, Object> map2 = new HashMap<>();
-                                                            map2.put("readyForRide", false);
-                                                            appClass.firestore.collection("partners")
-                                                                    .document(appClass.sharedPref.getUser().getPin())
-                                                                    .update(map2).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        String bikeNum = task.getResult().getString("rideBikeNum");
+                                                        if(bikeNum.isEmpty()) {
+                                                            pDialog.dismiss();
+                                                            DialogCustoms.showSnackBar(MainActivity.this, "Add bike number", binding.getRoot());
+                                                        } else {
+                                                            appClass.firestore.collection("rideHistory").document(docId)
+                                                                    .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                                         @Override
-                                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                                            if (task.isSuccessful()) {
-                                                                                HashMap<String, Object> map = new HashMap<>();
-                                                                                map.put("status", status);
-                                                                                appClass.firestore.collection("rideHistory")
-                                                                                        .document(docId)
-                                                                                        .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                            @Override
-                                                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                                                if (task.isSuccessful()) {
-                                                                                                    rideList.remove(pos);
-                                                                                                    rideListAdapter.submitList(rideList);
-                                                                                                    rideListAdapter.notifyDataSetChanged();
-                                                                                                } else {
-                                                                                                    DialogCustoms.showSnackBar(MainActivity.this, "Please try again", binding.getRoot());
+                                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                            if(task.isSuccessful()) {
+                                                                                if(task.getResult().getString("status").equalsIgnoreCase("pending")) {
+                                                                                    appClass.firestore.collection("partners")
+                                                                                            .document(appClass.sharedPref.getUser().getPin())
+                                                                                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                                                @Override
+                                                                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                                                    if (task.isSuccessful()) {
+                                                                                                        boolean readyForRide = task.getResult().getBoolean("readyForRide");
+                                                                                                        if (readyForRide) {
+                                                                                                            HashMap<String, Object> map2 = new HashMap<>();
+                                                                                                            map2.put("readyForRide", false);
+                                                                                                            appClass.firestore.collection("partners")
+                                                                                                                    .document(appClass.sharedPref.getUser().getPin())
+                                                                                                                    .update(map2).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                        @Override
+                                                                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                                                                            if (task.isSuccessful()) {
+                                                                                                                                HashMap<String, Object> map = new HashMap<>();
+                                                                                                                                map.put("broPartnerId", appClass.sharedPref.getUser().getPin());
+                                                                                                                                map.put("broPartnerNumber", appClass.sharedPref.getUser().getMobile());
+                                                                                                                                map.put("status", status);
+                                                                                                                                appClass.firestore.collection("rideHistory")
+                                                                                                                                        .document(docId)
+                                                                                                                                        .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                            @Override
+                                                                                                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                                                                                                pDialog.dismiss();
+                                                                                                                                                if (task.isSuccessful()) {
+                                                                                                                                                    rideList.remove(pos);
+                                                                                                                                                    rideListAdapter.submitList(rideList);
+                                                                                                                                                    rideListAdapter.notifyDataSetChanged();
+                                                                                                                                                } else {
+                                                                                                                                                    DialogCustoms.showSnackBar(MainActivity.this, "Please try again", binding.getRoot());
+                                                                                                                                                }
+                                                                                                                                            }
+                                                                                                                                        });
+                                                                                                                            } else {
+                                                                                                                                pDialog.dismiss();
+                                                                                                                                DialogCustoms.showSnackBar(MainActivity.this, "Please try again", binding.getRoot());
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                    });
+                                                                                                        } else {
+                                                                                                            pDialog.dismiss();
+                                                                                                            Snackbar snackbar = Snackbar.make(binding.getRoot(), "Please complete previous ride", Snackbar.LENGTH_SHORT);
+                                                                                                            snackbar.setAction("Okay", new View.OnClickListener() {
+                                                                                                                @Override
+                                                                                                                public void onClick(View view) {
+                                                                                                                }
+                                                                                                            });
+
+                                                                                                            snackbar.show();
+                                                                                                        }
+                                                                                                    } else {
+                                                                                                        pDialog.dismiss();
+                                                                                                        DialogCustoms.showSnackBar(MainActivity.this, "Please try again", binding.getRoot());
+                                                                                                    }
                                                                                                 }
-                                                                                            }
-                                                                                        });
+                                                                                            });
+                                                                                } else {
+                                                                                    if(rideList.isEmpty()) {
+                                                                                        getData();
+                                                                                    } else {
+                                                                                        rideList.remove(pos);
+                                                                                        rideListAdapter.submitList(rideList);
+                                                                                        rideListAdapter.notifyDataSetChanged();
+                                                                                    }
+                                                                                    DialogCustoms.showSnackBar(MainActivity.this, "Ride already accepted", binding.getRoot());
+                                                                                }
                                                                             } else {
-                                                                                DialogCustoms.showSnackBar(MainActivity.this, "Please try again", binding.getRoot());
+                                                                                Log.d(TAG, "onComplete: " + task.getException());
+                                                                                pDialog.dismiss();
                                                                             }
                                                                         }
                                                                     });
-                                                        } else {
-                                                            Snackbar snackbar = Snackbar.make(binding.getRoot(), "Please complete previous ride", Snackbar.LENGTH_SHORT);
-                                                            snackbar.setAction("Okay", new View.OnClickListener() {
-                                                                @Override
-                                                                public void onClick(View view) {
-                                                                }
-                                                            });
-
-                                                            snackbar.show();
                                                         }
-                                                    } else {
-                                                        DialogCustoms.showSnackBar(MainActivity.this, "Please try again", binding.getRoot());
                                                     }
                                                 }
                                             });
@@ -609,16 +669,19 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+
         //get updated profile.
         getProfile(null);
     }
 
     private void getProfile(androidx.appcompat.app.AlertDialog alertDialog) {
+        pDialog.show();
         //profile update.
         appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot d) {
+                        pDialog.dismiss();
                         appClass.sharedPref.saveUser(new User(d.getString("name"), d.getString("mobile"), d.getString("pin"),
                                 d.getString("totalRent"), d.getString("totalRide"), true,
                                 d.getString("profileUrl"), d.getString("wallet")));
@@ -631,9 +694,11 @@ public class MainActivity extends AppCompatActivity {
                         appClass.sharedPref.setState(d.getString("state"));
                         appClass.sharedPref.setAddress(d.getString("address"));
                         onActivityResult(101, RESULT_OK, null);
-                        if(alertDialog != null)
-                        if(appClass.sharedPref.getStatus().equalsIgnoreCase("pending"))
-                            alertDialog.dismiss();
+                        if (alertDialog != null)
+                            if (!appClass.sharedPref.getStatus().equalsIgnoreCase("pending"))
+                                alertDialog.dismiss();
+                            else
+                                Toast.makeText(appClass, "Please complete KYC", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -643,7 +708,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void openFragment(SearchFragment searchFragment) {
+    private void openFragment(Fragment searchFragment) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction fT = fm.beginTransaction();
         fT.replace(R.id.fragmentContainer, searchFragment);

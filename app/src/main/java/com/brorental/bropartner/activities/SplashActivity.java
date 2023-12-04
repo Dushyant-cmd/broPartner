@@ -74,9 +74,11 @@ public class SplashActivity extends AppCompatActivity {
                             long rentCom = d.getLong("partnerRentCommission");
                             long rideCom = d.getLong("partnerRideCommission");
                             String conNum = d.getString("customerCareNum");
+                            String banner = d.getString("partnerBannerImgUrl");
                             appClass.sharedPref.setPartnerRentCom(rentCom);
                             appClass.sharedPref.setPartnerRideCom(rideCom);
                             appClass.sharedPref.setCustomerCareNum(conNum);
+                            appClass.sharedPref.setBannerImage(banner);
                         } else {
                             Log.d(TAG, "onComplete: " + task.getException());
                         }

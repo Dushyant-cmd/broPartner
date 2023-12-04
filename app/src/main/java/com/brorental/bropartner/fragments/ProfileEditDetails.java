@@ -142,7 +142,6 @@ public class ProfileEditDetails extends Fragment {
                                     adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, list);
                                     binding.spinner.setAdapter(adapter);
                                 } catch (Exception e) {
-                                    ErrorDialog.createErrorDialog(requireActivity(), e.getMessage());
                                     Log.d(TAG, "onResponse: " + e);
                                 }
                             }
@@ -258,7 +257,6 @@ public class ProfileEditDetails extends Fragment {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                dialog.dismiss();
                                                 if (!altMob.isEmpty())
                                                     appClass.sharedPref.setAlternateMob(altMob);
                                                 if (!name.isEmpty())
@@ -526,9 +524,10 @@ public class ProfileEditDetails extends Fragment {
                                 appClass.sharedPref.setPanImgPath(imagePath);
                             }
 
-                            dialog.dismiss();
-                            if (filePanImage == null && fileAadhaarImage == null && fileProfileImage == null && !requireActivity().isFinishing())
+                            if (filePanImage == null && fileAadhaarImage == null && fileProfileImage == null && !requireActivity().isFinishing()) {
                                 requireActivity().onBackPressed();
+                                dialog.dismiss();
+                            }
                         } else {
                             dialog.dismiss();
                             Log.d(TAG, "onComplete: " + task.getException());

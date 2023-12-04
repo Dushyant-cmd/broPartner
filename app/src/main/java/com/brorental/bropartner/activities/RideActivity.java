@@ -104,6 +104,7 @@ public class RideActivity extends AppCompatActivity {
                                 binding.noDataLy.setVisibility(View.GONE);
                                 binding.extLy.setVisibility(View.GONE);
                             } else {
+                                binding.noDataLy.setVisibility(View.VISIBLE);
                                 appClass.firestore.collection("pointsHistory")
                                         .whereEqualTo("broPartnerId", appClass.sharedPref.getUser().getPin())
                                         .orderBy("timestamp", Query.Direction.DESCENDING)
@@ -112,15 +113,21 @@ public class RideActivity extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                 if (task.isSuccessful()) {
                                                     pDialog.dismiss();
-                                                    binding.noDataLy.setVisibility(View.GONE);
                                                     binding.addBikeNumBtn.setVisibility(View.GONE);
                                                     binding.extLy.setVisibility(View.VISIBLE);
                                                     binding.recyclerView.setVisibility(View.VISIBLE);
                                                     List<DocumentSnapshot> docList = task.getResult().getDocuments();
+
+                                                    if(!docList.isEmpty()) {
+                                                        binding.noDataLy.setVisibility(View.GONE);
+                                                        list.clear();
+                                                    }
+
                                                     for (DocumentSnapshot d : docList) {
                                                         PointsHistoryModel model = d.toObject(PointsHistoryModel.class);
                                                         list.add(model);
                                                     }
+
                                                     adapter.submitList(list);
                                                     adapter.addRefreshListener(new UtilsInterface.RentRefreshListener() {
                                                         @Override
@@ -181,7 +188,12 @@ public class RideActivity extends AppCompatActivity {
         });
 
         binding.addBikeNumBtn.setOnClickListener(view -> {
-            BikeDetailsSheet sheet = new BikeDetailsSheet(appClass);
+            BikeDetailsSheet sheet = new BikeDetailsSheet(appClass, new UtilsInterface.RefreshInterface() {
+                @Override
+                public void refresh(int catePosition) {
+                    getData();
+                }
+            });
             sheet.show(getSupportFragmentManager(), "Bike Details");
         });
 
@@ -214,7 +226,12 @@ public class RideActivity extends AppCompatActivity {
         });
 
         binding.exFabAddBikeNum.setOnClickListener(view -> {
-            BikeDetailsSheet sheet = new BikeDetailsSheet(appClass);
+            BikeDetailsSheet sheet = new BikeDetailsSheet(appClass, new UtilsInterface.RefreshInterface() {
+                @Override
+                public void refresh(int catePosition) {
+                    getData();
+                }
+            });
             sheet.show(getSupportFragmentManager(), "bike_details");
         });
 
@@ -421,9 +438,11 @@ public class RideActivity extends AppCompatActivity {
         private Activity activity;
         private BikeDrivingSheetBinding binding;
         private AppClass appClass;
+        private UtilsInterface.RefreshInterface refreshInterface;
 
-        public BikeDetailsSheet(AppClass appClass) {
+        public BikeDetailsSheet(AppClass appClass, UtilsInterface.RefreshInterface refreshInterface) {
             this.appClass = appClass;
+            this.refreshInterface = refreshInterface;
         }
 
         @Nullable
@@ -456,6 +475,7 @@ public class RideActivity extends AppCompatActivity {
                             pDialog.dismiss();
                             if (task.isSuccessful()) {
                                 dismiss();
+                                refreshInterface.refresh(0);
                                 Toast.makeText(ctx, "Bike Details Added", Toast.LENGTH_SHORT).show();
                             } else {
                                 DialogCustoms.showSnackBar(ctx, task.getException().getMessage(), binding.getRoot());
