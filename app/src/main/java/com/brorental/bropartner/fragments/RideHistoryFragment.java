@@ -106,7 +106,7 @@ public class RideHistoryFragment extends Fragment {
         binding.shimmer.setVisibility(View.VISIBLE);
         binding.recyclerView.setVisibility(View.GONE);
         appclass.firestore.collection("rideHistory")
-                .whereGreaterThan("startTimestamp", "0")
+                .whereEqualTo("broPartnerId", appclass.sharedPref.getUser().getPin())
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .limit(10)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -371,7 +371,7 @@ public class RideHistoryFragment extends Fragment {
         try {
             pDialog.show();
             appclass.firestore.collection("rideHistory")
-                    .whereGreaterThan("startTimestamp", "0")
+                    .whereEqualTo("broPartnerId", appclass.sharedPref.getUser().getPin())
                     .orderBy("timestamp", Query.Direction.DESCENDING)
                     .startAfter(lastDoc)
                     .limit(10)
