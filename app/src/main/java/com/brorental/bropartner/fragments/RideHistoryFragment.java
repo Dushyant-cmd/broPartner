@@ -294,6 +294,7 @@ public class RideHistoryFragment extends Fragment {
                                                     payDialog.dismiss();
                                                     getData();
                                                     if(task.isSuccessful()) {
+                                                        updateTotalRides();
                                                         DialogCustoms.showSnackBar(ctx, "Ride Completed", binding.getRoot());
                                                     } else {
                                                         Toast.makeText(ctx, "Please try again", Toast.LENGTH_SHORT).show();
@@ -405,5 +406,32 @@ public class RideHistoryFragment extends Fragment {
         } catch (Exception e) {
             Log.d(TAG, "loadMoreGameResult: " + e);
         }
+    }
+
+    private void updateTotalRides() {
+        appclass.firestore.collection("partners").document(appclass.sharedPref.getUser().getPin())
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()) {
+                            long totalRides = Long.parseLong(task.getResult().getString("totalRides"));
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("totalRides", --totalRides);
+                            appclass.firestore.collection("partners").document(appclass.sharedPref.getUser().getPin())
+                                    .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d(TAG, "onComplete: success");
+                                            } else {
+                                                Log.d(TAG, "onComplete: " + task.getException());
+                                            }
+                                        }
+                                    });
+                        } else {
+                            Log.d(TAG, "onComplete:  " + task.getException());
+                        }
+                    }
+                });
     }
 }

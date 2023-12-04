@@ -604,6 +604,8 @@ public class MainActivity extends AppCompatActivity {
                                                                                                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                                                                                                 pDialog.dismiss();
                                                                                                                                                 if (task.isSuccessful()) {
+                                                                                                                                                    if(status.equalsIgnoreCase("completed"))
+                                                                                                                                                        updateTotalRides();
                                                                                                                                                     rideList.remove(pos);
                                                                                                                                                     rideListAdapter.submitList(rideList);
                                                                                                                                                     rideListAdapter.notifyDataSetChanged();
@@ -672,6 +674,33 @@ public class MainActivity extends AppCompatActivity {
 
         //get updated profile.
         getProfile(null);
+    }
+
+    private void updateTotalRides() {
+        appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()) {
+                            long totalRides = Long.parseLong(task.getResult().getString("totalRides"));
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("totalRides", --totalRides);
+                            appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
+                                    .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d(TAG, "onComplete: success");
+                                            } else {
+                                                Log.d(TAG, "onComplete: " + task.getException());
+                                            }
+                                        }
+                                    });
+                        } else {
+                            Log.d(TAG, "onComplete:  " + task.getException());
+                        }
+                    }
+                });
     }
 
     private void getProfile(androidx.appcompat.app.AlertDialog alertDialog) {
