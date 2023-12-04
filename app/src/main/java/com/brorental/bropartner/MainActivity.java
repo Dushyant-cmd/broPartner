@@ -677,7 +677,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateTotalRides() {
-        appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
+        appClass.firestore.collection("users").document(appClass.sharedPref.getUser().getPin())
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -685,7 +685,7 @@ public class MainActivity extends AppCompatActivity {
                             long totalRides = Long.parseLong(task.getResult().getString("totalRides"));
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("totalRides", --totalRides);
-                            appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
+                            appClass.firestore.collection("users").document(appClass.sharedPref.getUser().getPin())
                                     .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {

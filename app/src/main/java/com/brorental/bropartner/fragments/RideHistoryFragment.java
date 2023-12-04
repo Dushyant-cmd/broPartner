@@ -409,7 +409,7 @@ public class RideHistoryFragment extends Fragment {
     }
 
     private void updateTotalRides() {
-        appclass.firestore.collection("partners").document(appclass.sharedPref.getUser().getPin())
+        appclass.firestore.collection("users").document(appclass.sharedPref.getUser().getPin())
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -417,7 +417,7 @@ public class RideHistoryFragment extends Fragment {
                             long totalRides = Long.parseLong(task.getResult().getString("totalRides"));
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("totalRides", --totalRides);
-                            appclass.firestore.collection("partners").document(appclass.sharedPref.getUser().getPin())
+                            appclass.firestore.collection("users").document(appclass.sharedPref.getUser().getPin())
                                     .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
