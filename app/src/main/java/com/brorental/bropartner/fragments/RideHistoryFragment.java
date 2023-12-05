@@ -274,7 +274,7 @@ public class RideHistoryFragment extends Fragment {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 HashMap<String, Object> map = new HashMap<>();
-                                map.put("amount", data.getAmount());
+                                map.put("amount", String.valueOf(data.getAmount()));
                                 map.put("date", dateAndTime);
                                 map.put("info", null);
                                 map.put("name", appclass.sharedPref.getUser().getName());
@@ -294,7 +294,7 @@ public class RideHistoryFragment extends Fragment {
                                                     payDialog.dismiss();
                                                     getData();
                                                     if(task.isSuccessful()) {
-                                                        updateTotalRides();
+                                                        updateTotalRides(data.getBroRentalId());
                                                         DialogCustoms.showSnackBar(ctx, "Ride Completed", binding.getRoot());
                                                     } else {
                                                         Toast.makeText(ctx, "Please try again", Toast.LENGTH_SHORT).show();
@@ -350,7 +350,7 @@ public class RideHistoryFragment extends Fragment {
 
             HashMap<String, Object> updateMap = new HashMap<>();
             updateMap.put("readyForRide", true);
-            updateMap.put("wallet", (Long.parseLong(appclass.sharedPref.getUser().getWallet()) + data.getAmount()));
+            updateMap.put("wallet", String.valueOf((Long.parseLong(appclass.sharedPref.getUser().getWallet()) + data.getAmount())));
             appclass.firestore.collection("partners")
                     .document(appclass.sharedPref.getUser().getPin())
                     .update(updateMap).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -408,8 +408,8 @@ public class RideHistoryFragment extends Fragment {
         }
     }
 
-    private void updateTotalRides() {
-        appclass.firestore.collection("users").document(appclass.sharedPref.getUser().getPin())
+    private void updateTotalRides(String broRentalId) {
+        appclass.firestore.collection("users").document(broRentalId)
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -417,7 +417,7 @@ public class RideHistoryFragment extends Fragment {
                             long totalRides = Long.parseLong(task.getResult().getString("totalRides"));
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("totalRides", --totalRides);
-                            appclass.firestore.collection("users").document(appclass.sharedPref.getUser().getPin())
+                            appclass.firestore.collection("users").document(broRentalId)
                                     .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {

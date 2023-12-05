@@ -40,8 +40,11 @@ import com.brorental.bropartner.R;
 import com.brorental.bropartner.databinding.ActivityUploadRentItemBinding;
 import com.brorental.bropartner.localdb.RoomDb;
 import com.brorental.bropartner.localdb.StateEntity;
+import com.brorental.bropartner.retrofit.ApiService;
+import com.brorental.bropartner.retrofit.RetrofitClient;
 import com.brorental.bropartner.utilities.AppClass;
 import com.brorental.bropartner.utilities.DialogCustoms;
+import com.brorental.bropartner.utilities.ErrorDialog;
 import com.brorental.bropartner.utilities.ProgressDialog;
 import com.brorental.bropartner.utilities.Utility;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
@@ -53,6 +56,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,6 +73,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UploadRentItem extends AppCompatActivity {
     private ActivityUploadRentItemBinding binding;
@@ -86,6 +98,7 @@ public class UploadRentItem extends AppCompatActivity {
     private AppClass appClass;
     private RoomDb room;
     private List<String> stateList = new ArrayList<>();
+    private ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +112,7 @@ public class UploadRentItem extends AppCompatActivity {
         appClass = (AppClass) getApplication();
         spf = new SimpleDateFormat("hh:mm", Locale.getDefault());
         room = RoomDb.getInstance(ctx);
+        apiService = RetrofitClient.getInstance().create(ApiService.class);
         stateList.add("Select your state");
         ArrayList<String> list = new ArrayList<>();
         list.add("Select product health");
@@ -137,25 +151,46 @@ public class UploadRentItem extends AppCompatActivity {
 
     private void queries() {
         List<StateEntity> roomList = room.getStateDao().getStates();
-        if(roomList.isEmpty()) {
-        appClass.firestore.collection("appData").document("constants")
-                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "onComplete: " + task.getResult().getString("state"));
-                            String[] states = task.getResult().getString("state").split(",");
-                            Collections.addAll(stateList, states);
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_dropdown_item, stateList);
-                            binding.spinnerState.setAdapter(adapter);
-                            binding.spinnerState.setVisibility(View.VISIBLE);
-                        } else {
-                            Log.d(TAG, "onComplete: " + task.getException());
-                        }
-                    }
-                });
+        if (roomList.isEmpty()) {
+            try {
+                JSONObject json = new JSONObject();
+                json.put("country", "india");
+                RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), (json).toString());
+                String url = "https://countriesnow.space/api/v0.1/countries/states";
+                apiService.getCountryState(url, body)
+                        .enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                                if (response.isSuccessful()) {
+                                    try {
+                                        room.getStateDao().deleteStates();
+                                        JSONObject json1 = new JSONObject(response.body().toString());
+                                        JSONObject dataJs = json1.getJSONObject("data");
+                                        JSONArray jsonArray1 = dataJs.getJSONArray("states");
+                                        for (int i = 0; i < jsonArray1.length(); i++) {
+                                            JSONObject js = jsonArray1.getJSONObject(i);
+                                            room.getStateDao().insertState(new StateEntity(js.getString("name")));
+                                            stateList.add(js.getString("name"));
+                                        }
+
+                                        ArrayAdapter<String> adapter = new ArrayAdapter<>(UploadRentItem.this, android.R.layout.simple_spinner_dropdown_item, stateList);
+                                        binding.spinnerState.setAdapter(adapter);
+                                    } catch (Exception e) {
+                                        Log.d(TAG, "onResponse: " + e);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<JsonObject> call, Throwable t) {
+                                ErrorDialog.createErrorDialog(UploadRentItem.this, t.getMessage());
+                            }
+                        });
+            } catch (Exception e) {
+                Log.d(TAG, "getStates: " + e);
+            }
         } else {
-            for(StateEntity state: roomList) {
+            for (StateEntity state : roomList) {
                 stateList.add(state.getState());
             }
             ArrayAdapter<String> adapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_dropdown_item, stateList);

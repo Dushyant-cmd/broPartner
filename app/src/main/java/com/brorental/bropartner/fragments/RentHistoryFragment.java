@@ -250,7 +250,7 @@ public class RentHistoryFragment extends Fragment {
                                                                                                                 map.put("advertisementId", data.advertisementId);
                                                                                                                 map.put("timestamp", System.currentTimeMillis());
                                                                                                                 map.put("isBroRental", false);
-                                                                                                                map.put("broRentalId", data.broRentalId);
+                                                                                                                map.put("broRentalId", "");
                                                                                                                 map.put("broPartnerId", data.broPartnerId);
                                                                                                                 appClass.firestore.collection("transactions").add(map)
                                                                                                                         .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {

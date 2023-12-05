@@ -58,6 +58,7 @@ public class RidesFragment extends Fragment {
     private AlertDialog pDialog;
     private RideHistoryAdapter adapter;
     private ArrayList<String> fromList = new ArrayList<>(), toList = new ArrayList<>();
+    private String from = "", to = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -119,14 +120,19 @@ public class RidesFragment extends Fragment {
         });
     }
 
-    private void getFilterData(String from, String to, androidx.appcompat.app.AlertDialog alertDialog) {
+    private void getFilterData(String from1, String to1, androidx.appcompat.app.AlertDialog alertDialog) {
         pDialog.show();
+        this.from = from1;
+        this.to = to1;
         appClass.firestore.collection("rideHistory")
                 .whereEqualTo("status", "pending")
                 .whereEqualTo("from", from)
                 .whereEqualTo("to", to)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
                 .limit(10)
                 .get().addOnCompleteListener(task -> {
+                    pDialog.dismiss();
+                    alertDialog.dismiss();
                     if (task.isSuccessful()) {
                         List<DocumentSnapshot> list2 = task.getResult().getDocuments();
                         if (list2.isEmpty()) {
@@ -138,10 +144,28 @@ public class RidesFragment extends Fragment {
                             list.add(model);
                         }
 
-                        alertDialog.dismiss();
-                        pDialog.dismiss();
+                        lastDoc = list2.get(list2.size() - 1);
                         adapter.submitList(list);
                         adapter.notifyDataSetChanged();
+
+
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+                            binding.nestedSv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+                                @Override
+                                public void onScrollChange(@NonNull NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                                    //Check if user scrolled till bottom
+                                    if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
+                                        Log.v(TAG, "list scroll till bottom");
+                                        if (Utility.isNetworkAvailable(context) && page == 0) {
+                                            page++;
+                                            loadMoreRideResultFilter(from, to);
+                                        } else if (!Utility.isNetworkAvailable(context)) {
+                                            Toast.makeText(context, "Check internet connection", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+                            });
+
                     } else {
                         DialogCustoms.showSnackBar(context, "No data found", binding.getRoot());
                     }
@@ -191,6 +215,7 @@ public class RidesFragment extends Fragment {
                                 lastDoc = dList.get(dList.size() - 1);
 
                             adapter.submitList(list);
+                            adapter.notifyDataSetChanged();
                             adapter.addRefreshListeners(new UtilsInterface.RideHistoryListener() {
                                 @Override
                                 public void updateStatus(String status, String docId, int pos, RideHistoryModel data) {
@@ -327,29 +352,68 @@ public class RidesFragment extends Fragment {
                 });
 
         //get all the added points
-        appClass.firestore.collection("pointsHistory")
-                .whereEqualTo("status", true)
-                .whereEqualTo("broPartnerId", appClass.sharedPref.getUser().getPin())
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<DocumentSnapshot> list2 = task.getResult().getDocuments();
-                            for (DocumentSnapshot d : list2) {
-                                fromList.add(d.getString("from"));
-                                toList.add(d.getString("to"));
+        if (fromList.isEmpty() || toList.isEmpty())
+            appClass.firestore.collection("pointsHistory")
+                    .whereEqualTo("status", true)
+                    .whereEqualTo("broPartnerId", appClass.sharedPref.getUser().getPin())
+                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                List<DocumentSnapshot> list2 = task.getResult().getDocuments();
+                                for (DocumentSnapshot d : list2) {
+                                    fromList.add(d.getString("from"));
+                                    toList.add(d.getString("to"));
+                                }
+                            } else {
+                                DialogCustoms.showSnackBar(context, "Please add points for filter", binding.getRoot());
                             }
-                        } else {
-                            DialogCustoms.showSnackBar(context, "Please add points for filter", binding.getRoot());
                         }
-                    }
-                });
+                    });
     }
 
     private void loadMoreRideResult() {
         pDialog.show();
         appClass.firestore.collection("rideHistory")
                 .whereEqualTo("status", "pending")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .startAfter(lastDoc)
+                .limit(10)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        page = 0;
+                        pDialog.dismiss();
+                        if (task.isSuccessful()) {
+                            List<DocumentSnapshot> dList = task.getResult().getDocuments();
+                            if (!dList.isEmpty()) {
+                                for (DocumentSnapshot d : dList) {
+                                    RideHistoryModel model = d.toObject(RideHistoryModel.class);
+                                    list.add(model);
+                                }
+
+                                if (!dList.isEmpty())
+                                    lastDoc = dList.get(dList.size() - 1);
+
+                                adapter.submitList(list);
+                                adapter.notifyDataSetChanged();
+                            } else {
+                                Toast.makeText(context, "No data found", Toast.LENGTH_SHORT).show();
+                                page++;
+                            }
+                        } else {
+                            DialogCustoms.showSnackBar(context, "Please try again", binding.getRoot());
+                        }
+                    }
+                });
+    }
+
+    private void loadMoreRideResultFilter(String from, String to) {
+        pDialog.show();
+        appClass.firestore.collection("rideHistory")
+                .whereEqualTo("status", "pending")
+                .whereEqualTo("from", from)
+                .whereEqualTo("to", to)
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .startAfter(lastDoc)
                 .limit(10)

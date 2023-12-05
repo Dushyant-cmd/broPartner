@@ -605,7 +605,7 @@ public class MainActivity extends AppCompatActivity {
                                                                                                                                                 pDialog.dismiss();
                                                                                                                                                 if (task.isSuccessful()) {
                                                                                                                                                     if(status.equalsIgnoreCase("completed"))
-                                                                                                                                                        updateTotalRides();
+                                                                                                                                                        updateTotalRides(data.getBroRentalId());
                                                                                                                                                     rideList.remove(pos);
                                                                                                                                                     rideListAdapter.submitList(rideList);
                                                                                                                                                     rideListAdapter.notifyDataSetChanged();
@@ -676,8 +676,8 @@ public class MainActivity extends AppCompatActivity {
         getProfile(null);
     }
 
-    private void updateTotalRides() {
-        appClass.firestore.collection("users").document(appClass.sharedPref.getUser().getPin())
+    private void updateTotalRides(String broRentalId) {
+        appClass.firestore.collection("users").document(broRentalId)
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -685,7 +685,7 @@ public class MainActivity extends AppCompatActivity {
                             long totalRides = Long.parseLong(task.getResult().getString("totalRides"));
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("totalRides", --totalRides);
-                            appClass.firestore.collection("users").document(appClass.sharedPref.getUser().getPin())
+                            appClass.firestore.collection("users").document(broRentalId)
                                     .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {

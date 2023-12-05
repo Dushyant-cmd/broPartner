@@ -18,10 +18,13 @@ import com.brorental.bropartner.R;
 import com.brorental.bropartner.adapters.PaymentAdapter;
 import com.brorental.bropartner.databinding.ActivityPaymentHistoryBinding;
 import com.brorental.bropartner.models.PaymentHistoryModel;
+import com.brorental.bropartner.models.User;
 import com.brorental.bropartner.utilities.AppClass;
 import com.brorental.bropartner.utilities.DialogCustoms;
 import com.brorental.bropartner.utilities.Utility;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
@@ -200,5 +203,39 @@ public class PaymentHistory extends AppCompatActivity {
                         }
                     }
                 });
+
+        getProfile();
     }
+
+    /**Below method to get profile from firebase */
+    private void getProfile() {
+        //profile update.
+        appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot d) {
+                        binding.swipeRef.setRefreshing(false);
+                        appClass.sharedPref.saveUser(new User(d.getString("name"), d.getString("mobile"), d.getString("pin"),
+                                d.getString("totalRent"), d.getString("totalRide"), true,
+                                d.getString("profileUrl"), d.getString("wallet")));
+                        appClass.sharedPref.setAadhaarImg(d.getString("aadhaarImgUrl"));
+                        appClass.sharedPref.setAadhaarPath(d.getString("aadhaarImgPath"));
+                        appClass.sharedPref.setPanImgUrl(d.getString("panImgUrl"));
+                        appClass.sharedPref.setPanImgPath(d.getString("panImgPath"));
+                        appClass.sharedPref.setProfilePath(d.getString("profileImgPath"));
+                        appClass.sharedPref.setStatus(d.getString("status"));
+                        appClass.sharedPref.setState(d.getString("state"));
+                        appClass.sharedPref.setAddress(d.getString("address"));
+
+                        binding.walletTV.setText(Utility.rupeeIcon + appClass.sharedPref.getUser().getWallet());
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        binding.swipeRef.setRefreshing(false);
+                        Log.d(TAG, "onFailure: " + e);
+                    }
+                });
+    }
+
 }
