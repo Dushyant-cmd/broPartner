@@ -129,6 +129,7 @@ public class RideActivity extends AppCompatActivity {
                                                     }
 
                                                     adapter.submitList(list);
+                                                    adapter.notifyDataSetChanged();
                                                     adapter.addRefreshListener(new UtilsInterface.RentRefreshListener() {
                                                         @Override
                                                         public void updateLiveStatus(boolean status, String docId, int pos) {

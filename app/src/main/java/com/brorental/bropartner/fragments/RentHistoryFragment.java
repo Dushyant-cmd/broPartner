@@ -100,6 +100,7 @@ public class RentHistoryFragment extends Fragment {
                             }
                             Log.d(TAG, "onComplete: " + list);
                             adapter.submitList(list);
+                            adapter.notifyDataSetChanged();
                             adapter.setRentStatusListener(new UtilsInterface.RentStatusListener() {
                                 @Override
                                 public void updateStatus(String status, HistoryModel data) {

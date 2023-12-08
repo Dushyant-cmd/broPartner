@@ -61,6 +61,10 @@ public class RentHistoryAdapter extends ListAdapter<HistoryModel, RentHistoryAda
             holder.binding.completeBtn.setVisibility(View.VISIBLE);
             holder.binding.pendingLy.setVisibility(View.GONE);
             holder.binding.callBtn.setVisibility(View.GONE);
+        } else if(data.status.equalsIgnoreCase("completed")) {
+            holder.binding.completeBtn.setVisibility(View.GONE);
+            holder.binding.pendingLy.setVisibility(View.GONE);
+            holder.binding.callBtn.setVisibility(View.GONE);
         } else {
             holder.binding.completeBtn.setVisibility(View.GONE);
             holder.binding.pendingLy.setVisibility(View.GONE);

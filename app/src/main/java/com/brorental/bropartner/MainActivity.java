@@ -288,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
                                 rentLastDoc = docList.get(docList.size() - 1);
 
                             rentListAdapter.submitList(rentList);
+                            rentListAdapter.notifyDataSetChanged();
                             rentListAdapter.setRentStatusListener(new UtilsInterface.RentStatusListener() {
                                 @Override
                                 public void updateStatus(String status, HistoryModel data) {
@@ -554,6 +555,7 @@ public class MainActivity extends AppCompatActivity {
                                 rideLastDoc = dList.get(dList.size() - 1);
 
                             rideListAdapter.submitList(rideList);
+                            rideListAdapter.notifyDataSetChanged();
                             rideListAdapter.addRefreshListeners(new UtilsInterface.RideHistoryListener() {
                                 @Override
                                 public void updateStatus(String status, String docId, int pos, RideHistoryModel data) {
@@ -567,7 +569,7 @@ public class MainActivity extends AppCompatActivity {
                                                     binding.swipeRef.setRefreshing(false);
                                                     if (task.isSuccessful()) {
                                                         String bikeNum = task.getResult().getString("rideBikeNum");
-                                                        if(bikeNum.isEmpty()) {
+                                                        if (bikeNum.isEmpty()) {
                                                             pDialog.dismiss();
                                                             DialogCustoms.showSnackBar(MainActivity.this, "Add bike number", binding.getRoot());
                                                         } else {
@@ -575,8 +577,8 @@ public class MainActivity extends AppCompatActivity {
                                                                     .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                                         @Override
                                                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                            if(task.isSuccessful()) {
-                                                                                if(task.getResult().getString("status").equalsIgnoreCase("pending")) {
+                                                                            if (task.isSuccessful()) {
+                                                                                if (task.getResult().getString("status").equalsIgnoreCase("pending")) {
                                                                                     appClass.firestore.collection("partners")
                                                                                             .document(appClass.sharedPref.getUser().getPin())
                                                                                             .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -596,6 +598,8 @@ public class MainActivity extends AppCompatActivity {
                                                                                                                                 HashMap<String, Object> map = new HashMap<>();
                                                                                                                                 map.put("broPartnerId", appClass.sharedPref.getUser().getPin());
                                                                                                                                 map.put("broPartnerNumber", appClass.sharedPref.getUser().getMobile());
+                                                                                                                                map.put("name", appClass.sharedPref.getUser().getName());
+                                                                                                                                map.put("profileUrl", appClass.sharedPref.getUser().getName());
                                                                                                                                 map.put("status", status);
                                                                                                                                 appClass.firestore.collection("rideHistory")
                                                                                                                                         .document(docId)
@@ -604,7 +608,7 @@ public class MainActivity extends AppCompatActivity {
                                                                                                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                                                                                                 pDialog.dismiss();
                                                                                                                                                 if (task.isSuccessful()) {
-                                                                                                                                                    if(status.equalsIgnoreCase("completed"))
+                                                                                                                                                    if (status.equalsIgnoreCase("completed"))
                                                                                                                                                         updateTotalRides(data.getBroRentalId());
                                                                                                                                                     rideList.remove(pos);
                                                                                                                                                     rideListAdapter.submitList(rideList);
@@ -638,7 +642,7 @@ public class MainActivity extends AppCompatActivity {
                                                                                                 }
                                                                                             });
                                                                                 } else {
-                                                                                    if(rideList.isEmpty()) {
+                                                                                    if (rideList.isEmpty()) {
                                                                                         getData();
                                                                                     } else {
                                                                                         rideList.remove(pos);
@@ -681,7 +685,7 @@ public class MainActivity extends AppCompatActivity {
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             long totalRides = Long.parseLong(task.getResult().getString("totalRides"));
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("totalRides", --totalRides);

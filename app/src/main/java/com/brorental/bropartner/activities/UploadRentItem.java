@@ -61,6 +61,8 @@ import com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -123,12 +125,16 @@ public class UploadRentItem extends AppCompatActivity {
         ArrayAdapter<String> adapter = new
                 ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, list);
         binding.spinnerHealth.setAdapter(adapter);
+        getData();
+        setListeners();
+    }
+
+    private void getData() {
         if (Utility.isNetworkAvailable(ctx)) {
             queries();
         } else {
             noNetworkDialog();
         }
-        setListeners();
     }
 
     private void noNetworkDialog() {
@@ -342,9 +348,6 @@ public class UploadRentItem extends AppCompatActivity {
         binding.uploadBtn.setOnClickListener(view -> {
             String health = binding.spinnerHealth.getSelectedItem().toString();
             String state = binding.spinnerState.getSelectedItem().toString();
-//            Log.d(TAG, "setListeners: " + health + "," + state + "," + isImageUploaded + "," + ownName + "," + rcNum + ","
-//                    + bikeNum + "," + aadhaarNum + "," + pickupTimings + "," + perHourCharge + "," +
-//                    extraHourCharge + "," + ownerDesc + "," + productName + "," + pickUpLoc + "," + productYear + "," + color);
             if (category.equalsIgnoreCase("bike")) {
                 if (isImageUploaded && !ownName.isEmpty() && !rcNum.isEmpty() && !bikeNum.isEmpty() &&
                         !aadhaarNum.isEmpty() && !pickupTimings.toLowerCase().contains("pickup timings") &&
@@ -431,6 +434,7 @@ public class UploadRentItem extends AppCompatActivity {
                                                                                                                                     @Override
                                                                                                                                     public void onComplete(@NonNull Task<Void> task) {
                                                                                                                                         if (task.isSuccessful()) {
+                                                                                                                                            getData();
                                                                                                                                             dialog.dismiss();
                                                                                                                                             Toast.makeText(UploadRentItem.this, "Add Uploaded Successfully", Toast.LENGTH_SHORT).show();
                                                                                                                                             onBackPressed();
@@ -765,9 +769,25 @@ public class UploadRentItem extends AppCompatActivity {
                                 Uri uri1 = clipData.getItemAt(0).getUri();
                                 Uri uri2 = clipData.getItemAt(1).getUri();
                                 Uri uri3 = clipData.getItemAt(2).getUri();
-                                mFirstImg = getContentResolver().openInputStream(uri1);
-                                mSecImg = getContentResolver().openInputStream(uri2);
-                                mThirdImg = getContentResolver().openInputStream(uri3);
+
+                                Bitmap firBmp = BitmapFactory.decodeFile(String.valueOf(uri1));
+                                ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
+                                firBmp.compress(Bitmap.CompressFormat.JPEG, 50, bos1);
+                                mFirstImg = new ByteArrayInputStream(bos1.toByteArray());
+
+                                Bitmap secBmp = BitmapFactory.decodeFile(String.valueOf(uri1));
+                                ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
+                                secBmp.compress(Bitmap.CompressFormat.JPEG, 50, bos2);
+                                mSecImg = new ByteArrayInputStream(bos2.toByteArray());
+
+                                Bitmap thrBmp = BitmapFactory.decodeFile(String.valueOf(uri1));
+                                ByteArrayOutputStream bos3 = new ByteArrayOutputStream();
+                                thrBmp.compress(Bitmap.CompressFormat.JPEG, 50, bos3);
+                                mThirdImg = new ByteArrayInputStream(bos3.toByteArray());
+
+//                                mFirstImg = getContentResolver().openInputStream(uri1);
+//                                mSecImg = getContentResolver().openInputStream(uri2);
+//                                mThirdImg = getContentResolver().openInputStream(uri3);
                                 SlideModel model1 = new SlideModel(uri1.toString(), ScaleTypes.CENTER_INSIDE);
                                 SlideModel model2 = new SlideModel(uri2.toString(), ScaleTypes.CENTER_INSIDE);
                                 SlideModel model3 = new SlideModel(uri3.toString(), ScaleTypes.CENTER_INSIDE);
