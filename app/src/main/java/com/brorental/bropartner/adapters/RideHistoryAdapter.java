@@ -85,6 +85,11 @@ public class RideHistoryAdapter extends ListAdapter<RideHistoryModel, RideHistor
                 holder.binding.btnStart.setVisibility(View.GONE);
                 holder.binding.btnComplete.setVisibility(View.VISIBLE);
                 break;
+            case "completed":
+                holder.binding.btnSubmit.setVisibility(View.GONE);
+                holder.binding.btnStart.setVisibility(View.GONE);
+                holder.binding.btnComplete.setVisibility(View.GONE);
+                break;
             default:
                 break;
         }
@@ -103,10 +108,10 @@ public class RideHistoryAdapter extends ListAdapter<RideHistoryModel, RideHistor
 
         holder.binding.tvDial.setOnClickListener(view -> {
             if (data.getStatus().equalsIgnoreCase("pending")) {
-                Toast.makeText(ctx, "Calling customer care", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ctx, "Calling customer care...", Toast.LENGTH_SHORT).show();
                 rideStatusListener.contactListener(appClass.sharedPref.getCustomerCareNum());
             } else {
-                Toast.makeText(ctx, "Calling " + data.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ctx, "Calling " + data.getName() + "...", Toast.LENGTH_SHORT).show();
                 rideStatusListener.contactListener(data.getBroRentalNumber());
             }
         });

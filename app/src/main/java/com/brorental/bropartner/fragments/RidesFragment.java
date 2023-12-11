@@ -147,6 +147,7 @@ public class RidesFragment extends Fragment {
                         lastDoc = list2.get(list2.size() - 1);
                         adapter.submitList(list);
                         adapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
 
 
                         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
@@ -257,6 +258,8 @@ public class RidesFragment extends Fragment {
                                                                                                                                 HashMap<String, Object> map = new HashMap<>();
                                                                                                                                 map.put("broPartnerId", appClass.sharedPref.getUser().getPin());
                                                                                                                                 map.put("broPartnerNumber", appClass.sharedPref.getUser().getMobile());
+                                                                                                                                map.put("name", appClass.sharedPref.getUser().getName());
+                                                                                                                                map.put("profileUrl", appClass.sharedPref.getUser().getName());
                                                                                                                                 map.put("status", status);
                                                                                                                                 appClass.firestore.collection("rideHistory")
                                                                                                                                         .document(docId)
@@ -325,7 +328,7 @@ public class RidesFragment extends Fragment {
                                 public void contactListener(String phoneNum) {
                                     Intent i = new Intent(Intent.ACTION_DIAL);
                                     i.setData(Uri.parse("tel:" + phoneNum));
-                                    startActivity(i);
+                                    activity.startActivity(i);
                                 }
                             });
 
@@ -362,8 +365,13 @@ public class RidesFragment extends Fragment {
                             if (task.isSuccessful()) {
                                 List<DocumentSnapshot> list2 = task.getResult().getDocuments();
                                 for (DocumentSnapshot d : list2) {
-                                    fromList.add(d.getString("from"));
-                                    toList.add(d.getString("to"));
+                                    String fr = d.getString("from");
+                                    String to = d.getString("to");
+                                    if (!fromList.contains(fr))
+                                        fromList.add(fr);
+
+                                    if (!toList.contains(to))
+                                        toList.add(to);
                                 }
                             } else {
                                 DialogCustoms.showSnackBar(context, "Please add points for filter", binding.getRoot());

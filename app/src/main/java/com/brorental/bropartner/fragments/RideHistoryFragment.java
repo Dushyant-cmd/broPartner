@@ -126,6 +126,7 @@ public class RideHistoryFragment extends Fragment {
                             }
 
                             adapter.submitList(list);
+                            adapter.notifyDataSetChanged();
                             adapter.addRefreshListeners(new UtilsInterface.RideHistoryListener() {
                                 @Override
                                 public void updateStatus(String status, String docId, int pos, RideHistoryModel data) {

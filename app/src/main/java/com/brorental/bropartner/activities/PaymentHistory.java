@@ -195,6 +195,7 @@ public class PaymentHistory extends AppCompatActivity {
                                 }
 
                                 adapter.submitList(list);
+                                adapter.notifyDataSetChanged();
                             } else {
                                 Log.d(TAG, "onComplete: " + task.getException());
                             }
