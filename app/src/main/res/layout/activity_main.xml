@@ -153,15 +153,21 @@
                                     android:visibility="gone"
                                     tools:visibility="visible">
 
-                                    <ImageView
-                                        android:layout_width="100dp"
-                                        android:layout_height="100dp"
+                                    <FrameLayout
                                         android:layout_gravity="center_horizontal"
-                                        android:src="@drawable/kyc_logo"
-                                        android:visibility="gone"
-                                        tools:visibility="visible" />
+                                        android:layout_width="100dp"
+                                        android:layout_height="100dp">
+
+                                        <ImageView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:src="@drawable/kyc_logo"
+                                            android:visibility="gone"
+                                            tools:visibility="visible" />
+                                    </FrameLayout>
 
                                     <TextView
+                                        android:layout_gravity="center_horizontal"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="8dp"
@@ -217,14 +223,18 @@
                                     android:visibility="gone"
                                     tools:visibility="visible" >
 
-                                    <ImageView
-                                        android:layout_width="100dp"
-                                        android:layout_height="100dp"
+                                    <FrameLayout
                                         android:layout_gravity="center_horizontal"
-                                        android:src="@drawable/kyc_logo"
-                                        android:visibility="gone"
-                                        tools:visibility="visible" />
+                                        android:layout_width="100dp"
+                                        android:layout_height="100dp">
 
+                                        <ImageView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:src="@drawable/kyc_logo"
+                                            android:visibility="gone"
+                                            tools:visibility="visible" />
+                                    </FrameLayout>
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"

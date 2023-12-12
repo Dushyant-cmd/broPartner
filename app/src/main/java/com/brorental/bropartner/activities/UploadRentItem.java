@@ -770,24 +770,25 @@ public class UploadRentItem extends AppCompatActivity {
                                 Uri uri2 = clipData.getItemAt(1).getUri();
                                 Uri uri3 = clipData.getItemAt(2).getUri();
 
-                                Bitmap firBmp = BitmapFactory.decodeFile(String.valueOf(uri1));
-                                ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
-                                firBmp.compress(Bitmap.CompressFormat.JPEG, 50, bos1);
-                                mFirstImg = new ByteArrayInputStream(bos1.toByteArray());
+//                                Bitmap firBmp = BitmapFactory.decodeFile(String.valueOf(uri1));
+//                                ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
+//                                firBmp.compress(Bitmap.CompressFormat.JPEG, 50, bos1);
+//                                mFirstImg = new ByteArrayInputStream(bos1.toByteArray());
+//
+//                                Bitmap secBmp = BitmapFactory.decodeFile(String.valueOf(uri1));
+//                                ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
+//                                secBmp.compress(Bitmap.CompressFormat.JPEG, 50, bos2);
+//                                mSecImg = new ByteArrayInputStream(bos2.toByteArray());
+//
+//                                Bitmap thrBmp = BitmapFactory.decodeFile(String.valueOf(uri1));
+//                                ByteArrayOutputStream bos3 = new ByteArrayOutputStream();
+//                                thrBmp.compress(Bitmap.CompressFormat.JPEG, 50, bos3);
+//                                mThirdImg = new ByteArrayInputStream(bos3.toByteArray());
 
-                                Bitmap secBmp = BitmapFactory.decodeFile(String.valueOf(uri1));
-                                ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
-                                secBmp.compress(Bitmap.CompressFormat.JPEG, 50, bos2);
-                                mSecImg = new ByteArrayInputStream(bos2.toByteArray());
+                                mFirstImg = getContentResolver().openInputStream(uri1);
+                                mSecImg = getContentResolver().openInputStream(uri2);
+                                mThirdImg = getContentResolver().openInputStream(uri3);
 
-                                Bitmap thrBmp = BitmapFactory.decodeFile(String.valueOf(uri1));
-                                ByteArrayOutputStream bos3 = new ByteArrayOutputStream();
-                                thrBmp.compress(Bitmap.CompressFormat.JPEG, 50, bos3);
-                                mThirdImg = new ByteArrayInputStream(bos3.toByteArray());
-
-//                                mFirstImg = getContentResolver().openInputStream(uri1);
-//                                mSecImg = getContentResolver().openInputStream(uri2);
-//                                mThirdImg = getContentResolver().openInputStream(uri3);
                                 SlideModel model1 = new SlideModel(uri1.toString(), ScaleTypes.CENTER_INSIDE);
                                 SlideModel model2 = new SlideModel(uri2.toString(), ScaleTypes.CENTER_INSIDE);
                                 SlideModel model3 = new SlideModel(uri3.toString(), ScaleTypes.CENTER_INSIDE);
@@ -815,9 +816,7 @@ public class UploadRentItem extends AppCompatActivity {
                         Bitmap bitmap = BitmapFactory.decodeStream(stream);
                         if (bitmap != null) {
                             capFileList.add(photoFile);
-                            Log.d(TAG, "onActivityResult: " + bitmap);
                         } else {
-                            Log.d(TAG, "onActivityResult: camera else" + bitmap);
                             REQUEST_IMAGE_CAPTURE = 1;
                             capFileList.clear();
                             DialogCustoms.showSnackBar(ctx, "Please select 3 product images", binding.getRoot());
@@ -837,15 +836,12 @@ public class UploadRentItem extends AppCompatActivity {
                         binding.slider.setVisibility(View.VISIBLE);
                         binding.imageTv.setText("Images Selected");
                         isImageUploaded = true;
-                        Log.d(TAG, "onActivityResult: " + result.getData());
                     } else {
                         InputStream stream = getContentResolver().openInputStream(Uri.fromFile(photoFile));
                         Bitmap bitmap = BitmapFactory.decodeStream(stream);
                         if (bitmap != null) {
                             capFileList.add(photoFile);
-                            Log.d(TAG, "onActivityResult: " + bitmap);
                         } else {
-                            Log.d(TAG, "onActivityResult: camera else" + bitmap);
                             REQUEST_IMAGE_CAPTURE = 1;
                             capFileList.clear();
                             DialogCustoms.showSnackBar(ctx, "Please select 3 product images", binding.getRoot());
