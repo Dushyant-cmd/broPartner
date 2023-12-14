@@ -238,7 +238,8 @@ public class MainActivity extends AppCompatActivity {
                     Intent i = new Intent(MainActivity.this, HistoryActivity.class);
                     startActivity(i);
                 } else if (id == R.id.termsCon) {
-                    DialogCustoms.showSnackBar(MainActivity.this, "Terms & Conditions", binding.getRoot());
+                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://brorental.com/terms"));
+                    startActivity(i);
                 }
 
                 binding.drawerLayout.close();

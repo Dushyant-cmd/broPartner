@@ -316,7 +316,7 @@ public class RideHistoryFragment extends Fragment {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 HashMap<String, Object> map = new HashMap<>();
-                                map.put("amount", data.getAmount());
+                                map.put("amount", String.valueOf(data.getAmount()));
                                 map.put("date", dateAndTime);
                                 map.put("info", null);
                                 map.put("name", appclass.sharedPref.getUser().getName());
