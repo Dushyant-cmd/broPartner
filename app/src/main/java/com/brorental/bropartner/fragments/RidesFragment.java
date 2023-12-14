@@ -101,7 +101,7 @@ public class RidesFragment extends Fragment {
             if (!fromList.isEmpty() && !toList.isEmpty()) {
                 dialog.show();
             } else {
-                Snackbar bar = Snackbar.make(binding.getRoot(), "No points added", Snackbar.LENGTH_INDEFINITE);
+                Snackbar bar = Snackbar.make(binding.getRoot(), "No points added", Snackbar.LENGTH_LONG);
                 bar.setAction("Add point", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
