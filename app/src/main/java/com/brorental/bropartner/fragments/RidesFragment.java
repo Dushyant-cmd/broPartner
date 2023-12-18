@@ -106,8 +106,10 @@ public class RidesFragment extends Fragment {
                     bar.setAction("Add point", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Intent i = new Intent(requireActivity(), RideActivity.class);
-                            startActivity(i);
+                            if(!isDetached()) {
+                                Intent i = new Intent(activity.getApplicationContext(), RideActivity.class);
+                                startActivity(i);
+                            }
                         }
                     });
 
