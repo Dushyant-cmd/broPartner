@@ -101,16 +101,20 @@ public class RidesFragment extends Fragment {
             if (!fromList.isEmpty() && !toList.isEmpty()) {
                 dialog.show();
             } else {
-                Snackbar bar = Snackbar.make(binding.getRoot(), "No points added", Snackbar.LENGTH_LONG);
-                bar.setAction("Add point", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent i = new Intent(context, RideActivity.class);
-                        startActivity(i);
-                    }
-                });
+                try {
+                    Snackbar bar = Snackbar.make(binding.getRoot(), "No points added", Snackbar.LENGTH_LONG);
+                    bar.setAction("Add point", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent i = new Intent(requireActivity(), RideActivity.class);
+                            startActivity(i);
+                        }
+                    });
 
-                bar.show();
+                    bar.show();
+                } catch (Exception e) {
+                    Log.d(TAG, "setListeners: " + e);
+                }
             }
         });
 

@@ -689,7 +689,7 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             long totalRides = Long.parseLong(task.getResult().getString("totalRides"));
                             HashMap<String, Object> map = new HashMap<>();
-                            map.put("totalRides", --totalRides);
+                            map.put("totalRides", String.valueOf(--totalRides));
                             appClass.firestore.collection("users").document(broRentalId)
                                     .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
@@ -728,6 +728,10 @@ public class MainActivity extends AppCompatActivity {
                         appClass.sharedPref.setState(d.getString("state"));
                         appClass.sharedPref.setAddress(d.getString("address"));
                         onActivityResult(101, RESULT_OK, null);
+                        headerWalletTV.setText(Utility.rupeeIcon + appClass.sharedPref.getUser().getWallet());
+                        headerNameTV.setText(appClass.sharedPref.getUser().getName());
+                        Glide.with(MainActivity.this).load(appClass.sharedPref.getUser().getProfileUrl()).placeholder(R.drawable.default_profile).into(headerImageView);
+
                         if (alertDialog != null)
                             if (!appClass.sharedPref.getStatus().equalsIgnoreCase("pending"))
                                 alertDialog.dismiss();

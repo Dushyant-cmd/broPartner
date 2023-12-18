@@ -61,13 +61,13 @@ public class RideHistoryAdapter extends ListAdapter<RideHistoryModel, RideHistor
         String status = data.getStatus().toLowerCase();
 
         holder.binding.tvStatus.setText("Status: " + status);
-        holder.binding.tvName.setText(data.getName());
+        holder.binding.tvName.setText(data.getBroRentalName());
         holder.binding.tvAmt.setText("Ride cost: " + Utility.rupeeIcon + data.getAmount());
         holder.binding.tvOrdered.setText(orderTime);
         holder.binding.tvDis.setText(data.getDistance() + " KM");
         holder.binding.tvFrom.setText(data.getFrom());
         holder.binding.tvTo.setText(data.getTo());
-        Glide.with(ctx).load(data.getProfileUrl()).placeholder(R.drawable.default_profile).into(holder.binding.civProfile);
+        Glide.with(ctx).load(data.getBroRentalProfile()).placeholder(R.drawable.default_profile).into(holder.binding.civProfile);
 
         switch (status) {
             case "pending":
@@ -111,7 +111,7 @@ public class RideHistoryAdapter extends ListAdapter<RideHistoryModel, RideHistor
                 Toast.makeText(ctx, "Calling customer care...", Toast.LENGTH_SHORT).show();
                 rideStatusListener.contactListener(appClass.sharedPref.getCustomerCareNum());
             } else {
-                Toast.makeText(ctx, "Calling " + data.getName() + "...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ctx, "Calling customer...", Toast.LENGTH_SHORT).show();
                 rideStatusListener.contactListener(data.getBroRentalNumber());
             }
         });

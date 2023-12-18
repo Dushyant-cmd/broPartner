@@ -150,9 +150,9 @@ public class RideHistoryFragment extends Fragment {
                                             pDialog.show();
                                             HashMap<String, Object> map = new HashMap<>();
                                             map.put("status", status);
-                                            if(status.equalsIgnoreCase("completed")) {
+                                            if (status.equalsIgnoreCase("completed")) {
                                                 completePayment(map, docId, data);
-                                            } else if(status.equalsIgnoreCase("ongoing")) {
+                                            } else if (status.equalsIgnoreCase("ongoing")) {
                                                 map.put("startTimestamp", System.currentTimeMillis());
                                                 appclass.firestore.collection("rideHistory")
                                                         .document(docId)
@@ -160,7 +160,7 @@ public class RideHistoryFragment extends Fragment {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                 pDialog.dismiss();
-                                                                if(task.isSuccessful()) {
+                                                                if (task.isSuccessful()) {
                                                                     getData();
                                                                     Toast.makeText(ctx, "Ride started.", Toast.LENGTH_SHORT).show();
                                                                 } else {
@@ -176,54 +176,52 @@ public class RideHistoryFragment extends Fragment {
                                     alertDialog.show();
                                 }
 
-                            @Override
-                            public void contactListener (String phoneNum){
-                                Intent i = new Intent(Intent.ACTION_DIAL);
-                                i.setData(Uri.parse("tel:" + phoneNum));
-                                activity.startActivity(i);
-                            }
-                        });
-
-                        if (!dList.isEmpty())
-                            lastDoc = dList.get(dList.size() - 1);
-
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
-                            binding.nestedSv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
                                 @Override
-                                public void onScrollChange(@NonNull NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                                    //Check if user scrolled till bottom
-                                    if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
-                                        Log.v(TAG, "list scroll till bottom");
-                                        if (Utility.isNetworkAvailable(ctx) && page == 0) {
-                                            page++;
-                                            loadMoreGameResult();
-                                        } else if (!Utility.isNetworkAvailable(ctx)) {
-                                            Toast.makeText(getActivity(), "Check internet connection", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
+                                public void contactListener(String phoneNum) {
+                                    Intent i = new Intent(Intent.ACTION_DIAL);
+                                    i.setData(Uri.parse("tel:" + phoneNum));
+                                    activity.startActivity(i);
                                 }
                             });
-                    } else
 
-                    {
-                        DialogCustoms.showSnackBar(ctx, "Please try again", binding.getRoot());
+                            if (!dList.isEmpty())
+                                lastDoc = dList.get(dList.size() - 1);
+
+                            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+                                binding.nestedSv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+                                    @Override
+                                    public void onScrollChange(@NonNull NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                                        //Check if user scrolled till bottom
+                                        if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
+                                            Log.v(TAG, "list scroll till bottom");
+                                            if (Utility.isNetworkAvailable(ctx) && page == 0) {
+                                                page++;
+                                                loadMoreGameResult();
+                                            } else if (!Utility.isNetworkAvailable(ctx)) {
+                                                Toast.makeText(getActivity(), "Check internet connection", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+                                });
+                        } else {
+                            DialogCustoms.showSnackBar(ctx, "Please try again", binding.getRoot());
+                        }
                     }
-                }
-    });
+                });
 
 
         appclass.firestore.collection("appData").document("lowerSettings")
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             qrImg = task.getResult().getString("upiQrImage");
                         } else {
                             Log.d(TAG, "onComplete: " + task.getException());
                         }
                     }
                 });
-}
+    }
 
     private void completePayment(HashMap<String, Object> map, String docId, RideHistoryModel data) {
         androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(ctx);
@@ -240,7 +238,7 @@ public class RideHistoryFragment extends Fragment {
         binding2.spinnerPay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(payList.get(i).equalsIgnoreCase("cod")) {
+                if (payList.get(i).equalsIgnoreCase("cod")) {
                     binding2.ivPay.setVisibility(View.GONE);
                 } else {
                     binding2.ivPay.setVisibility(View.VISIBLE);
@@ -267,7 +265,7 @@ public class RideHistoryFragment extends Fragment {
             String selectedPayMode = binding2.spinnerPay.getSelectedItem().toString();
             map.put("endTimestamp", System.currentTimeMillis());
 
-            if(selectedPayMode.equalsIgnoreCase("cod")) {
+            if (selectedPayMode.equalsIgnoreCase("cod")) {
                 map.put("paymentMode", "cod");
                 appclass.firestore.collection("rideHistory")
                         .document(docId)
@@ -290,11 +288,11 @@ public class RideHistoryFragment extends Fragment {
                                         .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                             @Override
                                             public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                if(task.isSuccessful()) {
+                                                if (task.isSuccessful()) {
                                                     pDialog.dismiss();
                                                     payDialog.dismiss();
                                                     getData();
-                                                    if(task.isSuccessful()) {
+                                                    if (task.isSuccessful()) {
                                                         updateTotalRides(data.getBroRentalId());
                                                         DialogCustoms.showSnackBar(ctx, "Ride Completed", binding.getRoot());
                                                     } else {
@@ -308,7 +306,7 @@ public class RideHistoryFragment extends Fragment {
                             }
                         });
 
-            } else if(selectedPayMode.equalsIgnoreCase("online")) {
+            } else if (selectedPayMode.equalsIgnoreCase("online")) {
                 map.put("paymentMode", "online");
                 appclass.firestore.collection("rideHistory")
                         .document(docId)
@@ -328,23 +326,23 @@ public class RideHistoryFragment extends Fragment {
                                 map.put("broRentalId", "");
                                 map.put("broPartnerId", appclass.sharedPref.getUser().getPin());
                                 appclass.firestore.collection("transactions").add(map)
-                                                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                        if(task.isSuccessful()) {
-                                                            pDialog.dismiss();
-                                                            payDialog.dismiss();
-                                                            getData();
-                                                            if(task.isSuccessful()) {
-                                                                DialogCustoms.showSnackBar(ctx, "Ride Completed", binding.getRoot());
-                                                            } else {
-                                                                Toast.makeText(ctx, "Please try again", Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        } else {
-                                                            Log.d(TAG, "onComplete: " + task.getException());
-                                                        }
+                                        .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                if (task.isSuccessful()) {
+                                                    pDialog.dismiss();
+                                                    payDialog.dismiss();
+                                                    getData();
+                                                    if (task.isSuccessful()) {
+                                                        DialogCustoms.showSnackBar(ctx, "Ride Completed", binding.getRoot());
+                                                    } else {
+                                                        Toast.makeText(ctx, "Please try again", Toast.LENGTH_SHORT).show();
                                                     }
-                                                });
+                                                } else {
+                                                    Log.d(TAG, "onComplete: " + task.getException());
+                                                }
+                                            }
+                                        });
                             }
                         });
             }
@@ -357,7 +355,7 @@ public class RideHistoryFragment extends Fragment {
                     .update(updateMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()) {
+                            if (task.isSuccessful()) {
                                 Log.d(TAG, "onComplete: success");
                             } else {
                                 Toast.makeText(ctx, "Try again", Toast.LENGTH_SHORT).show();
@@ -414,10 +412,10 @@ public class RideHistoryFragment extends Fragment {
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             long totalRides = Long.parseLong(task.getResult().getString("totalRides"));
                             HashMap<String, Object> map = new HashMap<>();
-                            map.put("totalRides", --totalRides);
+                            map.put("totalRides", String.valueOf(--totalRides));
                             appclass.firestore.collection("users").document(broRentalId)
                                     .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override

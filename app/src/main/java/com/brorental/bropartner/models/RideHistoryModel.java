@@ -3,27 +3,23 @@ package com.brorental.bropartner.models;
 import java.util.Objects;
 
 public class RideHistoryModel {
-    private String from, to, broPartnerId, broRentalId, paymentMode, status, profileUrl, name, docId, pin, broRentalNumber;
+    private String from, to, broPartnerId, broRentalId, paymentMode, status, profileUrl, name, docId, pin, broRentalNumber, broRentalName, broRentalProfile;
     private long amount, distance, startTimestamp, endTimestamp, timestamp, rideId;
 
-    public RideHistoryModel(String from, String to, String broPartnerId, String broRentalId, String paymentMode, String status, String profileUrl, String name, String docId, String pin, String broRentalNumber, long amount, long distance, long startTimestamp, long endTimestamp, long timestamp, long rideId) {
-        this.from = from;
-        this.to = to;
-        this.broPartnerId = broPartnerId;
-        this.broRentalId = broRentalId;
-        this.paymentMode = paymentMode;
-        this.status = status;
-        this.profileUrl = profileUrl;
-        this.name = name;
-        this.docId = docId;
-        this.pin = pin;
-        this.broRentalNumber = broRentalNumber;
-        this.amount = amount;
-        this.distance = distance;
-        this.startTimestamp = startTimestamp;
-        this.endTimestamp = endTimestamp;
-        this.timestamp = timestamp;
-        this.rideId = rideId;
+    public String getBroRentalName() {
+        return broRentalName;
+    }
+
+    public void setBroRentalName(String broRentalName) {
+        this.broRentalName = broRentalName;
+    }
+
+    public String getBroRentalProfile() {
+        return broRentalProfile;
+    }
+
+    public void setBroRentalProfile(String broRentalProfile) {
+        this.broRentalProfile = broRentalProfile;
     }
 
     @Override
@@ -31,12 +27,12 @@ public class RideHistoryModel {
         if (this == o) return true;
         if (!(o instanceof RideHistoryModel)) return false;
         RideHistoryModel that = (RideHistoryModel) o;
-        return getAmount() == that.getAmount() && getDistance() == that.getDistance() && getStartTimestamp() == that.getStartTimestamp() && getEndTimestamp() == that.getEndTimestamp() && getTimestamp() == that.getTimestamp() && getRideId() == that.getRideId() && Objects.equals(getFrom(), that.getFrom()) && Objects.equals(getTo(), that.getTo()) && Objects.equals(getBroPartnerId(), that.getBroPartnerId()) && Objects.equals(getBroRentalId(), that.getBroRentalId()) && Objects.equals(getPaymentMode(), that.getPaymentMode()) && Objects.equals(getStatus(), that.getStatus()) && Objects.equals(getProfileUrl(), that.getProfileUrl()) && Objects.equals(getName(), that.getName()) && Objects.equals(getDocId(), that.getDocId()) && Objects.equals(getPin(), that.getPin()) && Objects.equals(getBroRentalNumber(), that.getBroRentalNumber());
+        return getAmount() == that.getAmount() && getDistance() == that.getDistance() && getStartTimestamp() == that.getStartTimestamp() && getEndTimestamp() == that.getEndTimestamp() && getTimestamp() == that.getTimestamp() && getRideId() == that.getRideId() && Objects.equals(getFrom(), that.getFrom()) && Objects.equals(getTo(), that.getTo()) && Objects.equals(getBroPartnerId(), that.getBroPartnerId()) && Objects.equals(getBroRentalId(), that.getBroRentalId()) && Objects.equals(getPaymentMode(), that.getPaymentMode()) && Objects.equals(getStatus(), that.getStatus()) && Objects.equals(getProfileUrl(), that.getProfileUrl()) && Objects.equals(getName(), that.getName()) && Objects.equals(getDocId(), that.getDocId()) && Objects.equals(getPin(), that.getPin()) && Objects.equals(getBroRentalNumber(), that.getBroRentalNumber()) && Objects.equals(broRentalName, that.broRentalName) && Objects.equals(broRentalProfile, that.broRentalProfile);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getFrom(), getTo(), getBroPartnerId(), getBroRentalId(), getPaymentMode(), getStatus(), getProfileUrl(), getName(), getDocId(), getPin(), getBroRentalNumber(), getAmount(), getDistance(), getStartTimestamp(), getEndTimestamp(), getTimestamp(), getRideId());
+        return Objects.hash(getFrom(), getTo(), getBroPartnerId(), getBroRentalId(), getPaymentMode(), getStatus(), getProfileUrl(), getName(), getDocId(), getPin(), getBroRentalNumber(), broRentalName, broRentalProfile, getAmount(), getDistance(), getStartTimestamp(), getEndTimestamp(), getTimestamp(), getRideId());
     }
 
     public String getBroRentalNumber() {
