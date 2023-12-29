@@ -59,6 +59,7 @@ public class RidesFragment extends Fragment {
     private RideHistoryAdapter adapter;
     private ArrayList<String> fromList = new ArrayList<>(), toList = new ArrayList<>();
     private String from = "", to = "";
+    private Snackbar bar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,11 +103,11 @@ public class RidesFragment extends Fragment {
                 dialog.show();
             } else {
                 try {
-                    Snackbar bar = Snackbar.make(binding.getRoot(), "No points added", Snackbar.LENGTH_LONG);
+                    bar = Snackbar.make(binding.getRoot(), "No points added", Snackbar.LENGTH_LONG);
                     bar.setAction("Add point", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if(!isDetached()) {
+                            if (!isDetached()) {
                                 Intent i = new Intent(activity.getApplicationContext(), RideActivity.class);
                                 startActivity(i);
                             }
@@ -458,5 +459,12 @@ public class RidesFragment extends Fragment {
                         }
                     }
                 });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (bar != null)
+            bar.dismiss();
     }
 }

@@ -56,6 +56,7 @@
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
+
             <com.chaos.view.PinView
                 android:id="@+id/otp"
                 style="@style/PinWidget.PinView"
@@ -73,10 +74,10 @@
                 app:hideLineWhenFilled="false"
                 app:itemCount="6"
                 app:itemHeight="48dp"
-                app:itemRadius="4dp"
-                app:itemSpacing="1dp"
+                app:itemRadius="8dp"
+                app:itemSpacing="8dp"
                 app:itemWidth="48dp"
-                app:lineColor="@android:color/darker_gray"
+                app:lineColor="@color/grey_font"
                 app:lineWidth="2dp"
                 app:viewType="rectangle" />
 
@@ -162,6 +163,7 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/terms_tv"
                         android:textSize="16sp"
                         android:fontFamily="@font/montserrat_regular"
                         android:layout_width="wrap_content"

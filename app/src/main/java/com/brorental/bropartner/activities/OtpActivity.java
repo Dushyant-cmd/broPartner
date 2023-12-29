@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -174,6 +175,11 @@ public class OtpActivity extends AppCompatActivity {
                 Log.d(TAG, "onCreate: " + e);
                 sharedPreferences.logout();
             }
+        });
+
+        binding.termsTv.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://brorental.com/terms"));
+            startActivity(intent);
         });
     }
 

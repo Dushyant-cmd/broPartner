@@ -161,7 +161,7 @@
                                         <ImageView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:src="@drawable/kyc_logo"
+                                            android:src="@drawable/no_data"
                                             android:visibility="gone"
                                             tools:visibility="visible" />
                                     </FrameLayout>
@@ -231,8 +231,7 @@
                                         <ImageView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:src="@drawable/kyc_logo"
-                                            android:visibility="gone"
+                                            android:src="@drawable/no_data"
                                             tools:visibility="visible" />
                                     </FrameLayout>
                                     <TextView

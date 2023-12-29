@@ -44,7 +44,7 @@ public class SignUpAndLogin extends AppCompatActivity {
 
     private void isUserRegistered() {
         progressDialog.show();
-        appClass.firestore.collection("partners").whereEqualTo("mobile", "+91 " + phone).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        appClass.firestore.collection("partners").whereEqualTo("mobile", "+91 " + phone).limit(1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 Log.d(TAG, "onComplete: " + task.getResult());
