@@ -542,6 +542,7 @@ public class MainActivity extends AppCompatActivity {
                         binding.recyclerViewRide.setVisibility(View.VISIBLE);
                         ridePage = 0;
                         if (task.isSuccessful()) {
+                            rideList.clear();
                             List<DocumentSnapshot> dList = task.getResult().getDocuments();
                             for (DocumentSnapshot d : dList) {
                                 rideList.add(d.toObject(RideHistoryModel.class));
