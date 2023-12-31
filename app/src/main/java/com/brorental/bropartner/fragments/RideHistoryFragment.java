@@ -260,6 +260,7 @@ public class RideHistoryFragment extends Fragment {
         SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy, hh:mm:ss a", Locale.getDefault());
         String dateAndTime = spf.format(date);
         binding2.btnSubmit.setOnClickListener(v -> {
+            pDialog.show();
             binding2.btnSubmit.setEnabled(false);
             builder1.setCancelable(false);
             String selectedPayMode = binding2.spinnerPay.getSelectedItem().toString();
@@ -299,6 +300,7 @@ public class RideHistoryFragment extends Fragment {
                                                         Toast.makeText(ctx, "Please try again", Toast.LENGTH_SHORT).show();
                                                     }
                                                 } else {
+                                                    pDialog.dismiss();
                                                     Log.d(TAG, "onComplete: " + task.getException());
                                                 }
                                             }
@@ -339,6 +341,7 @@ public class RideHistoryFragment extends Fragment {
                                                         Toast.makeText(ctx, "Please try again", Toast.LENGTH_SHORT).show();
                                                     }
                                                 } else {
+                                                    pDialog.dismiss();
                                                     Log.d(TAG, "onComplete: " + task.getException());
                                                 }
                                             }
@@ -413,9 +416,9 @@ public class RideHistoryFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
-                            long totalRides = Long.parseLong(task.getResult().getString("totalRides"));
+                            long totalRides = Long.parseLong(task.getResult().getString("totalRides")) - 1;
                             HashMap<String, Object> map = new HashMap<>();
-                            map.put("totalRides", String.valueOf(--totalRides));
+                            map.put("totalRides", String.valueOf(totalRides));
                             appclass.firestore.collection("users").document(broRentalId)
                                     .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override

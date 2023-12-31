@@ -193,7 +193,7 @@ public class ProfileEditDetails extends Fragment {
                         String name = binding.nameET.getText().toString();
                         String altMob = binding.altMobET.getText().toString();
                         String email = binding.emailEt.getText().toString();
-                        String state = binding.spinner.getSelectedItem().toString();
+                        String state = binding.spinner.getSelectedItem().toString().toLowerCase();
                         String address = binding.addTv.getText().toString();
 
                         if (name.isEmpty() && altMob.isEmpty() && fileAadhaarImage == null && fileProfileImage == null
