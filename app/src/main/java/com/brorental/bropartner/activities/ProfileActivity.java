@@ -81,7 +81,9 @@ public class ProfileActivity extends AppCompatActivity {
         binding.editTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, new ProfileEditDetails(new UtilsInterface.RefreshInterface() {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container, new ProfileEditDetails(new UtilsInterface.RefreshInterface() {
                             @Override
                             public void refresh(int cate) {
                                 binding.textImgLl.setVisibility(View.VISIBLE);

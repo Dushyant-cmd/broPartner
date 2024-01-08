@@ -770,21 +770,6 @@ public class UploadRentItem extends AppCompatActivity {
                                 Uri uri2 = clipData.getItemAt(1).getUri();
                                 Uri uri3 = clipData.getItemAt(2).getUri();
 
-//                                Bitmap firBmp = BitmapFactory.decodeFile(String.valueOf(uri1));
-//                                ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
-//                                firBmp.compress(Bitmap.CompressFormat.JPEG, 50, bos1);
-//                                mFirstImg = new ByteArrayInputStream(bos1.toByteArray());
-//
-//                                Bitmap secBmp = BitmapFactory.decodeFile(String.valueOf(uri1));
-//                                ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
-//                                secBmp.compress(Bitmap.CompressFormat.JPEG, 50, bos2);
-//                                mSecImg = new ByteArrayInputStream(bos2.toByteArray());
-//
-//                                Bitmap thrBmp = BitmapFactory.decodeFile(String.valueOf(uri1));
-//                                ByteArrayOutputStream bos3 = new ByteArrayOutputStream();
-//                                thrBmp.compress(Bitmap.CompressFormat.JPEG, 50, bos3);
-//                                mThirdImg = new ByteArrayInputStream(bos3.toByteArray());
-
                                 mFirstImg = getContentResolver().openInputStream(uri1);
                                 mSecImg = getContentResolver().openInputStream(uri2);
                                 mThirdImg = getContentResolver().openInputStream(uri3);

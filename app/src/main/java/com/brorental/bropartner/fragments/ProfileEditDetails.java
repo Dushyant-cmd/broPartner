@@ -93,8 +93,7 @@ public class ProfileEditDetails extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile_details, container, false);
         appClass = (AppClass) getActivity().getApplication();
@@ -104,10 +103,9 @@ public class ProfileEditDetails extends Fragment {
         roomDb = RoomDb.getInstance(requireContext());
         statesList = roomDb.getStateDao().getStates();
         list.add("Select your state");
-        if (statesList.isEmpty())
-            getStates();
+        if (statesList.isEmpty()) getStates();
         else {
-            for(int i=0; i<statesList.size(); i++) {
+            for (int i = 0; i < statesList.size(); i++) {
                 list.add(statesList.get(i).getState());
             }
             adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, list);
@@ -123,35 +121,34 @@ public class ProfileEditDetails extends Fragment {
             json.put("country", "india");
             RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), (json).toString());
             String url = "https://countriesnow.space/api/v0.1/countries/states";
-            apiService.getCountryState(url, body)
-                    .enqueue(new Callback<JsonObject>() {
-                        @Override
-                        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                            if (response.isSuccessful()) {
-                                try {
-                                    roomDb.getStateDao().deleteStates();
-                                    JSONObject json1 = new JSONObject(response.body().toString());
-                                    JSONObject dataJs = json1.getJSONObject("data");
-                                    JSONArray jsonArray1 = dataJs.getJSONArray("states");
-                                    for (int i = 0; i < jsonArray1.length(); i++) {
-                                        JSONObject js = jsonArray1.getJSONObject(i);
-                                        roomDb.getStateDao().insertState(new StateEntity(js.getString("name")));
-                                        list.add(js.getString("name"));
-                                    }
-
-                                    adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, list);
-                                    binding.spinner.setAdapter(adapter);
-                                } catch (Exception e) {
-                                    Log.d(TAG, "onResponse: " + e);
-                                }
+            apiService.getCountryState(url, body).enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            roomDb.getStateDao().deleteStates();
+                            JSONObject json1 = new JSONObject(response.body().toString());
+                            JSONObject dataJs = json1.getJSONObject("data");
+                            JSONArray jsonArray1 = dataJs.getJSONArray("states");
+                            for (int i = 0; i < jsonArray1.length(); i++) {
+                                JSONObject js = jsonArray1.getJSONObject(i);
+                                roomDb.getStateDao().insertState(new StateEntity(js.getString("name")));
+                                list.add(js.getString("name"));
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<JsonObject> call, Throwable t) {
-                            ErrorDialog.createErrorDialog(requireActivity(), t.getMessage());
+                            adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, list);
+                            binding.spinner.setAdapter(adapter);
+                        } catch (Exception e) {
+                            Log.d(TAG, "onResponse: " + e);
                         }
-                    });
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    ErrorDialog.createErrorDialog(requireActivity(), t.getMessage());
+                }
+            });
         } catch (Exception e) {
             Log.d(TAG, "getStates: " + e);
         }
@@ -196,8 +193,7 @@ public class ProfileEditDetails extends Fragment {
                         String state = binding.spinner.getSelectedItem().toString().toLowerCase();
                         String address = binding.addTv.getText().toString();
 
-                        if (name.isEmpty() && altMob.isEmpty() && fileAadhaarImage == null && fileProfileImage == null
-                                && filePanImage == null && email.isEmpty() && state.contains("state") && address.isEmpty()) {
+                        if (name.isEmpty() && altMob.isEmpty() && fileAadhaarImage == null && fileProfileImage == null && filePanImage == null && email.isEmpty() && state.contains("state") && address.isEmpty()) {
                             DialogCustoms.showSnackBar(getActivity(), "Enter details to edit.", binding.getRoot());
                             dialog.dismiss();
                             binding.saveTV.setEnabled(true);
@@ -206,8 +202,7 @@ public class ProfileEditDetails extends Fragment {
 
                         HashMap<String, Object> map = new HashMap<>();
 
-                        if (!name.isEmpty())
-                            map.put("name", name);
+                        if (!name.isEmpty()) map.put("name", name);
 
                         if (!altMob.isEmpty()) {
                             try {
@@ -250,43 +245,37 @@ public class ProfileEditDetails extends Fragment {
                         }
 
                         if (!map.isEmpty()) {
-                            if(!dialog.isShowing())
-                                dialog.show();
-                            appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
-                                    .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                if (!altMob.isEmpty())
-                                                    appClass.sharedPref.setAlternateMob(altMob);
-                                                if (!name.isEmpty())
-                                                    appClass.sharedPref.setName(name);
-                                                if (!email.isEmpty())
-                                                    appClass.sharedPref.setEmail(email);
-                                                if (!state.contains("select"))
-                                                    appClass.sharedPref.setState(state);
-                                                if (!address.isEmpty())
-                                                    appClass.sharedPref.setAddress(address);
-                                                Log.d(TAG, "onComplete: success");
-                                                if (filePanImage == null && fileAadhaarImage == null && fileProfileImage == null)
-                                                    requireActivity().onBackPressed();
-                                            } else {
-                                                dialog.dismiss();
-                                                Log.d(TAG, "onComplete: " + task.getException());
-                                            }
-                                        }
-                                    });
+                            if (!dialog.isShowing()) dialog.show();
+                            appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin()).update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        if (!altMob.isEmpty())
+                                            appClass.sharedPref.setAlternateMob(altMob);
+                                        if (!name.isEmpty()) appClass.sharedPref.setName(name);
+                                        if (!email.isEmpty()) appClass.sharedPref.setEmail(email);
+                                        if (!state.contains("select"))
+                                            appClass.sharedPref.setState(state);
+                                        if (!address.isEmpty())
+                                            appClass.sharedPref.setAddress(address);
+                                        Log.d(TAG, "onComplete: success");
+                                        if (filePanImage == null && fileAadhaarImage == null && fileProfileImage == null)
+                                            requireActivity().onBackPressed();
+                                    } else {
+                                        dialog.dismiss();
+                                        Log.d(TAG, "onComplete: " + task.getException());
+                                    }
+                                }
+                            });
                         }
 
                         if (fileAadhaarImage != null) {
-                            if(!dialog.isShowing())
-                                dialog.show();
+                            if (!dialog.isShowing()) dialog.show();
                             aadhaarRef.putFile(Uri.fromFile(fileAadhaarImage)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                     if (task.isSuccessful()) {
-                                        if(!dialog.isShowing())
-                                            dialog.show();
+                                        if (!dialog.isShowing()) dialog.show();
                                         aadhaarRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                             @Override
                                             public void onSuccess(Uri uri) {
@@ -309,14 +298,12 @@ public class ProfileEditDetails extends Fragment {
                         }
 
                         if (fileProfileImage != null) {
-                            if(!dialog.isShowing())
-                                dialog.show();
+                            if (!dialog.isShowing()) dialog.show();
                             profileRef.putFile(Uri.fromFile(fileProfileImage)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                     if (task.isSuccessful()) {
-                                        if(!dialog.isShowing())
-                                            dialog.show();
+                                        if (!dialog.isShowing()) dialog.show();
                                         profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                             @Override
                                             public void onSuccess(Uri uri) {
@@ -339,14 +326,12 @@ public class ProfileEditDetails extends Fragment {
                         }
 
                         if (filePanImage != null) {
-                            if(!dialog.isShowing())
-                                dialog.show();
+                            if (!dialog.isShowing()) dialog.show();
                             panRef.putFile(Uri.fromFile(filePanImage)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                     if (task.isSuccessful()) {
-                                        if(!dialog.isShowing())
-                                            dialog.show();
+                                        if (!dialog.isShowing()) dialog.show();
                                         panRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                             @Override
                                             public void onSuccess(Uri uri) {
@@ -378,40 +363,24 @@ public class ProfileEditDetails extends Fragment {
             @Override
             public void onClick(View v) {
                 if (checkStoragePermission()) {
-                    if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_DENIED) {
-                        Log.d(TAG, "onCreate: permission");
-                        android.app.AlertDialog uploadDialog = DialogCustoms.getUploadDialog(getActivity());
+                    android.app.AlertDialog uploadDialog = DialogCustoms.getUploadDialog(getActivity());
 
-                        LinearLayout uploadFileLayout = uploadDialog.findViewById(R.id.upload_file_layout);
-                        LinearLayout takePhotoLayout = uploadDialog.findViewById(R.id.take_photo_layout);
+                    LinearLayout uploadFileLayout = uploadDialog.findViewById(R.id.upload_file_layout);
+                    LinearLayout takePhotoLayout = uploadDialog.findViewById(R.id.take_photo_layout);
 
-                        uploadFileLayout.setOnClickListener(v1 ->
-                        {
-                            isProfileUpload = true;
-                            uploadDialog.dismiss();
-                            Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            uploadProfileImage.launch(galleryIntent);
-                        });
+                    uploadFileLayout.setOnClickListener(v1 -> {
+                        isProfileUpload = true;
+                        uploadDialog.dismiss();
+                        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        uploadProfileImage.launch(galleryIntent);
+                    });
 
-                        takePhotoLayout.setOnClickListener(v1 -> {
-                            isProfileUpload = false;
-                            uploadDialog.dismiss();
-                            Intent cameraIntent = getCameraIntent();
-                            uploadProfileImage.launch(cameraIntent);
-                        });
-                    } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES,
-                                            Manifest.permission.CAMERA},
-                                    1);
-                        } else {
-                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA,
-                                            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
-                                    },
-                                    1);
-                        }
-                    }
+                    takePhotoLayout.setOnClickListener(v1 -> {
+                        isProfileUpload = false;
+                        uploadDialog.dismiss();
+                        Intent cameraIntent = getCameraIntent();
+                        uploadProfileImage.launch(cameraIntent);
+                    });
                 }
             }
         });
@@ -427,12 +396,10 @@ public class ProfileEditDetails extends Fragment {
                         LinearLayout uploadFileLayout = uploadDialog.findViewById(R.id.upload_file_layout);
                         LinearLayout takePhotoLayout = uploadDialog.findViewById(R.id.take_photo_layout);
 
-                        uploadFileLayout.setOnClickListener(v1 ->
-                        {
+                        uploadFileLayout.setOnClickListener(v1 -> {
                             isPanUpload = true;
                             uploadDialog.dismiss();
-                            Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             uploadDLImage.launch(galleryIntent);
                         });
 
@@ -444,14 +411,9 @@ public class ProfileEditDetails extends Fragment {
                         });
                     } else {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES,
-                                            Manifest.permission.CAMERA},
-                                    1);
+                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.CAMERA}, 1);
                         } else {
-                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA,
-                                            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
-                                    },
-                                    1);
+                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                         }
                     }
                 }
@@ -469,12 +431,10 @@ public class ProfileEditDetails extends Fragment {
                         LinearLayout uploadFileLayout = uploadDialog.findViewById(R.id.upload_file_layout);
                         LinearLayout takePhotoLayout = uploadDialog.findViewById(R.id.take_photo_layout);
 
-                        uploadFileLayout.setOnClickListener(v1 ->
-                        {
+                        uploadFileLayout.setOnClickListener(v1 -> {
                             isAadhaarUpload = true;
                             uploadDialog.dismiss();
-                            Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             uploadAadhaarImage.launch(galleryIntent);
                         });
 
@@ -486,14 +446,9 @@ public class ProfileEditDetails extends Fragment {
                         });
                     } else {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES,
-                                            Manifest.permission.CAMERA},
-                                    1);
+                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.CAMERA}, 1);
                         } else {
-                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA,
-                                            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
-                                    },
-                                    1);
+                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                         }
                     }
                 }
@@ -506,34 +461,32 @@ public class ProfileEditDetails extends Fragment {
         map.put(key, uri.toString());
         map.put(imagePathKey, imagePath);
 
-        if(!dialog.isShowing())
-            dialog.show();
-        appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin())
-                .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            if (key.equalsIgnoreCase("profileUrl")) {
-                                appClass.sharedPref.setProfileUrl(uri.toString());
-                                appClass.sharedPref.setProfilePath(imagePath);
-                            } else if (key.equalsIgnoreCase("aadhaarImgUrl")) {
-                                appClass.sharedPref.setAadhaarImg(uri.toString());
-                                appClass.sharedPref.setAadhaarPath(imagePath);
-                            } else if (key.equalsIgnoreCase("panImgUrl")) {
-                                appClass.sharedPref.setPanImgUrl(uri.toString());
-                                appClass.sharedPref.setPanImgPath(imagePath);
-                            }
-
-                            if (filePanImage == null && fileAadhaarImage == null && fileProfileImage == null && !requireActivity().isFinishing()) {
-                                requireActivity().onBackPressed();
-                                dialog.dismiss();
-                            }
-                        } else {
-                            dialog.dismiss();
-                            Log.d(TAG, "onComplete: " + task.getException());
-                        }
+        if (!dialog.isShowing()) dialog.show();
+        appClass.firestore.collection("partners").document(appClass.sharedPref.getUser().getPin()).update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    if (key.equalsIgnoreCase("profileUrl")) {
+                        appClass.sharedPref.setProfileUrl(uri.toString());
+                        appClass.sharedPref.setProfilePath(imagePath);
+                    } else if (key.equalsIgnoreCase("aadhaarImgUrl")) {
+                        appClass.sharedPref.setAadhaarImg(uri.toString());
+                        appClass.sharedPref.setAadhaarPath(imagePath);
+                    } else if (key.equalsIgnoreCase("panImgUrl")) {
+                        appClass.sharedPref.setPanImgUrl(uri.toString());
+                        appClass.sharedPref.setPanImgPath(imagePath);
                     }
-                });
+
+                    if (filePanImage == null && fileAadhaarImage == null && fileProfileImage == null && !requireActivity().isFinishing()) {
+                        requireActivity().onBackPressed();
+                        dialog.dismiss();
+                    }
+                } else {
+                    dialog.dismiss();
+                    Log.d(TAG, "onComplete: " + task.getException());
+                }
+            }
+        });
     }
 
     private Intent getCameraIntent() {
@@ -560,212 +513,189 @@ public class ProfileEditDetails extends Fragment {
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
-        File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
 
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
 
     @SuppressLint("SetTextI18n")
-    ActivityResultLauncher<Intent> uploadProfileImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                try {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        if (isProfileUpload) {
-                            Intent data = result.getData();
-                            if (data != null && data.getData() != null) {
-                                Uri selectedImage = data.getData();
-                                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+    ActivityResultLauncher<Intent> uploadProfileImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        try {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                if (isProfileUpload) {
+                    Intent data = result.getData();
+                    if (data != null && data.getData() != null) {
+                        Uri selectedImage = data.getData();
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
-                                Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn,
-                                        null, null, null);
-                                assert cursor != null;
-                                cursor.moveToFirst();
+                        Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                        assert cursor != null;
+                        cursor.moveToFirst();
 
-                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                                String mediaPath = cursor.getString(columnIndex);
-                                fileProfileImage = new File(mediaPath);
-                                binding.profileCirIV.setImageURI(Uri.fromFile(fileProfileImage));
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        String mediaPath = cursor.getString(columnIndex);
+                        fileProfileImage = new File(mediaPath);
+                        binding.profileCirIV.setImageURI(Uri.fromFile(fileProfileImage));
 
-                                cursor.close();
-                            }
-                        } else {
-                            try {
-                                Log.d(TAG, "uri of camera image: " + currentPhotoPath);
-                                if (currentPhotoPath != null) {
-                                    Uri uri = Uri.fromFile(new File(currentPhotoPath));
-                                    fileProfileImage = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                                            , "Pan" + System.currentTimeMillis() + ".jpeg");
-                                    binding.profileCirIV.setImageURI(Uri.fromFile(fileProfileImage));
-
-                                    InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
-                                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-                                    byte[] bytes = baos.toByteArray();
-
-                                    FileOutputStream fileOutputStream = new FileOutputStream(fileProfileImage);
-                                    fileOutputStream.write(bytes);
-                                    fileOutputStream.flush();
-                                    fileOutputStream.close();
-                                    baos.close();
-
-                                    Log.d(TAG, "bitmap: " + bitmap);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Log.d(TAG, "onCatch pan: " + e.getLocalizedMessage());
-                            }
-                        }
-
-                    } else {
-                        fileProfileImage = null;
+                        cursor.close();
                     }
-                } catch (Exception e) {
-                    Log.d(TAG, "onCatch: " + e);
-                }
-            });
+                } else {
+                    try {
+                        Log.d(TAG, "uri of camera image: " + currentPhotoPath);
+                        if (currentPhotoPath != null) {
+                            Uri uri = Uri.fromFile(new File(currentPhotoPath));
+                            fileProfileImage = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "Pan" + System.currentTimeMillis() + ".jpeg");
 
-    ActivityResultLauncher<Intent> uploadDLImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                try {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        if (isPanUpload) {
-                            Intent data = result.getData();
-                            if (data != null && data.getData() != null) {
-                                Uri selectedImage = data.getData();
-                                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                            InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                            byte[] bytes = baos.toByteArray();
 
-                                Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn,
-                                        null, null, null);
-                                assert cursor != null;
-                                cursor.moveToFirst();
+                            FileOutputStream fileOutputStream = new FileOutputStream(fileProfileImage);
+                            fileOutputStream.write(bytes);
+                            fileOutputStream.flush();
+                            fileOutputStream.close();
+                            baos.close();
+                            binding.profileCirIV.setImageURI(Uri.fromFile(fileProfileImage));
 
-                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                                String mediaPath = cursor.getString(columnIndex);
-                                filePanImage = new File(mediaPath);
-                                binding.dLTV.setText("Document Uploaded");
-
-                                cursor.close();
-                            }
-                        } else {
-                            try {
-                                Log.d(TAG, "uri of camera image: " + currentPhotoPath);
-                                if (currentPhotoPath != null) {
-                                    Uri uri = Uri.fromFile(new File(currentPhotoPath));
-                                    filePanImage = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                                            , "Pan" + System.currentTimeMillis() + ".jpeg");
-                                    binding.dLTV.setText("Document Uploaded");
-
-                                    InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
-                                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-                                    byte[] bytes = baos.toByteArray();
-
-                                    FileOutputStream fileOutputStream = new FileOutputStream(filePanImage);
-                                    fileOutputStream.write(bytes);
-                                    fileOutputStream.flush();
-                                    fileOutputStream.close();
-                                    baos.close();
-
-                                    Log.d(TAG, "bitmap: " + bitmap);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Log.d(TAG, "onCatch pan: " + e.getLocalizedMessage());
-                            }
+                            Log.d(TAG, "bitmap: " + bitmap);
                         }
-
-                    } else {
-                        filePanImage = null;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.d(TAG, "onCatch pan: " + e.getLocalizedMessage());
                     }
-                } catch (Exception e) {
-                    Log.d(TAG, "onCatch: " + e);
                 }
-            });
-    ActivityResultLauncher<Intent> uploadAadhaarImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                try {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        if (isAadhaarUpload) {
-                            Intent data = result.getData();
-                            if (data != null && data.getData() != null) {
-                                Uri selectedImage = data.getData();
-                                String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
-                                Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn,
-                                        null, null, null);
-                                assert cursor != null;
-                                cursor.moveToFirst();
+            } else {
+                fileProfileImage = null;
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "onCatch: " + e);
+        }
+    });
 
-                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                                String mediaPath = cursor.getString(columnIndex);
-                                fileAadhaarImage = new File(mediaPath);
-                                binding.aadhaarTV.setText("Document Uploaded");
+    ActivityResultLauncher<Intent> uploadDLImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        try {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                if (isPanUpload) {
+                    Intent data = result.getData();
+                    if (data != null && data.getData() != null) {
+                        Uri selectedImage = data.getData();
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
-                                cursor.close();
-                            }
-                        } else {
-                            try {
-                                Log.d(TAG, "uri of camera image: " + currentPhotoPath);
-                                if (currentPhotoPath != null) {
-                                    Uri uri = Uri.fromFile(new File(currentPhotoPath));
-                                    fileAadhaarImage = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                                            , "Pan" + System.currentTimeMillis() + ".jpeg");
-                                    binding.aadhaarTV.setText("Document Uploaded");
+                        Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                        assert cursor != null;
+                        cursor.moveToFirst();
 
-                                    InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
-                                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-                                    byte[] bytes = baos.toByteArray();
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        String mediaPath = cursor.getString(columnIndex);
+                        filePanImage = new File(mediaPath);
+                        binding.dLTV.setText("Document Uploaded");
 
-                                    FileOutputStream fileOutputStream = new FileOutputStream(fileAadhaarImage);
-                                    fileOutputStream.write(bytes);
-                                    fileOutputStream.flush();
-                                    fileOutputStream.close();
-                                    baos.close();
+                        cursor.close();
+                    }
+                } else {
+                    try {
+                        Log.d(TAG, "uri of camera image: " + currentPhotoPath);
+                        if (currentPhotoPath != null) {
+                            Uri uri = Uri.fromFile(new File(currentPhotoPath));
+                            filePanImage = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "Pan" + System.currentTimeMillis() + ".jpeg");
+                            binding.dLTV.setText("Document Uploaded");
 
-                                    Log.d(TAG, "bitmap: " + bitmap);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Log.d(TAG, "onCatch pan: " + e.getLocalizedMessage());
-                            }
+                            InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                            byte[] bytes = baos.toByteArray();
+
+                            FileOutputStream fileOutputStream = new FileOutputStream(filePanImage);
+                            fileOutputStream.write(bytes);
+                            fileOutputStream.flush();
+                            fileOutputStream.close();
+                            baos.close();
+
+                            Log.d(TAG, "bitmap: " + bitmap);
                         }
-
-                    } else {
-                        fileAadhaarImage = null;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.d(TAG, "onCatch pan: " + e.getLocalizedMessage());
                     }
-                } catch (Exception e) {
-                    Log.d(TAG, "onCatch: " + e);
                 }
-            });
+
+            } else {
+                filePanImage = null;
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "onCatch: " + e);
+        }
+    });
+    ActivityResultLauncher<Intent> uploadAadhaarImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        try {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                if (isAadhaarUpload) {
+                    Intent data = result.getData();
+                    if (data != null && data.getData() != null) {
+                        Uri selectedImage = data.getData();
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                        Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                        assert cursor != null;
+                        cursor.moveToFirst();
+
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        String mediaPath = cursor.getString(columnIndex);
+                        fileAadhaarImage = new File(mediaPath);
+                        binding.aadhaarTV.setText("Document Uploaded");
+
+                        cursor.close();
+                    }
+                } else {
+                    try {
+                        Log.d(TAG, "uri of camera image: " + currentPhotoPath);
+                        if (currentPhotoPath != null) {
+                            Uri uri = Uri.fromFile(new File(currentPhotoPath));
+                            fileAadhaarImage = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "Pan" + System.currentTimeMillis() + ".jpeg");
+                            binding.aadhaarTV.setText("Document Uploaded");
+
+                            InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                            byte[] bytes = baos.toByteArray();
+
+                            FileOutputStream fileOutputStream = new FileOutputStream(fileAadhaarImage);
+                            fileOutputStream.write(bytes);
+                            fileOutputStream.flush();
+                            fileOutputStream.close();
+                            baos.close();
+
+                            Log.d(TAG, "bitmap: " + bitmap);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.d(TAG, "onCatch pan: " + e.getLocalizedMessage());
+                    }
+                }
+
+            } else {
+                fileAadhaarImage = null;
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "onCatch: " + e);
+        }
+    });
 
     public boolean checkStoragePermission() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
-                    || ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
-                    || ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                Manifest.permission.CAMERA},
-                        1);
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED || ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED || ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, 1);
                 return false;
             }
         } else {
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_DENIED
-                    || ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{
-                                Manifest.permission.READ_MEDIA_IMAGES,
-                                Manifest.permission.CAMERA},
-                        1);
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_DENIED || ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.CAMERA}, 1);
                 return false;
             }
         }
@@ -781,20 +711,5 @@ public class ProfileEditDetails extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         refreshInterface.refresh(0);
-//        if (!appClass.sharedPref.getEmail().isEmpty() && !appClass.sharedPref.getAlternateMob().isEmpty() && appClass.sharedPref.getAadhaarImg() != null && appClass.sharedPref.getUser().getProfileUrl() != null && appClass.sharedPref.getDLImg() != null) {
-//            if (appClass.sharedPref.getStatus().matches("pending")) {
-//                appClass.sharedPref.setStatus("approved");
-//                HashMap<String, Object> map = new HashMap<>();
-//                map.put("status", "approved");
-//                appClass.firestore.collection("partners")
-//                        .document(appClass.sharedPref.getUser().getPin())
-//                        .update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                            @Override
-//                            public void onSuccess(Void unused) {
-//                                Log.d(TAG, "onSuccess: success");
-//                            }
-//                        });
-//            }
-//        }
     }
 }
